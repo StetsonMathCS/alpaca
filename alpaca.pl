@@ -1,40 +1,45 @@
 %vuln( [prereqs], [result], 
 %					[Role-[key-(pred,[val]),...,key-(pred,[val])]]
 
-vuln('sql injection', [web_access], [database_queries], 
-		 [apache-[version-(only, [2.4])], mysql-[tables-(exists, [users]), version-(only, [5.3])], php-[version-(only, [5.5]), script-(exists, [web])]]).
+vuln('sql-injection', [web_access], [database_queries], 
+			[apache-[version-(only, [2.4])], mysql-[tables-(exists, [users]), version-(only, [5.3])], php-[version-(only, [5.5]), script-(exists, [web])]]).
 vuln('db-query-users', [database_queries], [user_list, hashed_passwords], [mysql-[tables-(exists, [users])]]).
-vuln('crack passwords', [hashed_passwords], [passwords], []).
-vuln('login ssh', [passwords, user_list, ssh_server], [shell_access], []).
+vuln('crack-passwords', [hashed_passwords], [passwords], []).
+vuln('login-ssh', [passwords, user_list, ssh_server], [shell_access], []).
 
+vuln('login-verbose', [web_access, login_page_verbose], [unauthorized_access], 
+			[apache-[version-(only, [2.4])], mysql-[tables-(exists, [users])], php-[version-(only, [5.5]), script-(exists, [web_login_verbose, web])]]).
 
-%setof((Configs, Vulns), achieve_goal(shell_access, [web_access, ssh_server], [], [], Configs, Vulns), Result), length(Result, L), print(Result).
+vuln('login-cracked-passwords', [web_access, login_page, passwords, user_list], [unauthorized_access], 
+			[apache-[version-(only, [2.4])], mysql-[tables-(exists, [users])], php-[version-(only, [5.5]), script-(exists, [web_login_cracked_passwords])]]).
+
+%setof((Configs, Vulns), achieveGoal(shell_access, [web_access, ssh_server], [], [], Configs, Vulns), Result), length(Result, L), print(Result).
 
 % DON'T CHANGE CODE BELOW HERE. YOU WILL BREAK IT.
 
-%achieve_goal( Goal, InitialState, [Attempted], [Vulns] )
-achieve_goal(Goal, InitialState, _, [], [], []) :- member(Goal, InitialState).
-achieve_goal(Goal, InitialState, Attempted, StartingConfigs, AcceptedConfigs, [Description|Vulns]) :-
+%achieveGoal( Goal, InitialState, [Attempted], [Vulns] )
+achieveGoal(Goal, InitialState, _, [], [], []) :- member(Goal, InitialState).
+achieveGoal(Goal, InitialState, Attempted, StartingConfigs, AcceptedConfigs, [Description|Vulns]) :-
 		vuln(Description, Input, Output, Configs),
 		\+member((Input, Output, Configs), Attempted),
 		intersection(Input, InitialState, Input),
 		union(Output, InitialState, NewState),
-		achieve_goal(Goal, NewState, [(Input, Output, Configs)|Attempted], StartingConfigs, NewConfigs, Vulns),
-		check_configs(NewConfigs, Configs, AcceptedConfigs).
+		achieveGoal(Goal, NewState, [(Input, Output, Configs)|Attempted], StartingConfigs, NewConfigs, Vulns),
+		checkConfigs(NewConfigs, Configs, AcceptedConfigs).
 
-%check_configs(AcceptedConfigs, PendingConfigs, NewConfigs)
-check_configs([], PendingConfigs, PendingConfigs).
-check_configs(AcceptedConfigs, [], AcceptedConfigs).
-check_configs(AcceptedConfigs, PendingConfigs, SortedConfigs) :-
+%checkConfigs(AcceptedConfigs, PendingConfigs, NewConfigs)
+checkConfigs([], PendingConfigs, PendingConfigs).
+checkConfigs(AcceptedConfigs, [], AcceptedConfigs).
+checkConfigs(AcceptedConfigs, PendingConfigs, SortedConfigs) :-
 		select(K-PendingVals, PendingConfigs, RestPendingConfigs),
 		\+member(K-_, AcceptedConfigs),
-		check_configs(AcceptedConfigs, RestPendingConfigs, TmpConfigs),
+		checkConfigs(AcceptedConfigs, RestPendingConfigs, TmpConfigs),
 		NewConfigs = [K-PendingVals|TmpConfigs],
 		sort(NewConfigs, SortedConfigs).
-check_configs(AcceptedConfigs, PendingConfigs, SortedConfigs) :-
+checkConfigs(AcceptedConfigs, PendingConfigs, SortedConfigs) :-
 		select(K-PendingVals, PendingConfigs, RestPendingConfigs),
 		select(K-AcceptedVals, AcceptedConfigs, RestAcceptedConfigs),
-		check_configs(RestAcceptedConfigs, RestPendingConfigs, TmpConfigs),
+		checkConfigs(RestAcceptedConfigs, RestPendingConfigs, TmpConfigs),
 		mergeConfigs(AcceptedVals, PendingVals, MergedConfigs),
 		NewConfigs = [K-MergedConfigs|TmpConfigs],
 		sort(NewConfigs, SortedConfigs).
