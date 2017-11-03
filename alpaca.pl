@@ -15,6 +15,38 @@ vuln('login-cracked-passwords', [web_access, login_page, passwords, user_list], 
 
 %setof((Configs, Vulns), achieveGoal(shell_access, [web_access, ssh_server], [], [], Configs, Vulns), Result), length(Result, L), print(Result).
 
+
+getPlan(Goal, InitialState, Result) :-
+		setof((Configs, Vulns), achieveGoal(Goal, InitialState, [], [], Configs, Vulns), Result).
+getPlan(Goal, InitialState, Attempted, StartingConfigs, Result) :-
+		setof((Configs, Vulns), achieveGoal(Goal, InitialState, Attempted, StartingConfigs, Configs, Vulns), Result).
+
+savePlan(Goal, InitialState) :-
+		open('plan.txt', write, Stream),
+		getPlan(Goal, InitialState, Result),
+		formatConfigs(Stream, Result),
+		close(Stream).
+savePlan(Goal, InitialState, Attempted, StartingConfigs) :-
+		open('plan.txt', write, Stream),
+		getPlan(Goal, InitialState, Attempted, StartingConfigs, Result),
+		formatConfigs(Stream Result),
+		close(Stream).
+
+% "Return" only Configurations of a plan
+getConfigs([(Configs, _)], Configs).
+
+% "Return only Vulnerabilities of a plan
+getVulns([(_, Vulns)], Vulns).
+
+formatConfigs(Stream, Results) :-
+		getConfigs(Results, Configs),
+		printConfigs(Stream, Configs).
+
+printConfigs(_, []).
+printConfigs(Stream, [Config|Configs]) :-
+		writeln(Stream, Config),
+		printConfigs(Stream, Configs).
+
 % DON'T CHANGE CODE BELOW HERE. YOU WILL BREAK IT.
 
 %achieveGoal( Goal, InitialState, [Attempted], [Vulns] )
@@ -74,3 +106,4 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     mergeConfig(K, PriorVals, ThisVals, PriorConfig, NewVals),
     NewConfig = [K-NewVals|TmpConfig],
 		sort(NewConfig, SortedConfig).
+
