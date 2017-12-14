@@ -1,51 +1,44 @@
-%vuln( [prereqs], [result], 
-%					[Role-[key-(pred,[val]),...,key-(pred,[val])]]
+:- [vulnDatabase]. %import vulnDatabase.pl
 
-vuln('sql-injection', [web_access], [database_queries], 
-			[apache-[version-(only, [2.4])], mysql-[tables-(exists, [users]), version-(only, [5.3])], php-[version-(only, [5.5]), script-(exists, [web])]]).
-vuln('db-query-users', [database_queries], [user_list, hashed_passwords], [mysql-[tables-(exists, [users])]]).
-vuln('crack-passwords', [hashed_passwords], [passwords], []).
-vuln('login-ssh', [passwords, user_list, ssh_server], [shell_access], []).
+allPaths(Goal, InitialState, Result) :-
+	setof((Configs, Vulns), achieveGoal(Goal, InitialState, [], [], Configs, Vulns), Result).
+allPaths(Goal, InitialState, Attempted, StartingConfigs, Result) :-
+	setof((Configs, Vulns), achieveGoal(Goal, InitialState, Attempted, StartingConfigs, Configs, Vulns), Result).
 
-vuln('login-verbose', [web_access, login_page_verbose], [unauthorized_access], 
-			[apache-[version-(only, [2.4])], mysql-[tables-(exists, [users])], php-[version-(only, [5.5]), script-(exists, [web_login_verbose, web])]]).
+sortByLength(Ordered, (_, Vuln1), (_, Vuln2)) :-
+	length(Vuln1, Length1),
+	length(Vuln2, Length2),
+	compare(Ordered, Length1, Length2).
 
-vuln('login-cracked-passwords', [web_access, login_page, passwords, user_list], [unauthorized_access], 
-			[apache-[version-(only, [2.4])], mysql-[tables-(exists, [users])], php-[version-(only, [5.5]), script-(exists, [web_login_cracked_passwords])]]).
+shortestPath(Goal, InitialState) :-
+	allPaths(Goal, InitialState, AllPaths),
+	predsort(sortByLength, AllPaths, SortedPaths),
+	nth0(0, SortedPaths, Shortest),
+	open('plan.txt', write, Stream),
+	createPlan(Stream, Shortest), !,
+	close(Stream).
 
-%setof((Configs, Vulns), achieveGoal(shell_access, [web_access, ssh_server], [], [], Configs, Vulns), Result), length(Result, L), print(Result).
+longestPath(Goal, InitialState) :-
+	allPaths(Goal, InitialState, AllPaths),
+	predsort(sortByLength, AllPaths, SortedPaths),
+	last(SortedPaths, Longest),
+	open('plan.txt', write, Stream),
+	createPlan(Stream, Longest), !,
+	close(Stream).
 
-
-getPlan(Goal, InitialState, Result) :-
-		setof((Configs, Vulns), achieveGoal(Goal, InitialState, [], [], Configs, Vulns), Result).
-getPlan(Goal, InitialState, Attempted, StartingConfigs, Result) :-
-		setof((Configs, Vulns), achieveGoal(Goal, InitialState, Attempted, StartingConfigs, Configs, Vulns), Result).
-
-savePlan(Goal, InitialState) :-
-		open('plan.txt', write, Stream),
-		getPlan(Goal, InitialState, Result),
-		formatConfigs(Stream, Result),
-		close(Stream).
-savePlan(Goal, InitialState, Attempted, StartingConfigs) :-
-		open('plan.txt', write, Stream),
-		getPlan(Goal, InitialState, Attempted, StartingConfigs, Result),
-		formatConfigs(Stream Result),
-		close(Stream).
-
-% "Return" only Configurations of a plan
-getConfigs([(Configs, _)], Configs).
-
-% "Return only Vulnerabilities of a plan
-getVulns([(_, Vulns)], Vulns).
-
-formatConfigs(Stream, Results) :-
-		getConfigs(Results, Configs),
-		printConfigs(Stream, Configs).
+createPlan(Stream, (Configs, Vulns)) :-
+	writeln(Stream, 'Plan:'),
+	writeln(Stream, Vulns),
+	writeln(Stream, "\nConfigs:"),
+	printConfigs(Stream, Configs).
 
 printConfigs(_, []).
-printConfigs(Stream, [Config|Configs]) :-
-		writeln(Stream, Config),
-		printConfigs(Stream, Configs).
+printConfigs(Stream, [Key-Value|Configs]) :-
+	write(Stream, Key),
+	writeln(Stream, Value),
+	printConfigs(Stream, Configs).
+
+runPythonScript() :- shell('python createVars.py').
 
 % DON'T CHANGE CODE BELOW HERE. YOU WILL BREAK IT.
 
@@ -106,4 +99,3 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     mergeConfig(K, PriorVals, ThisVals, PriorConfig, NewVals),
     NewConfig = [K-NewVals|TmpConfig],
 		sort(NewConfig, SortedConfig).
-
