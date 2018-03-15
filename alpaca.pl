@@ -16,15 +16,16 @@ allPossiblePaths() :-
 	p(AllVulns, Str),
 	generateLattice(Str, 'allPossiblePaths-test.gv').
 
-formatGraphviz([], "").
-formatGraphviz([(Prereqs, Vuln, Result)|Rest], String) :-
-	formatGraphviz(Rest, String1),
-	format(atom(String), "~s~a -> ~a [label=\"~a\"];~n", [String1, Prereqs, Result, Vuln]).
+formatGraphviz(_, [], "").
+formatGraphviz(VulnID, [(Prereq, Vuln, Result)|Rest], String) :-
+	formatGraphviz(VulnID, Rest, String1),
+    format(atom(String), "~s\"~a\" [shape=\"none\"];~n\"~a\" [shape=\"none\"];~n\"~s\" [shape=\"box\", label=\"~a\"];~n\"~a\" -> \"~s\";~n\"~s\" -> \"~a\";~n", [String1, Prereq, Result, VulnID, Vuln, Prereq, VulnID, VulnID, Result]).
 
 p([], "").
 p([(Prereqs, Vuln, Result)|Rest], Str) :-
 	p1(Prereqs, Vuln, Result, [], Out),
-	formatGraphviz(Out, Str1),
+    format(atom(VulnID), "~k~a~k", [Prereqs, Vuln, Result]),
+	formatGraphviz(VulnID, Out, Str1),
 	p(Rest, Str2),
 	format(atom(Str), "~s~s", [Str1, Str2]).
 
