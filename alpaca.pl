@@ -1,20 +1,25 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
 
-allPaths(Goal, InitialState, Result) :-
-	setof((Configs, Vulns), (achieveGoal(Goal, InitialState, [], [], Configs, Vulns),
-					         checkNoDanglingSteps(Vulns, Vulns, Goal)), Result).
-allPaths(Goal, InitialState, Attempted, StartingConfigs, Result) :-
-	setof((Configs, Vulns), achieveGoal(Goal, InitialState, Attempted, StartingConfigs, Configs, Vulns), Result).
+% e.g., allPaths([server_access_root], [], Result)
+% paths will be in reverse usually, but that doesn't matter for generating a lattice
+allPaths(Goals, InitialState, Result) :-
+	setof((Configs, Vulns), achieveGoal(Goals, InitialState, [], Configs, Vulns), Result).
 
 printPaths([]).
 printPaths([Vulns|Rest]) :-
 	print(Vulns), nl,
 	printPaths(Rest).
 
-allPossiblePaths() :-
+allPossiblePaths :-
 	findall((Prereqs, Vuln, Result), vuln(Vuln, Prereqs, Result, _), AllVulns),
 	p(AllVulns, Str),
 	generateLattice(Str, 'allPossiblePaths-test.gv').
+
+% another way to call formatGraphviz:
+% allPaths([server_access_root], [], Result),
+%  Result = [(Config, Vulns)|_],  % get first path, just for demostration
+%  p(Vulns, Str),
+%  generateLattice(Str, 'server_access_root_1.gv').
 
 formatGraphviz(_, [], "").
 formatGraphviz(VulnID, [(Prereq, Vuln, Result)|Rest], String) :-
@@ -120,33 +125,16 @@ listVals([Val|Vals], String) :-
 
 % DON''T CHANGE CODE BELOW HERE. YOU WILL BREAK IT.
 
-%achieveGoal( Goal, InitialState, [Attempted], [Vulns] )
-achieveGoal(Goal, InitialState, _, [], [], []) :- member(Goal, InitialState).
-achieveGoal(Goal, InitialState, Attempted, StartingConfigs, AcceptedConfigs, [(Input, Description, Output)|Vulns]) :-
-		\+member(Goal, InitialState),
-		vuln(Description, Input, Output, Configs),
-		print(Description), nl,
-		\+member((Input, Output, Configs), Attempted),
-		intersection(Input, InitialState, Input),
-		union(Output, InitialState, NewState),
-		print(Description), print('-'), print(InitialState), nl, nl,
-		achieveGoal(Goal, NewState, [(Input, Output, Configs)|Attempted], StartingConfigs, NewConfigs, Vulns),
-		checkConfigs(NewConfigs, Configs, AcceptedConfigs).
-
-	%how to find all possible paths in prolog graph
-
-ensureVulnLink(Output, _, Goal) :-
-	member(Goal, Output).
-ensureVulnLink(Output, [(Input, _, _)|_], _) :-
-	intersection(Output, Input, [_|_]), !.
-ensureVulnLink(Output, [_|Vulns], Goal) :-
-	ensureVulnLink(Output, Vulns, Goal).
-
-checkNoDanglingSteps([], _, _).
-checkNoDanglingSteps([(_, _, Output)|Vulns], AllVulns, Goal) :-
-	ensureVulnLink(Output, AllVulns, Goal),
-	checkNoDanglingSteps(Vulns, AllVulns, Goal).
-
+% work backwards from goal to initial
+achieveGoal([], _, _, _, []).
+achieveGoal([Goal|Goals], InitialState, StartingConfigs, AcceptedConfigs, [(Input, Description, Output)|Vulns]) :-
+    vuln(Description, Input, Output, Configs),
+    member(Goal, Output),
+    subtract(Input, InitialState, NewInput),
+    union(NewInput, Goals, NewGoals),
+    union(InitialState, Output, NewState),
+    achieveGoal(NewGoals, NewState, StartingConfigs, NewConfigs, Vulns),
+    checkConfigs(NewConfigs, Configs, AcceptedConfigs).
 
 %checkConfigs(AcceptedConfigs, PendingConfigs, NewConfigs)
 checkConfigs([], PendingConfigs, PendingConfigs).
