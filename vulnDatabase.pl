@@ -1,4 +1,5 @@
 %vuln( Description, [prereqs], [result], [Role-[key-(pred, [val]),...,key-(pred,[val])]] )
+%note, result cannot be empty
 
 vuln('host-discovery', [], [discover_host], []).
 vuln('port-scanning', [discover_host], [open_ports], []).

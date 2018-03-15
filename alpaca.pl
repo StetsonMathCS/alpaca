@@ -19,11 +19,13 @@ allPossiblePaths() :-
 formatGraphviz(_, [], "").
 formatGraphviz(VulnID, [(Prereq, Vuln, Result)|Rest], String) :-
 	formatGraphviz(VulnID, Rest, String1),
-    format(atom(String), "~s\"~a\" [shape=\"none\"];~n\"~a\" [shape=\"none\"];~n\"~s\" [shape=\"box\", label=\"~a\"];~n\"~a\" -> \"~s\";~n\"~s\" -> \"~a\";~n", [String1, Prereq, Result, VulnID, Vuln, Prereq, VulnID, VulnID, Result]).
+    ( Prereq = none -> PrereqLabel = '' ; PrereqLabel = Prereq ),
+    format(atom(String), "~s\"~a\" [shape=\"none\", label=\"~a\"];~n\"~a\" [shape=\"none\"];~n\"~s\" [shape=\"box\", label=\"~a\"];~n\"~a\" -> \"~s\";~n\"~s\" -> \"~a\";~n", [String1, Prereq, PrereqLabel, Result, VulnID, Vuln, Prereq, VulnID, VulnID, Result]).
 
 p([], "").
 p([(Prereqs, Vuln, Result)|Rest], Str) :-
-	p1(Prereqs, Vuln, Result, [], Out),
+    % if prereqs are empty, put in a dummy [none] so that p1 below doesn't ignore the vuln
+    ( Prereqs = [] -> p1([none], Vuln, Result, [], Out) ; p1(Prereqs, Vuln, Result, [], Out) ),
     format(atom(VulnID), "~k~a~k", [Prereqs, Vuln, Result]),
 	formatGraphviz(VulnID, Out, Str1),
 	p(Rest, Str2),
