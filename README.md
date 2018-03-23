@@ -28,6 +28,7 @@ swipl main.pl shortestPath '[server_access_root]' '[]'
 ```
 
 Possible predicate names include:
+
 + shortestPath
 + longestPath
 + fullPath
