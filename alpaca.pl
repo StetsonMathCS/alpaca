@@ -126,7 +126,8 @@ listVals([Val|Vals], String) :-
 % DON''T CHANGE CODE BELOW HERE. YOU WILL BREAK IT.
 
 % work backwards from goal to initial
-achieveGoal([], _, _, _, []).
+%achieveGoal([], _, _, _, []).
+achieveGoal([], _, [], [], []).
 achieveGoal([Goal|Goals], InitialState, StartingConfigs, AcceptedConfigs, [(Input, Description, Output)|Vulns]) :-
     vuln(Description, Input, Output, Configs),
     member(Goal, Output),
