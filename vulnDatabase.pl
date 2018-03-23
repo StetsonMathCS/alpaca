@@ -4,13 +4,14 @@
 vuln('host-discovery', [], [discover_host], []).
 vuln('port-scanning', [discover_host], [open_ports], []).
 
-vuln('open-ftp', [open_ports], [ftp_server], []).
+vuln('open-ftp', [open_ports], [ftp_server], [ftp-[]]).
 vuln('login-root(brute-force)', [ftp_server], [server_access_root], []).
 
 vuln('open-ssh', [open_ports], [ssh_server], []).
-vuln('login-root(brute-force)', [ssh_server], [server_access_root], []).
-vuln('login-user(brute-force)', [ssh_server], [server_access_user], []).
-
+vuln('login-root(brute-force)', [ssh_server], [server_access_root], 
+        [ssh-[users-(exists, root)]]).
+vuln('login-user(brute-force)', [ssh_server], [server_access_user], 
+        [ssh-[users-(exists, user)]]).
 
 vuln('database_queries', [server_access_user], [user_list, hashed_passwords], []).
 vuln('crack-hashes', [hashed_passwords], [passwords], []).
