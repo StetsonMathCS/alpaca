@@ -28,9 +28,9 @@ swipl main.pl shortestPath '[server_access_root]' '[]'
 ```
 
 Possible predicate names include:
-* shortestPath
-* longestPath
-* fullPath
-* allPossiblePaths (will not create ansible files; no arguments required, i.e. `swipl main.pl allPossiblePaths`)
++ shortestPath
++ longestPath
++ fullPath
++ allPossiblePaths (will not create ansible files; no arguments required, i.e. `swipl main.pl allPossiblePaths`)
 
 ### Vagrant
