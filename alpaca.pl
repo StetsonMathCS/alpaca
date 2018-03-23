@@ -1,9 +1,28 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
 
+/*
+[([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
+*/
+
+filterConfigs(Accepted, [(Config, _)|T], [(Config)|Final]) :-
+	checkConfigs(Accepted, Config, Merged),
+	filterConfigs(Merged, T, Final).
+filterConfigs(Accepted, [_|T], Vulns) :-
+	filterConfigs(Accepted, T, Vulns).
+filterConfigs(_, [], []).
+
+powerset([], []).
+powerset([_|T], P) :-
+	powerset(T, P).
+powerset([H|T], [H|P]) :-
+	filterConfigs(H, T, TFiltered),
+	powerset(TFiltered, P).
+
 % e.g., allPaths([server_access_root], [], Result)
 % paths will be in reverse usually, but that doesn't matter for generating a lattice
 allPaths(Goals, InitialState, Result) :-
-	setof((Configs, Vulns), achieveGoal(Goals, InitialState, [], Configs, Vulns), Result).
+	setof((Configs, Vulns), achieveGoal(Goals, InitialState, [], Configs, Vulns), Path),
+	powerset(Path, Result).
 
 printPaths([]).
 printPaths([Vulns|Rest]) :-
