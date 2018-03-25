@@ -9,9 +9,9 @@ vuln('login-root(brute-force)', [ftp_server], [server_access_root], []).
 
 vuln('open-ssh', [open_ports], [ssh_server], []).
 vuln('login-root(brute-force)', [ssh_server], [server_access_root], 
-        [ssh-[users-(exists, root)]]).
+        [ssh-[users-(exists, [root])]]).
 vuln('login-user(brute-force)', [ssh_server], [server_access_user], 
-        [ssh-[users-(exists, user)]]).
+        [ssh-[users-(exists, [user])]]).
 
 vuln('database_queries', [server_access_user], [user_list, hashed_passwords], []).
 vuln('crack-hashes', [hashed_passwords], [passwords], []).

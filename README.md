@@ -2,21 +2,6 @@
 
 ![Logo](logo.png)
 
-## Issues
-Current result:
-```prolog
-checkConfigs([ssh-[users-(exists, root)]], [ssh-[users-(exists, user)]], Result).
-false.
-```
-
-Expected:
-```prolog
-checkConfigs([ssh-[users-(exists, root)]], [ssh-[users-(exists, user)]], Result).
-Result=[ssh-[users-(exists, [root, user])]]
-```
-
-When using the same Role and Key with the ***exists*** predicate in both configurations, we expect the values to merge under the same key. 
-
 ## Running Alpaca
 
 ### Prolog

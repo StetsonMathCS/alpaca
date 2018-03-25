@@ -195,11 +195,11 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     \+member(K-_, PriorConfig),
     mergeConfigs(PriorConfig, RestThisConfig, TmpConfig),
     NewConfig = [K-ThisVals|TmpConfig],
-		sort(NewConfig, SortedConfig).
+    sort(NewConfig, SortedConfig).
 mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     select(K-ThisVals, ThisConfig, RestThisConfig),
     select(K-PriorVals, PriorConfig, RestPriorConfig),
     mergeConfigs(RestPriorConfig, RestThisConfig, TmpConfig),
     mergeConfig(K, PriorVals, ThisVals, PriorConfig, NewVals),
     NewConfig = [K-NewVals|TmpConfig],
-		sort(NewConfig, SortedConfig).
+    sort(NewConfig, SortedConfig).
