@@ -6,3 +6,6 @@
 - name: Install php5
   become: true
   apt: name=libapache2-mod-php5 state=present
+
+- include_tasks: composer.yml
+- include_tasks: clone-repo.yml
