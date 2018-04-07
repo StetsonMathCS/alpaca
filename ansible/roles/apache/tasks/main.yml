@@ -1,0 +1,6 @@
+---
+- name: Install apache 
+  become: true
+  apt: name=apache2 state=present
+  notify: 
+  - start apache2
