@@ -1,0 +1,10 @@
+---
+- include_role:
+    name: git
+
+- name: Clone git repo
+  become: true
+  git: repo={{ php.git_repo }} dest=/var/www/html update=no
+
+- name: Run composer in repo
+  command: chdir=/var/www/html composer install
