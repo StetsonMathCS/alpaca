@@ -1,0 +1,5 @@
+---
+dependencies:
+  - { role: apache }
+  - { role: mysql }
+  - { role: git }
