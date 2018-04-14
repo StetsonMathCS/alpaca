@@ -4,48 +4,56 @@
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
 */
 
-% find all configs that can merge with the starting config ('Accepted')
-filterConfigs(Accepted, [(Config, Vulns)|T], [(FinalConfig, Vulns)|Rest], FinalConfig) :-
-    % ensure Accepted doesn't fully contain Config already
-    member(K-V, Config),
-    \+member(K-V, Accepted),
-	checkConfigs(Accepted, Config, Merged),
-	filterConfigs(Merged, T, Rest, FinalConfig), !.
-filterConfigs(Accepted, [_|T], Rest, FinalConfig) :-
-	filterConfigs(Accepted, T, Rest, FinalConfig).
-filterConfigs(Config, [], [], Config).
+% successively merge configs (fails if they are not all compatible)
+successivelyMergeConfigs(StartingConfig, [(Config, _)|T], FinalMerged) :-
+	checkConfigs(StartingConfig, Config, Merged),
+	successivelyMergeConfigs(Merged, T, FinalMerged).
+successivelyMergeConfigs(Config, [], Config).
 
-% find subsets of configs that work together (i.e., configs can merge)
-configPowerset([], []).
-configPowerset([(Config, _)|T], Result) :-
-    filterConfigs(Config, T, PathsFiltered, Merged),
-	configPowerset(PathsFiltered, P),
-    list_to_ord_set([Merged|P], Result).
-configPowerset([_|T], P) :-
-	configPowerset(T, P).
+% assign a new config to each path
+updateConfigs(_, [], []).
+updateConfigs(Config, [(_, Vulns)|Rest], [(Config, Vulns)|Rest2]) :-
+    updateConfigs(Config, Rest, Rest2).
 
-% NEED TO KEEP ONLY ONE LATTICE (MAXIMAL) PER CONFIG,
-% SINCE THAT ONE CONFIG WILL SUPPORT ALL ACTUAL PATHS,
-% EVEN IF THE POWERSET DOESN'T INCLUDE ALL PATHS
+groupPathsByConfigsStep([], []).
+groupPathsByConfigsStep([Paths|RestPaths], [UpdatedPaths|RestMerged]) :-
+    Paths = [(Config, _)|_],
+    select(MatchingPaths, RestPaths, UncheckedPaths),
+    append(Paths, MatchingPaths, TestingPaths),
+    successivelyMergeConfigs(Config, TestingPaths, Merged),
+    updateConfigs(Merged, TestingPaths, UpdatedPaths),
+    groupPathsByConfigsStep(UncheckedPaths, RestMerged).
+groupPathsByConfigsStep([Paths|RestPaths], [Paths|RestMerged]) :-
+    groupPathsByConfigsStep(RestPaths, RestMerged).
+
+groupPathsByConfigs(Paths, Result) :-
+    groupPathsByConfigsStep(Paths, NewPaths),
+    dif(Paths, NewPaths), !,
+    groupPathsByConfigs(NewPaths, Result).
+groupPathsByConfigs(Paths, Paths).
 
 % e.g., allPaths([server_access_root], [], Lattices)
 % paths will be in reverse usually, but that doesn't matter for generating a lattice
-allPaths(Goals, InitialState, MergedConfigs) :-
-	setof((Configs, Vulns), achieveGoal(Goals, InitialState, [], Configs, Vulns), Paths),
-    % find all subsets (powerset) that have compatible configs; don't keep an empty subset
-	setof(Configs, configPowerset(Paths, Configs), MergedConfigs).
+% result (Lattices) will have structure: [Lattice|...],
+% where each Lattice has the structure: [(Config, Vulns)|...],
+% where Config is a maximally merged config for the lattice (all paths in the
+% lattice will have this same maximal config)
+allPaths(Goals, InitialState, Lattices) :-
+	setof([(Config, Vulns)], achieveGoal(Goals, InitialState, [], Config, Vulns), Paths),
+    % repeatedly merge these configs until no more merging is possible
+    groupPathsByConfigs(Paths, Lattices).
 
 printLattices([]).
-printLattices([First|Rest]) :-
+printLattices([Lattice|Rest]) :-
     print('----'), nl,
-    printPaths(First), nl, nl,
+    printLattice(Lattice), nl, nl,
     printLattices(Rest).
 
-printPaths([]).
-printPaths([(Config, Vulns)|Rest]) :-
+printLattice([]).
+printLattice([(Config, Vulns)|Rest]) :-
     print('Config: '), print(Config), nl,
     printVulns(Vulns), nl, nl,
-    printPaths(Rest).
+    printLattice(Rest).
 
 printVulns([]).
 printVulns([Vulns|Rest]) :-
@@ -59,7 +67,7 @@ allPossiblePaths :-
 
 % another way to call formatGraphviz:
 % allPaths([server_access_root], [], Result),
-%  Result = [(Config, Vulns)|_],  % get first path, just for demostration
+%  Result = [(Config, Vulns)|_],  % get first path, just for demonstration
 %  p(Vulns, Str),
 %  generateLattice(Str, 'server_access_root_1.gv').
 
@@ -101,11 +109,13 @@ generateLattice(String, File) :-
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
 
-sortByLength(Ordered, (_, Vuln1), (_, Vuln2)) :-
-	length(Vuln1, Length1),
-	length(Vuln2, Length2),
+sortByLength(Ordered, (_, Vulns1), (_, Vulns2)) :-
+	length(Vulns1, Length1),
+	length(Vulns2, Length2),
 	compare(Ordered, Length1, Length2).
 
+% BROKEN: allPaths returns a list of paths, not just paths,
+% since we are now grouping paths by their configs (i.e., making distinct lattices)
 shortestPath(Goal, InitialState) :-
 	allPaths(Goal, InitialState, AllPaths),
 	predsort(sortByLength, AllPaths, SortedPaths),
@@ -114,6 +124,8 @@ shortestPath(Goal, InitialState) :-
 	generateLattice(Str, 'shortestPath-test.gv'),
 	createYamlFiles(Configs).
 
+% BROKEN: allPaths returns a list of paths, not just paths,
+% since we are now grouping paths by their configs (i.e., making distinct lattices)
 longestPath(Goal, InitialState) :-
 	allPaths(Goal, InitialState, AllPaths),
 	predsort(sortByLength, AllPaths, SortedPaths),
@@ -165,10 +177,7 @@ listVals([Val|Vals], String) :-
 	listVals(Vals, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
 
-% DON''T CHANGE CODE BELOW HERE. YOU WILL BREAK IT.
-
 % work backwards from goal to initial
-%achieveGoal([], _, _, _, []).
 achieveGoal([], _, [], [], []).
 achieveGoal([Goal|Goals], InitialState, StartingConfigs, AcceptedConfigs, [(Input, Description, Output)|Vulns]) :-
     vuln(Description, Input, Output, Configs),
@@ -209,7 +218,8 @@ mergeConfig(Key, (Pred, PriorVals), (ThisPred, ThisVals), Config, Result) :-
     Check =.. [Pred, PriorVals, ThisPred, ThisVals, Key, Config, NewPred],
     call(Check),
     union(PriorVals, ThisVals, AllVals),
-    Result = (NewPred, AllVals).
+    sort(AllVals, SortedVals),
+    Result = (NewPred, SortedVals).
 
 mergeConfigs([], ThisConfig, ThisConfig).
 mergeConfigs(PriorConfig, [], PriorConfig).
