@@ -3,13 +3,16 @@
   apt: name={{item}} update_cache=yes state=present
   with_items:
   - python-mysqldb
+  - php5-mysql
   - mysql-server
-  notify:
-  - start MySQL
 
-- name: Create MySQL root user
+- name: Create MySQL DB user(s)
   mysql_user: 
-    name: "{{mysql.user}}" 
-    password: "{{mysql.password}}"
+    name: "{{ item.0 }}" 
+    password: "{{ item.1 }}"
     priv: '*.*:ALL' 
     state: present
+  with_together:
+    - "{{ mysql.user }}" 
+    - "{{ mysql.password }}"
+  
