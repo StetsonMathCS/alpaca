@@ -4,30 +4,53 @@
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
 */
 
-filterConfigs(Accepted, [(Config, _)|T], [(Config)|Final]) :-
+% find all configs that can merge with the starting config ('Accepted')
+filterConfigs(Accepted, [(Config, Vulns)|T], [(FinalConfig, Vulns)|Rest], FinalConfig) :-
+    % ensure Accepted doesn't fully contain Config already
+    member(K-V, Config),
+    \+member(K-V, Accepted),
 	checkConfigs(Accepted, Config, Merged),
-	filterConfigs(Merged, T, Final).
-filterConfigs(Accepted, [_|T], Vulns) :-
-	filterConfigs(Accepted, T, Vulns).
-filterConfigs(_, [], []).
+	filterConfigs(Merged, T, Rest, FinalConfig), !.
+filterConfigs(Accepted, [_|T], Rest, FinalConfig) :-
+	filterConfigs(Accepted, T, Rest, FinalConfig).
+filterConfigs(Config, [], [], Config).
 
-powerset([], []).
-powerset([_|T], P) :-
-	powerset(T, P).
-powerset([H|T], [H|P]) :-
-	filterConfigs(H, T, TFiltered),
-	powerset(TFiltered, P).
+% find subsets of configs that work together (i.e., configs can merge)
+configPowerset([], []).
+configPowerset([(Config, _)|T], Result) :-
+    filterConfigs(Config, T, PathsFiltered, Merged),
+	configPowerset(PathsFiltered, P),
+    list_to_ord_set([Merged|P], Result).
+configPowerset([_|T], P) :-
+	configPowerset(T, P).
 
-% e.g., allPaths([server_access_root], [], Result)
+% NEED TO KEEP ONLY ONE LATTICE (MAXIMAL) PER CONFIG,
+% SINCE THAT ONE CONFIG WILL SUPPORT ALL ACTUAL PATHS,
+% EVEN IF THE POWERSET DOESN'T INCLUDE ALL PATHS
+
+% e.g., allPaths([server_access_root], [], Lattices)
 % paths will be in reverse usually, but that doesn't matter for generating a lattice
-allPaths(Goals, InitialState, Result) :-
-	setof((Configs, Vulns), achieveGoal(Goals, InitialState, [], Configs, Vulns), Path),
-	powerset(Path, Result).
+allPaths(Goals, InitialState, MergedConfigs) :-
+	setof((Configs, Vulns), achieveGoal(Goals, InitialState, [], Configs, Vulns), Paths),
+    % find all subsets (powerset) that have compatible configs; don't keep an empty subset
+	setof(Configs, configPowerset(Paths, Configs), MergedConfigs).
+
+printLattices([]).
+printLattices([First|Rest]) :-
+    print('----'), nl,
+    printPaths(First), nl, nl,
+    printLattices(Rest).
 
 printPaths([]).
-printPaths([Vulns|Rest]) :-
+printPaths([(Config, Vulns)|Rest]) :-
+    print('Config: '), print(Config), nl,
+    printVulns(Vulns), nl, nl,
+    printPaths(Rest).
+
+printVulns([]).
+printVulns([Vulns|Rest]) :-
 	print(Vulns), nl,
-	printPaths(Rest).
+	printVulns(Rest).
 
 allPossiblePaths :-
 	findall((Prereqs, Vuln, Result), vuln(Vuln, Prereqs, Result, _), AllVulns),
