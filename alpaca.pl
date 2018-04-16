@@ -114,6 +114,27 @@ sortByLength(Ordered, (_, Vulns1), (_, Vulns2)) :-
 	length(Vulns2, Length2),
 	compare(Ordered, Length1, Length2).
 
+% gives back shortest path in each lattice
+shortestPathInLattices([], []).
+shortestPathInLattices([Lattice|Lattices], [[Shortest]|Rest]) :-
+	predsort(sortByLength, Lattice, SortedPaths),
+	nth0(0, SortedPaths, Shortest),
+    shortestPathInLattices(Lattices, Rest).
+
+latticeShortestPath(_, []).
+latticeShortestPath(MinLength, [(_,Path)|Paths]) :-
+    length(Path, L),
+    L >= MinLength,
+    latticeShortestPath(MinLength, Paths).
+
+filterLatticesByShortest(_, [], []).
+filterLatticesByShortest(MinLength, [Lattice|Lattices], [Lattice|Result]) :-
+    latticeShortestPath(MinLength, Lattice), !,
+    filterLatticesByShortest(MinLength, Lattices, Result), !.
+filterLatticesByShortest(MinLength, [_|Lattices], Result) :-
+    filterLatticesByShortest(MinLength, Lattices, Result).
+
+
 % BROKEN: allPaths returns a list of paths, not just paths,
 % since we are now grouping paths by their configs (i.e., making distinct lattices)
 shortestPath(Goal, InitialState) :-
