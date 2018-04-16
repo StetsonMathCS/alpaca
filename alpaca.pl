@@ -6,7 +6,7 @@
 
 % successively merge configs (fails if they are not all compatible)
 successivelyMergeConfigs(StartingConfig, [(Config, _)|T], FinalMerged) :-
-	checkConfigs(StartingConfig, Config, Merged),
+	checkConfigs(StartingConfig, Config, Merged), !,
 	successivelyMergeConfigs(Merged, T, FinalMerged).
 successivelyMergeConfigs(Config, [], Config).
 
