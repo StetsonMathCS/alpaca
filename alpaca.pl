@@ -134,6 +134,22 @@ appendVulns([], []).
 appendVulns([(_, Vulns)|RestPaths], [Vulns|Result]) :-
 	appendVulns(RestPaths, Result).
 
+% HEADER [shape="none" label="This is the header"];  
+% Calculates Complexities of all lattices in list of lattices and gives back list of complexities
+% Index of complexity corresponds to index of lattice
+calculateLatticeComplexity([], []).
+calculateLatticeComplexity([Lattice|Lattices], [LatticeComplexity|Rest]) :-
+	calculatePathComplexity(Lattice, Complexity),
+	sum_list(Complexity, Sum),
+	LatticeComplexity is 1/Sum,
+	calculateLatticeComplexity(Lattices, Rest).
+
+calculatePathComplexity([], []).
+calculatePathComplexity([(_, Vulns)|RestPaths], [Complexity|Rest]) :-
+	length(Vulns, Length),
+	Complexity is 1/Length,
+	calculatePathComplexity(RestPaths, Rest).
+
 sortByLength(Ordered, (_, Vulns1), (_, Vulns2)) :-
 	length(Vulns1, Length1),
 	length(Vulns2, Length2),
