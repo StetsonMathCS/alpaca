@@ -109,18 +109,46 @@ generateLattice(String, File) :-
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
 
+% Generates all graphs from list of lattices with FileName
+% Example: generateAllGraphs([server_access_root], [], 'server_access_root')
+generateAllGraphs(Goal, InitialState, FileName) :-
+	allPaths(Goal, InitialState, Lattices),
+	generateAllLattices(Lattices, FileName).
+
+generateAllLattices([], _).
+generateAllLattices(Lattices, FileName) :-
+	generateAllLattices(Lattices, FileName, 1).
+
+generateAllLattices([], _, _).
+generateAllLattices([Lattice|Lattices], FileName, Num) :-
+	appendVulns(Lattice, ListOfVulns),
+	append(ListOfVulns, Result),
+	number_string(Num, NumString),
+	p(Result, Str),
+	format(atom(NewFileName), "~s~s.gv", [FileName, NumString]),
+	generateLattice(Str, NewFileName),
+	NewNum is Num+1,
+	generateAllLattices(Lattices, FileName, NewNum).
+
+appendVulns([], []).
+appendVulns([(_, Vulns)|RestPaths], [Vulns|Result]) :-
+	appendVulns(RestPaths, Result).
+
 sortByLength(Ordered, (_, Vulns1), (_, Vulns2)) :-
 	length(Vulns1, Length1),
 	length(Vulns2, Length2),
 	compare(Ordered, Length1, Length2).
 
 % gives back shortest path in each lattice
+% Example: allPaths([server_access_root], [], Lattices), shortestPathInLattices(Lattices, Shortest)
 shortestPathInLattices([], []).
 shortestPathInLattices([Lattice|Lattices], [[Shortest]|Rest]) :-
 	predsort(sortByLength, Lattice, SortedPaths),
 	nth0(0, SortedPaths, Shortest),
     shortestPathInLattices(Lattices, Rest).
 
+% Constrains results to a minimum length
+% Example: allPaths([server_access_root], [], Lattices), filterLatticesByShortest(10, Lattices, Result)
 latticeShortestPath(_, []).
 latticeShortestPath(MinLength, [(_,Path)|Paths]) :-
     length(Path, L),
