@@ -10,11 +10,10 @@ vuln('login-root(brute-force)', [ftp_server], [server_access_root],
         [ftp-[root_password-(only, ['password'])]]).
 
 % SSH
-vuln('open-ssh', [open_ports], [ssh_server], 
-        [role-[value-(only, [ssh])]]).
+vuln('open-ssh', [open_ports], [ssh_server], []).
 
 vuln('login-root(brute-force)', [ssh_server], [server_access_root], 
-        [ssh-[root_password-(only, ['secret'])]]).
+        [ssh-[root_password-(only, ['secret2'])]]).
 
 vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root], 
         [ssh-[root_password-(only, ['secret'])]]).
@@ -31,8 +30,7 @@ vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
         [ssh-[root_password-(only, ['secret'])]]).
 
 % Web
-vuln('open-web', [open_ports], [port_80], 
-        [role-[value-(only, [web])]]).
+vuln('open-web', [open_ports], [port_80], []).
 vuln('web-access', [port_80], [web_access], 
         [apache-[]]).
 
