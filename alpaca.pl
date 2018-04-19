@@ -109,6 +109,28 @@ generateLattice(String, File) :-
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
 
+test(Goal, InitialState, Name) :-
+	allPaths(Goal, InitialState, Lattices),
+	length(Lattices, Length),
+	createLatticeDirectories(Name, 1, Length),
+	generateLatticeInDirectory(Lattices, Name).
+
+% creates new directory for each lattice
+createLatticeDirectories(_, Num, Length) :- Num > Length, !.
+createLatticeDirectories(Name, Num, Length) :-
+	number_string(Num, NumString),
+	format(atom(DirectoryName), "~s~s", [Name, NumString]),
+	exists_directory(DirectoryName), !,
+	NewNum is Num+1,
+	createLatticeDirectories(Name, NewNum, Length).
+createLatticeDirectories(Name, Num, Length) :-
+	Num =< Length,
+	number_string(Num, NumString),
+	format(atom(DirectoryName), "~s~s", [Name, NumString]),
+	make_directory(DirectoryName),
+	NewNum is Num+1,
+	createLatticeDirectories(Name, NewNum, Length).
+
 % Generates all graphs from list of lattices with FileName
 % Example: generateAllGraphs([server_access_root], [], 'server_access_root')
 generateAllGraphs(Goal, InitialState, FileName) :-
@@ -126,13 +148,30 @@ generateAllLattices([Lattice|Lattices], FileName, Num) :-
 	number_string(Num, NumString),
 	p(Result, Str),
 	format(atom(NewFileName), "~s~s.gv", [FileName, NumString]),
-	generateLattice(Str, NewFileName),
+	generateLattice(Str, NewFileName), !,
 	NewNum is Num+1,
 	generateAllLattices(Lattices, FileName, NewNum).
+
+generateLatticeInDirectory([], _).
+generateLatticeInDirectory(Lattices, DirectoryName) :-
+	generateLatticeInDirectory(Lattices, DirectoryName, 1).
+
+generateLatticeInDirectory([], _, _).
+generateLatticeInDirectory([Lattice|Lattices], DirectoryName, Num) :-
+	appendVulns(Lattice, ListOfVulns),
+	append(ListOfVulns, Result),
+	number_string(Num, NumString),
+	p(Result, Str),
+	format(atom(NewDirectoryName), "~s~s/lattice.gv", [DirectoryName, NumString]),
+	generateLattice(Str, NewDirectoryName), !,
+	NewNum is Num+1,
+	generateLatticeInDirectory(Lattices, DirectoryName, NewNum).
 
 appendVulns([], []).
 appendVulns([(_, Vulns)|RestPaths], [Vulns|Result]) :-
 	appendVulns(RestPaths, Result).
+
+
 
 % HEADER [shape="none" label="This is the header"];  
 % Calculates Complexities of all lattices in list of lattices and gives back list of complexities
