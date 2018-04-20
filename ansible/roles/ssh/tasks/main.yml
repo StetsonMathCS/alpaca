@@ -1,6 +1,5 @@
 ---
 - name: Enable root ssh
-  when: ssh.root_password is defined
   become: true
   lineinfile:
     path: /etc/ssh/sshd_config
@@ -10,8 +9,20 @@
   - restart ssh
 
 - name: Change root password
-  when: ssh.root_password is defined
   become: true
+  when: ssh.root_password is defined
   user:
     name: root
-    password: "{{ssh.root_password}}"
+    password: "{{ ssh.root_password }}"
+
+- name: Create ssh user
+  become: true
+  when: ssh.users is defined and ssh.passwords is defined
+  user:
+    name: "{{ item.0 }}"
+    password: "{{ item.1 }}"
+    state: present
+    shell: /bin/bash   
+  with_together:
+    - "{{ ssh.users }}"
+    - "{{ ssh.passwords }}"
