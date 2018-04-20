@@ -1,4 +1,8 @@
 ---
+- name: Update apt
+  become: true
+  apt: update_cache=yes
+
 - name: Install apache 
   become: true
   apt: name=apache2 state=present
