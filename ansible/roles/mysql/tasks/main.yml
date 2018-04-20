@@ -7,12 +7,13 @@
   - mysql-server
 
 - name: Create MySQL DB user(s)
+  when: mysql.users is defined and mysql.passwords is defined
   mysql_user: 
     name: "{{ item.0 }}" 
     password: "{{ item.1 }}"
     priv: '*.*:ALL' 
     state: present
   with_together:
-    - "{{ mysql.user }}" 
-    - "{{ mysql.password }}"
+    - "{{ mysql.users }}" 
+    - "{{ mysql.passwords }}"
   
