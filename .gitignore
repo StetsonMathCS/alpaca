@@ -2,3 +2,4 @@
 *.gv
 *.png
 *[0-9]
+.vagrant
