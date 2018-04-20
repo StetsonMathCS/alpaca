@@ -109,11 +109,14 @@ generateLattice(String, File) :-
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
 
-test(Goal, InitialState, Name) :-
+% Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
+% Example: createAllPaths(['server_access_root'], [], 'server_access_root')
+createAllPaths(Goal, InitialState, Name) :-
 	allPaths(Goal, InitialState, Lattices),
 	length(Lattices, Length),
 	createLatticeDirectories(Name, 1, Length),
-	generateLatticeInDirectory(Lattices, Name).
+	generateLatticeInDirectory(Lattices, Name),
+	getConfigs(Lattices, Name, 1).
 
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.
@@ -132,6 +135,7 @@ createLatticeDirectories(Name, Num, Length) :-
 	createLatticeDirectories(Name, NewNum, Length).
 
 % Generates all graphs from list of lattices with FileName
+% This predicate 
 % Example: generateAllGraphs([server_access_root], [], 'server_access_root')
 generateAllGraphs(Goal, InitialState, FileName) :-
 	allPaths(Goal, InitialState, Lattices),
@@ -152,6 +156,7 @@ generateAllLattices([Lattice|Lattices], FileName, Num) :-
 	NewNum is Num+1,
 	generateAllLattices(Lattices, FileName, NewNum).
 
+% Generates lattices in the directory where it belongs
 generateLatticeInDirectory([], _).
 generateLatticeInDirectory(Lattices, DirectoryName) :-
 	generateLatticeInDirectory(Lattices, DirectoryName, 1).
@@ -170,8 +175,6 @@ generateLatticeInDirectory([Lattice|Lattices], DirectoryName, Num) :-
 appendVulns([], []).
 appendVulns([(_, Vulns)|RestPaths], [Vulns|Result]) :-
 	appendVulns(RestPaths, Result).
-
-
 
 % HEADER [shape="none" label="This is the header"];  
 % Calculates Complexities of all lattices in list of lattices and gives back list of complexities
@@ -238,14 +241,28 @@ longestPath(Goal, InitialState) :-
 	generateLattice(Str, 'longestPath-test.gv'),
 	createYamlFiles(Configs).
 
-createYamlFiles(Configs) :-
-	formatRoles(Configs, Roles),
-	createPlaybook(Roles),
-	listRoles(Configs, Vars),
-	createVars(Vars).
+getConfigs([], _, _).
+getConfigs([Lattice|Lattices], Name, Num) :-
+	nth0(0, Lattice, First),
+	getConfig(First, Name, Num),
+	NewNum is Num+1,
+	getConfigs(Lattices, Name, NewNum).
 
-createPlaybook(Roles) :-
-	open('playbook.yml', write, Stream),
+getConfig([], _, _).
+getConfig((Configs, _), Name, Num) :-
+	createYamlFiles(Configs, Name, Num).
+
+createYamlFiles(Configs, Name, Num) :-
+	formatRoles(Configs, Roles),
+	createPlaybook(Roles, Name, Num),
+	listRoles(Configs, Vars),
+	createVars(Vars, Name, Num).
+
+createPlaybook(Roles, Name, Num) :-
+	number_string(Num, NumString),
+	format(atom(DirectoryName), "~s~s/playbook.yml", [Name, NumString]),
+	open(DirectoryName, write, Stream),
+	%open('playbook.yml', write, Stream),
 	format(atom(String), 
 		"---~n- hosts: all~n~t~2|become: true~n~t~2|vars_files:~n~t~4|- vars/all.yml~n~t~2|roles:~n~s", [Roles]),
 	write(Stream, String),
@@ -256,8 +273,11 @@ formatRoles([Role-_|Configs], String) :-
 	formatRoles(Configs, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Role, String1]).
 
-createVars(Vars) :- 
-	open('all.yml', write, Stream),
+createVars(Vars, Name, Num) :- 
+	number_string(Num, NumString),
+	format(atom(DirectoryName), "~s~s/all.yml", [Name, NumString]),
+	open(DirectoryName, write, Stream),
+	%open('all.yml', write, Stream),
 	format(atom(String), "---~n~s", [Vars]),
 	write(Stream, String),
 	close(Stream).
@@ -265,7 +285,7 @@ createVars(Vars) :-
 listRoles([], "").
 listRoles([Role-Val|Rest], String) :-
 	listKeys(Val, String1),
-	format(atom(Out), "~s:~n~s", [Role, String1]),
+	format(atom(Out), "~s:~n~s~n", [Role, String1]),
 	listRoles(Rest, String2),
 	format(atom(String), "~s~s", [Out, String2]).
 
