@@ -1,6 +1,7 @@
 ---
 - name: Clone git repo
   become: true
+  when: php.git_repo is defined and php.repo_folder is defined
   async: 45
   git: repo={{ item.0 }} dest=/var/www/html/{{ item.1 }} accept_hostkey=yes
   with_together:
@@ -8,26 +9,29 @@
     - "{{ php.repo_folder }}"
 
 - name: Run composer in repo
+  when: php.repo_folder is defined
   command: chdir=/var/www/html/{{ item }} composer install
   with_items:
     - "{{ php.repo_folder }}"
 
 - name: Create database(s)
+  when: mysql.db is defined
   mysql_db:
     name: "{{ item }}"
     state: present
-    login_user: "{{ mysql.user[0] }}"
-    login_password: "{{ mysql.password[0] }}"
+    login_user: "{{ mysql.users[0] }}"
+    login_password: "{{ mysql.passwords[0] }}"
   with_items:
     - "{{ mysql.db }}"
 
 - name: Populate database(s) from file
+  when: mysql.db is defined and mysql.sql_files is defined and php.repo_folder is defined
   mysql_db:
     name: "{{ item.0 }}"
     state: import
     target: /var/www/html/{{ item.1 }}/{{ item.2 }}
-    login_user: "{{ mysql.user[0] }}"
-    login_password: "{{ mysql.password[0] }}"
+    login_user: "{{ mysql.users[0] }}"
+    login_password: "{{ mysql.passwords[0] }}"
   with_together:
     - "{{ mysql.db }}"
     - "{{ php.repo_folder }}"
