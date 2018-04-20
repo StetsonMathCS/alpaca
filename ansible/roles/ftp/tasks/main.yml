@@ -16,4 +16,19 @@
     regexp: '#\s*write_enable=YES'
     line: 'write_enable=YES'
   notify:
-  - restart ftp
+  - restart vsftpd
+
+- name: FTP root
+  when: ftp.root_password is defined
+  user: 
+    name: root
+    password: "{{ ftp.root_password }}"
+
+- name: FTP users
+  when: ftp.users is defined and ftp.passwords is defined
+  user:
+    name: "{{ item.0 }}"
+    password: "{{ item.1 }}"
+  with_together:
+    - "{{ ftp.users }}"
+    - "{{ ftp.passwords }}"
