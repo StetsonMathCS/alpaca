@@ -255,6 +255,9 @@ getConfig((Configs, _), Name, Num) :-
 createYamlFiles(Configs, Name, Num) :-
 	formatRoles(Configs, Roles),
 	createPlaybook(Roles, Name, Num),
+	number_string(Num, NumString),
+	format(atom(DirectoryName), "~s~s/vars", [Name, NumString]),
+	make_directory(DirectoryName),
 	listRoles(Configs, Vars),
 	createVars(Vars, Name, Num).
 
@@ -275,7 +278,7 @@ formatRoles([Role-_|Configs], String) :-
 
 createVars(Vars, Name, Num) :- 
 	number_string(Num, NumString),
-	format(atom(DirectoryName), "~s~s/all.yml", [Name, NumString]),
+	format(atom(DirectoryName), "~s~s/vars/all.yml", [Name, NumString]),
 	open(DirectoryName, write, Stream),
 	%open('all.yml', write, Stream),
 	format(atom(String), "---~n~s", [Vars]),
