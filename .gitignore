@@ -1,0 +1,4 @@
+/ansible/playbook.yml
+*.gv
+*.png
+*[0-9]
