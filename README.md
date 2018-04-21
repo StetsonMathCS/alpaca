@@ -8,15 +8,37 @@
 
 Run main.pl to find/generate lattices and create ansible files
 
-```
-swipl main.pl shortestPath '[server_access_root]' '[]'
-```
+<pre>
+swipl main.pl <i>predicate</i> <i>args</i>
+</pre>
 
-Possible predicate names include:
+#### Examples:
 
-+ shortestPath
-+ longestPath
-+ fullPath
-+ allPossiblePaths (will not create ansible files; no arguments required, i.e. `swipl main.pl allPossiblePaths`)
+Generate full lattice showing all possible paths
 
-### Vagrant
+<pre>
+swipl main.pl allPossiblePaths
+</pre>
+
+Find all possible paths for scenario, group paths by compatible configurations, and separate into differnt directories. 
+
+Directories include:
++ Lattice
++ Variable file (contains configurations)
++ playbook.yml
+
+<pre>
+swipl main.pl <i>'[Goal]'</i> <i>'[InitialState]'</i> <i>'Name'</i>
+</pre>
+<pre>
+swipl main.pl '[server_access_root]' '[]' 'server_access_root'
+</pre>
+
+Select which scenario you want to create and instantiate the cyber range.
+
+<pre>
+swipl main.pl <i>'Directory_Name'</i>
+</pre>
+<pre>
+swipl main.pl 'server_access_root1'
+</pre>
