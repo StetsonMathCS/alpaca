@@ -304,6 +304,15 @@ listVals([Val|Vals], String) :-
 	listVals(Vals, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
 
+% Creates ansible/playbook.yml file
+% Starts vagrant to generate range
+createRange(DirectoryName) :-
+	open('ansible/playbook.yml', write, Stream),
+	format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [DirectoryName]),
+	write(Stream, String),
+	close(Stream),
+	shell('vagrant up').
+
 % work backwards from goal to initial
 achieveGoal([], _, [], [], []).
 achieveGoal([Goal|Goals], InitialState, StartingConfigs, AcceptedConfigs, [(Input, Description, Output)|Vulns]) :-
