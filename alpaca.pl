@@ -63,7 +63,7 @@ printVulns([Vulns|Rest]) :-
 allPossiblePaths :-
 	findall((Prereqs, Vuln, Result), vuln(Vuln, Prereqs, Result, _), AllVulns),
 	p(AllVulns, Str),
-	generateLattice(Str, 'allPossiblePaths-test.gv').
+	generateLattice(Str, 'allPossiblePaths.gv').
 
 % another way to call formatGraphviz:
 % allPaths([server_access_root], [], Result),
