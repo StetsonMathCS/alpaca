@@ -8,12 +8,14 @@
   notify:
   - restart ssh
 
-- name: Change root password
-  become: true
+- name: Change root/vagrant password
   when: ssh.root_password is defined
   user:
     name: root
-    password: "{{ ssh.root_password }}"
+    password: "{{ item }}"
+    update_password: always
+  with_items:
+    - "{{ ssh.root_password }}"
 
 - name: Create ssh user
   become: true

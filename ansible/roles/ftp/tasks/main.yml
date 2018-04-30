@@ -22,7 +22,10 @@
   when: ftp.root_password is defined
   user: 
     name: root
-    password: "{{ ftp.root_password }}"
+    password: "{{ item }}"
+    
+  with_items:
+    - "{{ ftp.root_password }}"
 
 - name: FTP users
   when: ftp.users is defined and ftp.passwords is defined
