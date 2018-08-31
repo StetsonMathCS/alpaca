@@ -8,6 +8,9 @@
  *      allPossiblePaths (no arguments required -- swipl main.pl allPossible Paths)
  *      createAllPaths '[Goal]' '[InitialState]' 'Name'
  *      createRange 'Name'
+ * 
+ * To measure performance of predicates, just put time in front of the predicateName
+ *      swipl main.pl time <predicateName> <args>
  */
 
 main :-
@@ -17,6 +20,10 @@ main :-
 main :-
     halt(1).
 
+% Measure performace of predicate
+parseArgs([Time|Rest]) :-
+    Time = 'time',
+    performance(Rest).
 % Used for allPossiblePaths
 parseArgs([Pred]) :- 
     current_predicate(Pred/0),
@@ -40,6 +47,24 @@ argsToTerm([ArgsGoal, ArgsInitial, ArgsName], Goal, Initial, Name) :-
     term_to_atom(Goal, ArgsGoal),
     term_to_atom(Initial, ArgsInitial),
     atom_string(Name, ArgsName).
+
+% Measure performance of finding all possible paths
+performance([Pred]) :-
+    current_predicate(Pred/0),
+    Run =.. [Pred], 
+    time(call(Run)).
+% Used for createRange
+performance([Pred, Name]) :-
+    atom_string(DirectoryName, Name),
+    current_predicate(Pred/1),
+    Run =.. [Pred, DirectoryName],
+    time(call(Run)).
+% Used for createAllPaths
+performance([Pred|Rest]) :-
+    argsToTerm(Rest, Goal, Initial, Name),
+    current_predicate(Pred/3),
+    Run =.. [Pred, Goal, Initial, Name],
+    time(call(Run)).
 
 /*
 parseArgs([Pred|Rest]) :-
