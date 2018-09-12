@@ -42,3 +42,5 @@ swipl main.pl createRange <i>'Directory_Name'</i>
 <pre>
 swipl main.pl createRange 'server_access_root1'
 </pre>
+
+1- Yazeed Ali.
