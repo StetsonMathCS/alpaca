@@ -28,17 +28,17 @@ Directories include:
 + playbook.yml
 
 <pre>
-swipl main.pl <i>'[Goal]'</i> <i>'[InitialState]'</i> <i>'Name'</i>
+swipl main.pl createAllPaths <i>'[Goal]'</i> <i>'[InitialState]'</i> <i>'Name'</i>
 </pre>
 <pre>
-swipl main.pl '[server_access_root]' '[]' 'server_access_root'
+swipl main.pl createAllPaths '[server_access_root]' '[]' 'server_access_root'
 </pre>
 
 Select which scenario you want to create and instantiate the cyber range.
 
 <pre>
-swipl main.pl <i>'Directory_Name'</i>
+swipl main.pl createRange <i>'Directory_Name'</i>
 </pre>
 <pre>
-swipl main.pl 'server_access_root1'
+swipl main.pl createRange 'server_access_root1'
 </pre>

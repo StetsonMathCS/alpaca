@@ -5,7 +5,7 @@
  * Run as:  swipl main.pl <predicateName> <args>
  * 
  * examples:
- *      allPossiblePaths (no arguments required -- swipl main.pl allPossible Paths)
+ *      allPossiblePaths (no arguments required -- swipl main.pl allPossiblePaths)
  *      createAllPaths '[Goal]' '[InitialState]' 'Name'
  *      createRange 'Name'
  * 
