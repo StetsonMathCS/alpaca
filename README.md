@@ -2,6 +2,10 @@
 
 ![Logo](logo.png)
 
+## Add Name
+
+Dominic
+
 ## Running Alpaca
 
 ### Prolog
