@@ -12,11 +12,12 @@ Vagrant.configure("2") do |config|
   
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://atlas.hashicorp.com/search.
-    config.vm.box = "ubuntu/trusty64"
+    # config.vm.box = "ubuntu/trusty64"
     # config.vm.box = "ubuntu/xenial64"
   
-    config.vm.define "senior_research"
-      config.vm.hostname = "sr"
+    config.vm.define "sr_create_range" do |sr_create_range|
+	sr_create_range.vm.box = "ubuntu/trusty64"
+	sr_create_range.vm.hostname = "sr-CR"
   
     #config.ssh.insert_key = false
   
@@ -28,7 +29,17 @@ Vagrant.configure("2") do |config|
     # Create a private network, which allows host-only access to the machine
     # using a specific IP.
     # config.vm.network "private_network", ip: "192.168.33.10"
-    config.vm.network :private_network, ip: "192.168.75.75"
+	sr_create_range.vm.network :private_network, ip: "192.168.75.75"
+	sr_create_range.vm.provision "ansible" do |ansible|
+		ansible.playbook = "ansible/playbook.yml"
+		ansible.inventory_path = "ansible/inventories/dev"
+		ansible.limit = 'all'
+        end
+    end
+    config.vm.define "sr_create_all_paths" do |sr_create_all_paths|
+    	sr_create_all_paths.vm.box = "ubuntu/trusty64"
+	sr_create_all_paths.vm.hostname = "sr-CAP"
+    	sr_create_all_paths.vm.network :private_network, ip: "192.168.75.76"
       #config.ssh.forward_agent = true
   
     # Share an additional folder to the guest VM. The first argument is
@@ -54,10 +65,11 @@ Vagrant.configure("2") do |config|
   
     # Need to generate ansible/playbook.yml file
     # File should only import playbook from desired directory
-    config.vm.provision "ansible" do |ansible|
-          ansible.playbook = "ansible/playbook.yml"
-          ansible.inventory_path = "ansible/inventories/dev"
-          ansible.limit = 'all'
-      end
-  end
+    	sr_create_all_paths.vm.provision "ansible" do |ansible|
+        	ansible.playbook = "ansible/playbook.yml"
+        	ansible.inventory_path = "ansible/inventories/dev2"
+        	ansible.limit = 'all'
+      	end
+    end
+end
   

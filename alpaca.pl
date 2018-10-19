@@ -116,7 +116,13 @@ createAllPaths(Goal, InitialState, Name) :-
 	length(Lattices, Length),
 	createLatticeDirectories(Name, 1, Length),
 	generateLatticeInDirectory(Lattices, Name),
-	getConfigs(Lattices, Name, 1).
+	getConfigs(Lattices, Name, 1),
+	format(atom(NewDirectoryName), "~s~s", [Name, "1"]),
+	open('ansible/playbook.yml', write, Stream),
+	format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [NewDirectoryName]),
+	write(Stream, String),
+	close(Stream),
+	shell('vagrant up sr_create_all_paths').
 
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.
@@ -184,7 +190,9 @@ calculateLatticeComplexity([Lattice|Lattices], [LatticeComplexity|Rest]) :-
 	calculatePathComplexity(Lattice, Complexity),
 	sum_list(Complexity, Sum),
 	LatticeComplexity is 1/Sum,
-	calculateLatticeComplexity(Lattices, Rest).
+	format("LATTICES: ~w, COMPLEXITY: ~w, SUM: ~w, REST: ~w", [Lattices, Complexity, Sum, Rest]),
+	calculateLatticeComplexity(Lattices, Rest),
+	flush_output.
 
 calculatePathComplexity([], []).
 calculatePathComplexity([(_, Vulns)|RestPaths], [Complexity|Rest]) :-
@@ -311,7 +319,7 @@ createRange(DirectoryName) :-
 	format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [DirectoryName]),
 	write(Stream, String),
 	close(Stream),
-	shell('vagrant up').
+	shell('vagrant up sr_create_range').
 
 % work backwards from goal to initial
 achieveGoal([], _, [], [], []).
