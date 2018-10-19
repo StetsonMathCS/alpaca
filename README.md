@@ -20,7 +20,7 @@ Generate full lattice showing all possible paths
 swipl main.pl allPossiblePaths
 </pre>
 
-Find all possible paths for scenario, group paths by compatible configurations, and separate into differnt directories. 
+Find all possible paths for scenario, group paths by compatible configurations, and separate into different directories. 
 
 Directories include:
 + Lattice
