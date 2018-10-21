@@ -1,6 +1,6 @@
 #!/bin/sh
 
-curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
+curl -X "POST" "http://127.0.0.1:10333/alpaca" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'[
   "createAllPaths",
@@ -10,7 +10,7 @@ curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
 ]'
 
 
-curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
+curl -X "POST" "http://127.0.0.1:10333/alpaca" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'[
   "allPossiblePaths"
@@ -18,7 +18,7 @@ curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
 
 
 
-curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
+curl -X "POST" "http://127.0.0.1:10333/alpaca" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'[
   "allPaths",
@@ -28,7 +28,7 @@ curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
 ]'
 
 #http://127.0.0.1:10333/alpaca"\
-curl -X "POST" "http://alpaca.artifice.cc:8080/milestone4" \
+curl -X "POST" "http://127.0.0.1:10333/alpaca" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'[
   "createRange",

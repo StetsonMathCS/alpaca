@@ -124,6 +124,7 @@ createAllPaths(Goal, InitialState, Name) :-
 	close(Stream),
 	shell('vagrant up sr_create_all_paths').
 
+
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.
 createLatticeDirectories(Name, Num, Length) :-

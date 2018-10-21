@@ -22,3 +22,44 @@ completed(7, 0.05122132, 3516, 500, error("directory `'server_access_root1/vars'
 [createAllPaths,'[server_access_root]','[]',server_access_root] ---> [_576{}]
 completed(8, 0.007636629000000006, 6, 200, ok).
 server(stopped, 1538770373).
+server(started, 1539962989).
+/*Fri Oct 19 11:29:49 2018*/ request(1, 1539962989.353, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(80)]).
+completed(1, 0.001938, 356, 404, error(404,/)).
+/*Fri Oct 19 11:31:21 2018*/ request(2, 1539963081.475, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(80)]).
+completed(2, 0.0010230000000000005, 356, 404, error(404,/)).
+/*Fri Oct 19 11:31:21 2018*/ request(3, 1539963081.493, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(24)]).
+completed(3, 0.0010249999999999999, 356, 404, error(404,/)).
+/*Fri Oct 19 11:31:21 2018*/ request(4, 1539963081.508, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(85)]).
+completed(4, 0.000876, 356, 404, error(404,/)).
+/*Fri Oct 19 11:31:21 2018*/ request(5, 1539963081.528, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(31)]).
+completed(5, 0.0009310000000000004, 356, 404, error(404,/)).
+/*Fri Oct 19 11:32:00 2018*/ request(6, 1539963120.595, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(80)]).
+completed(6, 0.002149, 356, 404, error(404,/)).
+/*Fri Oct 19 11:32:00 2018*/ request(7, 1539963120.613, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(24)]).
+completed(7, 0.0009309999999999995, 356, 404, error(404,/)).
+/*Fri Oct 19 11:32:00 2018*/ request(8, 1539963120.630, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(85)]).
+completed(8, 0.000928, 356, 404, error(404,/)).
+/*Fri Oct 19 11:32:00 2018*/ request(9, 1539963120.649, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host(localhost),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(31)]).
+completed(9, 0.001405, 356, 404, error(404,/)).
+/*Fri Oct 19 11:35:20 2018*/ request(10, 1539963320.393, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(80)]).
+completed(10, 0.0010040000000000014, 356, 404, error(404,/)).
+/*Fri Oct 19 11:35:20 2018*/ request(11, 1539963320.410, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(24)]).
+completed(11, 0.000903000000000001, 356, 404, error(404,/)).
+/*Fri Oct 19 11:35:20 2018*/ request(12, 1539963320.426, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(85)]).
+completed(12, 0.0008799999999999988, 356, 404, error(404,/)).
+/*Fri Oct 19 11:35:20 2018*/ request(13, 1539963320.444, [peer(ip(127,0,0,1)),method(post),request_uri(/),path(/),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(31)]).
+completed(13, 0.001217000000000001, 356, 404, error(404,/)).
+/*Fri Oct 19 11:36:49 2018*/ request(14, 1539963409.548, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(80)]).
+[createAllPaths,'[server_access_root]','[]',server_access_root]
+completed(14, 0.00903, 342, 500, error("Time limit exceeded")).
+/*Fri Oct 19 11:38:01 2018*/ request(15, 1539963481.049, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(24)]).
+[allPossiblePaths]
+completed(15, 0.009354999999999999, 3359, 500, error("goal unexpectedly failed: user:handle([protocol(http),peer(ip(127,0,0,1)),pool(client('httpd@10333',user:http_dispatch,<stream>(0x7fd869513390),<stream>(0x7fd869513490))),input(<stream>(0x7fd869513390)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),accept([media(_534/_536,[],1.0,[])]),content_type('application/json; charset=utf-8'),content_length(24)])\nIn:\n  [19] throw(error(goal_failed(...),_606))\n  [18] http_dispatch:call_action(user:handle,[protocol(http),...|...]) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/http_dispatch.pl:772\n  [16] time:run_alarm_goal('<garbage_collected>','<garbage_collected>') at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/time.pl:145\n  [15] setup_call_catcher_cleanup(time:alarm(30,...,...,...),time:run_alarm_goal(...,...),_724,time:remove_alarm_notrace(...)) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/boot/init.pl:443\n   [8] httpd_wrapper:call_handler('<garbage_collected>',15,'<garbage_collected>') at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/http_wrapper.pl:320\n   [7] catch(httpd_wrapper:call_handler(...,15,...),error(goal_failed(...),context(_854,_856)),httpd_wrapper:true) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/boot/init.pl:371\n   [6] httpd_wrapper:handler_with_output_to(user:http_dispatch,15,'<garbage_collected>',current_output,error(goal_failed(...),context(_920,_922))) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/http_wrapper.pl:297\n   [5] httpd_wrapper:handler_with_output_to('<garbage_collected>',15,'<garbage_collected>',<stream>(0x7fd869513800),error(goal_failed(...),context(_974,_976))) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/http_wrapper.pl:309\n   [4] httpd_wrapper:http_wrapper('<garbage_collected>',<stream>(0x7fd869513390),<stream>(0x7fd869513490),_1012,'<garbage_collected>') at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/http_wrapper.pl:98\n   [3] thread_httpd:http_process('<garbage_collected>',<stream>(0x7fd869513390),<stream>(0x7fd869513490),'<garbage_collected>') at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/thread_httpd.pl:778\n   [2] catch(thread_httpd:http_process(...,<stream>(0x7fd869513390),<stream>(0x7fd869513490),...),_1076,thread_httpd:true) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/boot/init.pl:371\n   [1] thread_httpd:http_worker([queue('httpd@10333'),...|...]) at /usr/local/Cellar/swi-prolog/7.6.4/libexec/lib/swipl-7.6.4/library/http/thread_httpd.pl:554\n   [0] <meta call>\n\nNote: some frames are missing due to last-call optimization.\nRe-run your program in debug mode (:- debug.) to get more detail.")).
+/*Fri Oct 19 11:38:01 2018*/ request(16, 1539963481.089, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(85)]).
+[allPaths,'[server_access_root]','[]','server_access_root/lattice.gv']
+[allPaths,'[server_access_root]','[]','server_access_root/lattice.gv'] ---> []
+completed(16, 0.0013749999999999978, 2, 200, ok).
+/*Fri Oct 19 11:38:01 2018*/ request(17, 1539963481.107, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(31)]).
+[createRange,alpaca]
+[createRange,alpaca] ---> [_860{}]
+completed(17, 0.0010560000000000014, 6, 200, ok).
