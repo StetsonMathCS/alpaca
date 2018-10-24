@@ -1,36 +1,33 @@
 #!/bin/sh
 
 curl -X "POST" "http://127.0.0.1:10333/alpaca" \
-     -H 'Content-Type: application/json; charset=utf-8' \
-     -d $'[
-  "createAllPaths",
-  "[server_access_root]",
-  "[]",
-  "server_access_root"
+-H 'Content-Type: application/json; charset=utf-8' \
+-d $'[
+"createRangeFromIGS",
+"alpaca"
 ]'
-
 
 curl -X "POST" "http://127.0.0.1:10333/alpaca" \
-     -H 'Content-Type: application/json; charset=utf-8' \
-     -d $'[
-  "allPossiblePaths"
+-H 'Content-Type: application/json; charset=utf-8' \
+-d $'[
+"createStartRangeFromIGS",
+"[server_access_root]",
+"[]",
+"server_access_root"
 ]'
-
-
 
 curl -X "POST" "http://127.0.0.1:10333/alpaca" \
-     -H 'Content-Type: application/json; charset=utf-8' \
-     -d $'[
-  "allPaths",
-  "[server_access_root]",
-  "[]",
-  "server_access_root/lattice.gv"
+-H 'Content-Type: application/json; charset=utf-8' \
+-d $'[
+"graphAllVulns"
 ]'
 
-#http://127.0.0.1:10333/alpaca"\
 curl -X "POST" "http://127.0.0.1:10333/alpaca" \
-     -H 'Content-Type: application/json; charset=utf-8' \
-     -d $'[
-  "createRange",
-  "alpaca"
+-H 'Content-Type: application/json; charset=utf-8' \
+-d $'[
+"createAllLatticesFromIGS",
+"[server_access_root]",
+"[]",
+"server_access_root/lattice.gv"
 ]'
+

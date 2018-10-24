@@ -5,9 +5,9 @@
  * Run as:  swipl main.pl <predicateName> <args>
  * 
  * examples:
- *      allPossiblePaths (no arguments required -- swipl main.pl allPossiblePaths)
- *      createAllPaths '[Goal]' '[InitialState]' 'Name'
- *      createRange 'Name'
+ *      graphAllVulns (no arguments required -- swipl main.pl graphAllVulns)
+ *      createStartRangeFromIGS '[Goal]' '[InitialState]' 'Name'
+ *      createRangeFromIGS 'Name'
  * 
  * To measure performance of predicates, just put time in front of the predicateName
  *      swipl main.pl time <predicateName> <args>
@@ -24,25 +24,25 @@ main :-
 parseArgs([Time|Rest]) :-
     Time = 'time',
     performance(Rest).
-% Used for allPossiblePaths
+% Used for graphAllVulns
 parseArgs([Pred]) :- 
     current_predicate(Pred/0),
     Run =.. [Pred], 
     call(Run).
-% Used for createRange
+% Used for createRangeFromIGS
 parseArgs([Pred, Name]) :-
     atom_string(DirectoryName, Name),
     current_predicate(Pred/1),
     Run =.. [Pred, DirectoryName],
     call(Run).
-% Used for createAllPaths
+% Used for createStartRangeFromIGS
 parseArgs([Pred|Rest]) :-
     argsToTerm(Rest, Goal, Initial, Name),
     current_predicate(Pred/3),
     Run =.. [Pred, Goal, Initial, Name],
     call(Run).
     
-% Parse args for createAllPaths
+% Parse args for createStartRangeFromIGS
 argsToTerm([ArgsGoal, ArgsInitial, ArgsName], Goal, Initial, Name) :-
     term_to_atom(Goal, ArgsGoal),
     term_to_atom(Initial, ArgsInitial),
@@ -53,13 +53,13 @@ performance([Pred]) :-
     current_predicate(Pred/0),
     Run =.. [Pred], 
     time(call(Run)).
-% Used for createRange
+% Used for createRangeFromIGS
 performance([Pred, Name]) :-
     atom_string(DirectoryName, Name),
     current_predicate(Pred/1),
     Run =.. [Pred, DirectoryName],
     time(call(Run)).
-% Used for createAllPaths
+% Used for createStartRangeFromIGS
 performance([Pred|Rest]) :-
     argsToTerm(Rest, Goal, Initial, Name),
     current_predicate(Pred/3),

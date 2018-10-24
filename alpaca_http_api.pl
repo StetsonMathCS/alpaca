@@ -12,8 +12,8 @@
 
 :- [alpaca].
 
-validPredicates([allPossiblePaths, createRange,
-                 createAllPaths, allPaths]).
+validPredicates([graphAllVulns, createRangeFromIGS,
+                 createStartRangeFromIGS, createAllLatticesFromIGS]).
 
 server(Port) :- http_server(http_dispatch, [port(Port)]).
 
