@@ -253,3 +253,23 @@ completed(3, 0.010688, 3356, 500, error("goal unexpectedly failed: user:handle([
 [createAllLatticesFromIGS,'[server_access_root]','[]','server_access_root/lattice.gv'] ---> []
 completed(4, 0.0011070000000000001, 2, 200, ok).
 server(stopped, 1540318007).
+server(started, 1540394944).
+/*Wed Oct 24 11:29:03 2018*/ request(1, 1540394943.676, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(37)]).
+completed(1, 0.003068, 399, 500, error("Stream <stream>(0x7ff1aff32e20):3:3 Syntax error: json(illegal_array)")).
+/*Wed Oct 24 11:31:08 2018*/ request(2, 1540395068.995, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(31)]).
+[graphAllVulns,fileName]
+[graphAllVulns,fileName] ---> [_546{}]
+completed(2, 0.0065239999999999986, 6, 200, ok).
+/*Wed Oct 24 11:31:42 2018*/ request(3, 1540395102.970, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(24)]).
+completed(3, 0.0028129999999999995, 399, 500, error("Stream <stream>(0x7ff1b2157550):3:5 Syntax error: json(eof_in_string)")).
+/*Wed Oct 24 11:31:50 2018*/ request(4, 1540395110.458, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(24)]).
+completed(4, 0.0009560000000000003, 399, 500, error("Stream <stream>(0x7ff1afe1cfd0):3:5 Syntax error: json(eof_in_string)")).
+/*Wed Oct 24 11:32:07 2018*/ request(5, 1540395127.842, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(34)]).
+[graphAllVulns,'\'Test file\'']
+[graphAllVulns,'\'Test file\''] ---> []
+completed(5, 0.006885999999999999, 2, 200, ok).
+/*Wed Oct 24 11:32:44 2018*/ request(6, 1540395164.970, [peer(ip(127,0,0,1)),method(post),request_uri('/alpaca'),path('/alpaca'),http_version(1-1),host('127.0.0.1'),port(10333),user_agent('curl/7.55.1'),content_type('application/json; charset=utf-8'),content_length(33)]).
+[graphAllVulns,'\'Testfile\'']
+[graphAllVulns,'\'Testfile\''] ---> [_546{}]
+completed(6, 0.005195999999999999, 6, 200, ok).
+server(stopped, 1540493449).

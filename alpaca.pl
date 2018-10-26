@@ -62,45 +62,49 @@ printVulns([Vulns|Rest]) :-
 	printVulns(Rest).
 
 % renamed from 'allPossiblePaths'
-graphAllVulns :-
+graphAllVulns(FileName) :-
 	findall((Prereqs, Vuln, Result), vuln(Vuln, Prereqs, Result, _), AllVulns),
-	p(AllVulns, Str),
-	generatePNGFromDot(Str, 'allVulnsGraph.gv').
+	formatDotVulns(AllVulns, Str),
+	generatePNGFromDot(Str, FileName).
 
-% another way to call formatGraphviz:
+% another way to call formatDotSingleVuln:
 % createAllLatticesFromIGS([server_access_root], [], Result),
 %  Result = [(Config, Vulns)|_],  % get first path, just for demonstration
-%  p(Vulns, Str),
+%  formatDotVulns(Vulns, Str),
 %  generatePNGFromDot(Str, 'allLattices.gv').
 
-formatGraphviz(_, [], "").
-formatGraphviz(VulnID, [(Prereq, Vuln, Result)|Rest], String) :-
-	formatGraphviz(VulnID, Rest, String1),
+formatDotSingleVuln(_, [], "").
+formatDotSingleVuln(VulnID, [(Prereq, Vuln, Result)|Rest], String) :-
+	formatDotSingleVuln(VulnID, Rest, String1),
     ( Prereq = none -> PrereqLabel = '' ; PrereqLabel = Prereq ),
     format(atom(String), "~s\"~a\" [shape=\"none\", label=\"~a\"];~n\"~a\" [shape=\"none\"];~n\"~s\" [shape=\"box\", label=\"~a\"];~n\"~a\" -> \"~s\";~n\"~s\" -> \"~a\";~n", [String1, Prereq, PrereqLabel, Result, VulnID, Vuln, Prereq, VulnID, VulnID, Result]).
 
-p([], "").
-p([(Prereqs, Vuln, Result)|Rest], Str) :-
-    % if prereqs are empty, put in a dummy [none] so that p1 below doesnt ignore the vuln
-    ( Prereqs = [] -> p1([none], Vuln, Result, [], Out) ; p1(Prereqs, Vuln, Result, [], Out) ),
+% renamed from 'p'
+formatDotVulns([], "").
+formatDotVulns([(Prereqs, Vuln, Result)|Rest], Str) :-
+    % if prereqs are empty, put in a dummy [none] so that makeTripletsFromListAtomList below doesnt ignore the vuln
+    ( Prereqs = [] -> makeTripletsFromListAtomList([none], Vuln, Result, [], Out) ; makeTripletsFromListAtomList(Prereqs, Vuln, Result, [], Out) ),
     format(atom(VulnID), "~k~a~k", [Prereqs, Vuln, Result]),
-	formatGraphviz(VulnID, Out, Str1),
-	p(Rest, Str2),
+	formatDotSingleVuln(VulnID, Out, Str1),
+	formatDotVulns(Rest, Str2),
 	format(atom(Str), "~s~s", [Str1, Str2]).
 
-p1([], _, Results, Pairs, Out) :- p2(Results, Pairs, Out).
-p1([H|T], Vuln, Results, Rest, Out) :-
-	p1(T, Vuln, Results, [(H, Vuln)|Rest], Out).
+% renamed from 'p1'
+makeTripletsFromListAtomList([], _, Results, Pairs, Out) :- addAtomIdToEndOfEachPair(Results, Pairs, Out).
+makeTripletsFromListAtomList([H|T], Vuln, Results, Rest, Out) :-
+	makeTripletsFromListAtomList(T, Vuln, Results, [(H, Vuln)|Rest], Out).
 
-p2([H|T], Pairs, Out) :-
-	p3(H, Pairs, Out1),
-	p2(T, Pairs, Out2),
+% renamed from 'p2'
+addAtomIdToEndOfEachPair([H|T], Pairs, Out) :-
+	addAtomToEndOfEachPair(H, Pairs, Out1),
+	addAtomIdToEndOfEachPair(T, Pairs, Out2),
 	append(Out1, Out2, Out).
-p2([], _, []).
+addAtomIdToEndOfEachPair([], _, []).
 
-p3(Res, [(A,B)|T], [(A, B, Res)|Rest]) :-
-	p3(Res, T, Rest).
-p3(_, [], []).
+% renamed from 'p3'
+addAtomToEndOfEachPair(Res, [(A,B)|T], [(A, B, Res)|Rest]) :-
+	addAtomToEndOfEachPair(Res, T, Rest).
+addAtomToEndOfEachPair(_, [], []).
 
 % renamed from 'generateLattice'
 generatePNGFromDot(String, File) :-
@@ -111,6 +115,20 @@ generatePNGFromDot(String, File) :-
 	close(Stream),
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
+
+% Starts the existing VM
+startRange(VMname) :-
+format(atom(Command), "VBoxManage startvm ~s", [VMname]),
+shell(Command).
+
+% Creates ansible/playbook.yml file
+% does not start the VM using vagrant up
+% renamed from 'createRange'
+createRangeFromIGS(DirectoryName) :-
+open('ansible/playbook.yml', write, Stream),
+format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [DirectoryName]),
+write(Stream, String),
+close(Stream).
 
 % Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
 % Example: createStartRangeFromIGS(['server_access_root'], [], 'server_access_root')
@@ -127,7 +145,6 @@ createStartRangeFromIGS(Goal, InitialState, Name) :-
 	write(Stream, String),
 	close(Stream),
 	shell('vagrant up sr_create_all_paths').
-
 
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.
@@ -154,7 +171,7 @@ generatePNGFromLattices([Lattice|Lattices], FileName, Num) :-
 	appendVulns(Lattice, ListOfVulns),
 	append(ListOfVulns, Result),
 	number_string(Num, NumString),
-	p(Result, Str),
+	formatDotVulns(Result, Str),
 	format(atom(NewFileName), "~s~s.gv", [FileName, NumString]),
 	generatePNGFromDot(Str, NewFileName), !,
 	NewNum is Num+1,
@@ -172,7 +189,7 @@ generatePNGFromDotInDirectory([Lattice|Lattices], DirectoryName, Num) :-
 	appendVulns(Lattice, ListOfVulns),
 	append(ListOfVulns, Result),
 	number_string(Num, NumString),
-	p(Result, Str),
+	formatDotVulns(Result, Str),
 	format(atom(NewDirectoryName), "~s~s/lattice.gv", [DirectoryName, NumString]),
 	generatePNGFromDot(Str, NewDirectoryName), !,
 	NewNum is Num+1,
@@ -235,7 +252,7 @@ shortestPath(Goal, InitialState) :-
 	createAllLatticesFromIGS(Goal, InitialState, createAllLatticesFromIGS),
 	predsort(sortByLength, createAllLatticesFromIGS, SortedPaths),
 	nth0(0, SortedPaths, (Configs, Vulns)),
-	p(Vulns, Str),
+	formatDotVulns(Vulns, Str),
 	generatePNGFromDot(Str, 'shortestPath-test.gv'),
 	createYamlFiles(Configs).
 
@@ -245,7 +262,7 @@ longestPath(Goal, InitialState) :-
 	createAllLatticesFromIGS(Goal, InitialState, createAllLatticesFromIGS),
 	predsort(sortByLength, createAllLatticesFromIGS, SortedPaths),
 	last(SortedPaths, (Configs, Vulns)),
-	p(Vulns, Str),
+	formatDotVulns(Vulns, Str),
 	generatePNGFromDot(Str, 'longestPath-test.gv'),
 	createYamlFiles(Configs).
 
@@ -311,20 +328,6 @@ listVals([], "").
 listVals([Val|Vals], String) :-
 	listVals(Vals, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
-
-% Creates ansible/playbook.yml file
-% does not start the VM using vagrant up
-% renamed from 'createRange'
-createRangeFromIGS(DirectoryName) :-
-	open('ansible/playbook.yml', write, Stream),
-	format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [DirectoryName]),
-	write(Stream, String),
-	close(Stream).
-
-% Starts the existing VM
-startRange(VMName) :-
-    format(atom(Command), "VBoxManage startvm ~s", [VMName]),
-    shell(Command).
 
 % work backwards from goal to initial
 achieveGoal([], _, [], [], []).

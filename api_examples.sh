@@ -19,7 +19,8 @@ curl -X "POST" "http://127.0.0.1:10333/alpaca" \
 curl -X "POST" "http://127.0.0.1:10333/alpaca" \
 -H 'Content-Type: application/json; charset=utf-8' \
 -d $'[
-"graphAllVulns"
+"graphAllVulns",
+"\'Test file\'"
 ]'
 
 curl -X "POST" "http://127.0.0.1:10333/alpaca" \
