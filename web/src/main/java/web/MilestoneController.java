@@ -1,4 +1,4 @@
-package mile5;
+package web;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import mile5.UserRepository;
-import mile5.VulnsRepository;
+
+import web.UserRepository;
+import web.VulnsRepository;
 
 @Controller
 public class MilestoneController {

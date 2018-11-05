@@ -1,4 +1,4 @@
-package mile5;
+package web;
 
 import javax.persistence.*;
 
