@@ -3,16 +3,15 @@ package web;
 import javax.persistence.*;
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name = "users")
-public class User {
+@Table(name = "authorities")
+public class Auth {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
     private String username;
 
-    private String password;
-    boolean enabled;
+    private String authority;
 
     public Integer getId() {
         return id;
@@ -30,17 +29,14 @@ public class User {
         this.username = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAuth() {
+        return authority;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAuth(String auth) {
+        this.authority = auth;
     }
     
-    public void setTrue() {
-    	this.enabled=true;
-    }
 
 
 }

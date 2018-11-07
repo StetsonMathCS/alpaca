@@ -2,21 +2,24 @@ package web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository UserRepository;
+	@Autowired
+	private UserRepository UserRepository;
+	@Autowired 
+	private AuthRepo authRepo;
 
-//    @Transactional
-    public void add(String user, String pass){
-        User n = new User();
-        n.setName(user);
-        n.setPassword(pass);
-        UserRepository.save(n);
-    }
+	public void add(String user, String pass) {
+		User n = new User();
+		n.setName(user);
+		n.setPassword(new BCryptPasswordEncoder().encode(pass));
+		n.setTrue();
+		UserRepository.save(n);
+		
+	}
 
 //    @Transactional
 //    public void insertTwo(){

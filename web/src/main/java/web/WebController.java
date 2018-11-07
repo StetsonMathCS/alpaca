@@ -20,10 +20,12 @@ import web.UserRepository;
 import web.VulnsRepository;
 
 @Controller
-public class MilestoneController {
+public class WebController {
 
 	@Autowired
 	private UserService UserService;
+	@Autowired
+	private AuthServ authService;
 	//@Autowired
 	//private VulnsService vulnsService;
 	@Autowired
@@ -92,7 +94,7 @@ public class MilestoneController {
 		String u = user;
 		String p = pass;
 		UserService.add(u, p);
-
+		authService.add(u);
 		return model;
 	}
 
