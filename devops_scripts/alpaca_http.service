@@ -1,0 +1,32 @@
+[Unit]
+Description=Service for ALPACA HTTP_API
+
+[Service]
+ExecStart=/home/noah/alpaca/devops_scripts/run_http_server.sh
+User=noah
+
+[Install]
+WantedBy=multi-user.target
+
+
+#[Unit]
+# Auto-generated, DO NOT EDIT
+#Description=Service for snap application amazon-ssm-agent.amazon-ssm-agent
+#Requires=snap-amazon\x2dssm\x2dagent-734.mount
+#Wants=network-online.target
+#After=snap-amazon\x2dssm\x2dagent-734.mount network-online.target
+#X-Snappy=yes
+
+#[Service]
+#ExecStart=/usr/bin/snap run amazon-ssm-agent
+#SyslogIdentifier=amazon-ssm-agent.amazon-ssm-agent
+#Restart=always
+#WorkingDirectory=/var/snap/amazon-ssm-agent/734
+#TimeoutStopSec=60
+#Type=simple
+#KillMode=process
+#KillSignal=SIGTERM
+
+#[Install]
+#WantedBy=multi-user.target
+
