@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Registration</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
@@ -11,17 +12,31 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+<font size="+5">REGISTER</font>
+	<div>
+	<nav class="navbar navbar-inverse">
 	<ul class="nav navbar-nav">
 		<li><a href ="download">Download</a></li>
 		<li><a href = "vulns">Vulnerability</a></li>
 		<li><a href = "builder">Lattice</a></li>
 		<li><a href = "home">Home</a></li>
 	</ul>
+	</nav>
+	</div>
+	
 	<form action="postLog" method="post">
-		<input type="text" name="user" placeholder="user"]>
-		<input type="text" name="pass" placeholder="pass">
-		<input type="submit" name="submit" >
+	
+		<input type="text" name="user" placeholder="user"> <input
+			type="text" name="pass" placeholder="pass">
+		<div>
+			<img alt="captcha" onclick="this.src='/Register?d='+new Date()*1"
+				src="/Register" />
+		</div>
+		<input type="text" name="tryCode" /> <input type="submit"
+			name="submit">
+
 	</form>
-	Welcome to the registration page!
+
+
 </body>
 </html>
