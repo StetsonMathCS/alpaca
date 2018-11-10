@@ -1,9 +1,14 @@
 package web;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +17,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.code.kaptcha.impl.DefaultKaptcha;
 
 import web.UserRepository;
 import web.VulnsRepository;
@@ -26,12 +34,14 @@ public class WebController {
 	private UserService UserService;
 	@Autowired
 	private AuthServ authService;
-	//@Autowired
-	//private VulnsService vulnsService;
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
 	VulnsRepository vulnsRepository;
+	@Autowired
+	DefaultKaptcha defaultKaptcha;
+
+	private String captcha;
 
 	@GetMapping("/home")
 	public String home() {
@@ -87,14 +97,21 @@ public class WebController {
 	}
 
 	@PostMapping(value = "/postLog")
-	public ModelAndView submitLogin(@RequestParam("user") String user, @RequestParam("pass") String pass) {
+	public ModelAndView submitLogin(@RequestParam("user") String user, @RequestParam("pass") String pass,
+			@RequestParam("tryCode") String tCap) {
 		ModelAndView model = new ModelAndView("postData");
-		model.addObject("msg", "USER: " + user + " PASS: " + pass);
 
 		String u = user;
 		String p = pass;
-		UserService.add(u, p);
-		authService.add(u);
+		String c = tCap;
+		if (tCap.compareTo(captcha) == 0) {
+			UserService.add(u, p);
+			authService.add(u);
+			model.addObject("msg", "USER: " + user + " PASS: " + pass);
+		} else {
+			model.addObject("msg", "Failed");
+		}
+
 		return model;
 	}
 
@@ -103,7 +120,7 @@ public class WebController {
 		ModelAndView model = new ModelAndView("login");
 		return model;
 	}
-	
+
 	@GetMapping("/register")
 	public ModelAndView showRegister() {
 		ModelAndView model = new ModelAndView("register");
@@ -125,4 +142,32 @@ public class WebController {
 
 		return userRepository.findById(1);
 	}
+
+	@RequestMapping("/Register")
+	public void defaultKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+			throws Exception {
+		byte[] captchaChallengeAsJpeg = null;
+		ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
+		try {
+			String createText = defaultKaptcha.createText();
+			captcha = createText;
+			httpServletRequest.getSession().setAttribute("rightCode", createText);
+			BufferedImage challenge = defaultKaptcha.createImage(createText);
+			ImageIO.write(challenge, "jpg", jpegOutputStream);
+		} catch (IllegalArgumentException e) {
+			httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+
+		captchaChallengeAsJpeg = jpegOutputStream.toByteArray();
+		httpServletResponse.setHeader("Cache-Control", "no-store");
+		httpServletResponse.setHeader("Pragma", "no-cache");
+		httpServletResponse.setDateHeader("Expires", 0);
+		httpServletResponse.setContentType("image/jpeg");
+		ServletOutputStream responseOutputStream = httpServletResponse.getOutputStream();
+		responseOutputStream.write(captchaChallengeAsJpeg);
+		responseOutputStream.flush();
+		responseOutputStream.close();
+	}
+
 }

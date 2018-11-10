@@ -23,7 +23,6 @@ public class Secure extends WebSecurityConfigurerAdapter{
 	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception{
 		auth.jdbcAuthentication().dataSource(database).passwordEncoder(new BCryptPasswordEncoder());
-		
 	}
 	
 	@Override
@@ -40,6 +39,8 @@ public class Secure extends WebSecurityConfigurerAdapter{
 		.antMatchers("/").permitAll()
 		.and()
 		.httpBasic();
+		
+		
 		http.csrf().disable();
 		
 	}
