@@ -1,3 +1,0 @@
-// You need to stop your locally mysql server in your setting ( or use different port on the local end of your tunnel).
-// You need to login in to the server in order to execute the program
-// run this command using the tunnel " ssh username@remoteserver -L 3306:localhost:3306 " in Terminal or Putty
