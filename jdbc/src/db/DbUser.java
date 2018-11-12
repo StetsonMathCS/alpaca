@@ -1,6 +1,10 @@
 package db;
 
 import java.sql.*;
+import java.util.Properties;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /*
  * make sure you log in using $ ssh username@remoteserver -L 3306:localhost:3306
@@ -8,8 +12,37 @@ import java.sql.*;
  * before execute the program. 
 */
 public class DbUser {
-
+	
+	private static String user;
+    private static String pass;
+    
     public static void main(String[] args) {
+    	 Properties prop = new Properties();
+         InputStream input = null;
+         
+         try {
+
+             input = new FileInputStream("config.properties");
+
+             // load a properties file
+             prop.load(input);
+
+             // get the property value and print it out
+             user = prop.getProperty("username");
+             pass = prop.getProperty("password");
+
+     } catch (IOException ex) {
+             ex.printStackTrace();
+     } finally {
+             if (input != null) {
+                     try {
+                             input.close();
+                     } catch (IOException e) {
+                             e.printStackTrace();
+                     }
+             }
+     }
+     
         DbUser dbUser = new DbUser();
         dbUser.executeQueries();
     }
@@ -17,7 +50,7 @@ public class DbUser {
     private void executeQueries() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/vuln", "mimi", "mimi123");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/vuln", user, pass);
             Statement statement = connection.createStatement();
 
             System.out.println("1. What is the total number of vulnerabilities?");
