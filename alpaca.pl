@@ -1,5 +1,5 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
-
+%:- use_module(library(archive)).
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
 */
@@ -65,7 +65,7 @@ printVulns([Vulns|Rest]) :-
 graphAllVulns(FileName) :-
 	findall((Prereqs, Vuln, Result), vuln(Vuln, Prereqs, Result, _), AllVulns),
 	formatDotVulns(AllVulns, Str),
-	generatePNGFromDot(Str, FileName).
+	generatePNGFromDot(Str, FileName), !.
 
 % another way to call formatDotSingleVuln:
 % createAllLatticesFromIGS([server_access_root], [], Result),
@@ -116,35 +116,44 @@ generatePNGFromDot(String, File) :-
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
 
-% Starts the existing VM
-startRange(VMname) :-
-format(atom(Command), "VBoxManage startvm ~s", [VMname]),
-shell(Command).
-
-% Creates ansible/playbook.yml file
-% does not start the VM using vagrant up
-% renamed from 'createRange'
-createRangeFromIGS(DirectoryName) :-
-open('ansible/playbook.yml', write, Stream),
-format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [DirectoryName]),
-write(Stream, String),
-close(Stream).
-
 % Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
+% renamed from 'createRange'
+createRangeFromIGS(Goal, InitialState, DirectoryName) :-
+    createAllLatticesFromIGS(Goal, InitialState, Lattices),
+    length(Lattices, Length),
+    createLatticeDirectories(DirectoryName, 1, Length),
+    generatePNGFromDotInDirectory(Lattices, DirectoryName),
+    getConfigs(Lattices, DirectoryName, 1),
+    format(atom(NewDirectoryName), "~s~s", [DirectoryName, "1"]),
+    open('ansible/playbook.yml', write, Stream),
+    format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [NewDirectoryName]),
+    write(Stream, String),
+    close(Stream).
+
+% Initializes the range as a virtual machine
 % Example: createStartRangeFromIGS(['server_access_root'], [], 'server_access_root')
 % renamed from 'createAllPaths'
-createStartRangeFromIGS(Goal, InitialState, Name) :-
-	createAllLatticesFromIGS(Goal, InitialState, Lattices),
-	length(Lattices, Length),
-	createLatticeDirectories(Name, 1, Length),
-	generatePNGFromDotInDirectory(Lattices, Name),
-	getConfigs(Lattices, Name, 1),
-	format(atom(NewDirectoryName), "~s~s", [Name, "1"]),
-	open('ansible/playbook.yml', write, Stream),
-	format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [NewDirectoryName]),
-	write(Stream, String),
-	close(Stream),
-	shell('vagrant up sr_create_all_paths').
+createStartRangeFromIGS(VMname) :-
+    format(atom(Command1), "vagrant up ~s", [VMname]),
+    format(atom(Command2), "vagrant halt ~s", [VMname]),
+    shell(Command1),
+    shell(Command2).
+	%shell('vagrant up sr_range_1'),
+    %shell('vagrant halt sr_range_1').
+
+initiateDevFile :-
+    open('ansible/inventories/dev2', write, Stream),
+    write(Stream, '[test-web]'), nl(Stream),
+    close(Stream).
+
+addAddrToDevFile :-
+    append('ansible/inventories/dev2'),
+    write('Here is another line'), nl, told.
+
+write_list([]).
+write_list([H|T]):-
+    write(H), nl,
+    write_list(T).
 
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.

@@ -6,8 +6,8 @@
  * 
  * examples:
  *      graphAllVulns (no arguments required -- swipl main.pl graphAllVulns)
- *      createStartRangeFromIGS '[Goal]' '[InitialState]' 'Name'
- *      createRangeFromIGS 'Name'
+ *      createStartRangeFromIGS (no arguments required currently because it only produces one VM)
+ *      createRangeFromIGS '[Goal]' '[InitialState]' 'DirectoryName'
  * 
  * To measure performance of predicates, just put time in front of the predicateName
  *      swipl main.pl time <predicateName> <args>
