@@ -1,6 +1,7 @@
 package db;
 
 import java.sql.*;
+
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class DbUser {
                 //increase the counter
                 i++;
                 //print out the answer
-                System.out.println("\tID = " + rs.getInt(1) + ", Vulnerability: " + rs.getString(2) + ", Area: " + rs.getString(3));
+                System.out.println("\tID = " + rs.getInt(1) + ", Vulnerability: " + rs.getString(2) + ", Description: " + rs.getString(3));
             }
 
             System.out.println("4. Do any vulnerabilities require open ports?");
