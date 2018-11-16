@@ -1,0 +1,1331 @@
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-11-14 20:56 EST
+Warning: 10.50.10.41 giving up on port because retransmission cap hit (10).
+Nmap scan report for 10.50.1.1
+Host is up (0.000054s latency).
+Not shown: 836 closed ports, 161 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.1.2
+Host is up (0.000049s latency).
+Not shown: 831 closed ports, 163 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+23/tcp   open  telnet
+80/tcp   open  http
+443/tcp  open  https
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.2.4
+Host is up (0.000031s latency).
+Not shown: 821 closed ports, 177 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for aruba-master.ad.stetson.edu (10.50.3.244)
+Host is up (0.14s latency).
+Not shown: 981 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+22/tcp   open   ssh
+80/tcp   open   http
+113/tcp  closed ident
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2000/tcp open   cisco-sccp
+2323/tcp closed 3d-nfsd
+4343/tcp open   unicall
+5060/tcp open   sip
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8083/tcp closed us-srv
+8088/tcp open   radan-http
+8888/tcp closed sun-answerbook
+
+Nmap scan report for 10.50.3.245
+Host is up (0.00013s latency).
+Not shown: 983 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+21/tcp   open   ftp
+22/tcp   open   ssh
+80/tcp   open   http
+113/tcp  closed ident
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2000/tcp open   cisco-sccp
+2323/tcp closed 3d-nfsd
+4343/tcp open   unicall
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8888/tcp closed sun-answerbook
+
+Nmap scan report for 10.50.3.250
+Host is up (0.00058s latency).
+Not shown: 981 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+22/tcp   open   ssh
+80/tcp   open   http
+113/tcp  closed ident
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2000/tcp open   cisco-sccp
+2323/tcp closed 3d-nfsd
+4343/tcp open   unicall
+5060/tcp open   sip
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8083/tcp closed us-srv
+8088/tcp open   radan-http
+8888/tcp closed sun-answerbook
+
+Nmap scan report for 10.50.3.252
+Host is up (0.000074s latency).
+Not shown: 850 closed ports, 148 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.3.254
+Host is up (0.000065s latency).
+Not shown: 778 closed ports, 219 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.6.1
+Host is up (0.000070s latency).
+Not shown: 798 closed ports, 199 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for dlesxiview01.ad.stetson.edu (10.50.9.4)
+Host is up (0.000073s latency).
+Not shown: 989 filtered ports
+PORT     STATE  SERVICE
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5988/tcp closed wbem-http
+5989/tcp closed wbem-https
+8000/tcp open   http-alt
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlesxiview02.ad.stetson.edu (10.50.9.5)
+Host is up (0.000044s latency).
+Not shown: 989 filtered ports
+PORT     STATE  SERVICE
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5988/tcp closed wbem-http
+5989/tcp closed wbem-https
+8000/tcp open   http-alt
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlesxiview03.ad.stetson.edu (10.50.9.6)
+Host is up (0.000029s latency).
+Not shown: 990 filtered ports
+PORT     STATE  SERVICE
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5988/tcp closed wbem-http
+5989/tcp closed wbem-https
+8000/tcp open   http-alt
+9080/tcp open   glrpc
+
+Nmap scan report for dlesxiview04.ad.stetson.edu (10.50.9.7)
+Host is up (0.00039s latency).
+Not shown: 990 filtered ports
+PORT     STATE  SERVICE
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5988/tcp closed wbem-http
+5989/tcp closed wbem-https
+8000/tcp open   http-alt
+8300/tcp open   tmi
+
+Nmap scan report for dlesxi01.ad.stetson.edu (10.50.9.10)
+Host is up (0.000046s latency).
+Not shown: 986 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+5988/tcp closed wbem-http
+5989/tcp open   wbem-https
+8000/tcp open   http-alt
+8080/tcp closed http-proxy
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlesxi02.ad.stetson.edu (10.50.9.11)
+Host is up (0.000052s latency).
+Not shown: 986 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+5988/tcp closed wbem-http
+5989/tcp open   wbem-https
+8000/tcp open   http-alt
+8080/tcp closed http-proxy
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlesxi03.ad.stetson.edu (10.50.9.12)
+Host is up (0.000026s latency).
+Not shown: 987 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5988/tcp closed wbem-http
+5989/tcp open   wbem-https
+8000/tcp open   http-alt
+8080/tcp closed http-proxy
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlucesxi01.ad.stetson.edu (10.50.9.15)
+Host is up (0.000033s latency).
+Not shown: 986 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+5988/tcp closed wbem-http
+5989/tcp open   wbem-https
+8000/tcp open   http-alt
+8080/tcp closed http-proxy
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlucesxi02.ad.stetson.edu (10.50.9.16)
+Host is up (0.00011s latency).
+Not shown: 986 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+80/tcp   open   http
+113/tcp  closed ident
+427/tcp  open   svrloc
+443/tcp  open   https
+902/tcp  open   iss-realsecure
+2000/tcp open   cisco-sccp
+5060/tcp open   sip
+5988/tcp closed wbem-http
+5989/tcp open   wbem-https
+8000/tcp open   http-alt
+8080/tcp closed http-proxy
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for dlesxisw01.ad.stetson.edu (10.50.9.21)
+Host is up (0.000080s latency).
+Not shown: 990 filtered ports
+PORT     STATE  SERVICE
+22/tcp   closed ssh
+80/tcp   open   http
+113/tcp  closed ident
+443/tcp  open   https
+2000/tcp open   cisco-sccp
+2020/tcp closed xinupageserver
+5988/tcp closed wbem-http
+5989/tcp closed wbem-https
+8300/tcp open   tmi
+9080/tcp open   glrpc
+
+Nmap scan report for 10.50.9.252
+Host is up (0.000086s latency).
+Not shown: 750 closed ports, 247 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.9.254
+Host is up (0.000061s latency).
+Not shown: 844 closed ports, 153 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for bandev-03.ad.stetson.edu (10.50.10.1)
+Host is up (0.000057s latency).
+Not shown: 792 closed ports, 196 filtered ports
+PORT     STATE SERVICE
+135/tcp  open  msrpc
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+1025/tcp open  NFS-or-IIS
+1027/tcp open  IIS
+1056/tcp open  vfo
+1059/tcp open  nimreg
+1070/tcp open  gmrupdateserv
+2000/tcp open  cisco-sccp
+3389/tcp open  ms-wbt-server
+4000/tcp open  remoteanything
+5060/tcp open  sip
+
+Nmap scan report for bandev-01.ad.stetson.edu (10.50.10.2)
+Host is up (0.000075s latency).
+Not shown: 826 closed ports, 163 filtered ports
+PORT     STATE SERVICE
+135/tcp  open  msrpc
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+1025/tcp open  NFS-or-IIS
+1027/tcp open  IIS
+1058/tcp open  nim
+1070/tcp open  gmrupdateserv
+2000/tcp open  cisco-sccp
+3389/tcp open  ms-wbt-server
+4000/tcp open  remoteanything
+5060/tcp open  sip
+
+Nmap scan report for bandev-04.ad.stetson.edu (10.50.10.4)
+Host is up (0.000028s latency).
+Not shown: 879 closed ports, 110 filtered ports
+PORT     STATE SERVICE
+135/tcp  open  msrpc
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+1025/tcp open  NFS-or-IIS
+1026/tcp open  LSA-or-nterm
+1027/tcp open  IIS
+1054/tcp open  brvread
+1070/tcp open  gmrupdateserv
+2000/tcp open  cisco-sccp
+3389/tcp open  ms-wbt-server
+4000/tcp open  remoteanything
+
+Nmap scan report for bandev-02.ad.stetson.edu (10.50.10.15)
+Host is up (0.000072s latency).
+Not shown: 719 closed ports, 271 filtered ports
+PORT     STATE SERVICE
+135/tcp  open  msrpc
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+1025/tcp open  NFS-or-IIS
+1026/tcp open  LSA-or-nterm
+1027/tcp open  IIS
+1057/tcp open  startron
+2000/tcp open  cisco-sccp
+3389/tcp open  ms-wbt-server
+5060/tcp open  sip
+
+Nmap scan report for 10.50.10.29
+Host is up (0.000094s latency).
+Not shown: 728 closed ports, 270 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.30
+Host is up (0.000054s latency).
+Not shown: 688 closed ports, 310 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.32
+Host is up (0.000065s latency).
+Not shown: 622 closed ports, 377 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for bandevform2.stetson.edu (10.50.10.34)
+Host is up (0.0093s latency).
+All 1000 scanned ports on bandevform2.stetson.edu (10.50.10.34) are closed (684) or filtered (316)
+
+Nmap scan report for suevimapsdev01.ad.stetson.edu (10.50.10.38)
+Host is up (0.017s latency).
+Not shown: 682 closed ports, 317 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for sudevmy01.stetson.edu (10.50.10.41)
+Host is up (0.000090s latency).
+Not shown: 644 closed ports, 355 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for bandevesm2.stetson.edu (10.50.10.44)
+Host is up (0.014s latency).
+Not shown: 684 closed ports, 315 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for DLBANDEVEL01.ad.stetson.edu (10.50.10.46)
+Host is up (0.010s latency).
+Not shown: 680 closed ports, 319 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevwebapp1.stetson.edu (10.50.10.48)
+Host is up (0.0076s latency).
+All 1000 scanned ports on dldevwebapp1.stetson.edu (10.50.10.48) are closed (682) or filtered (318)
+
+Nmap scan report for dldevwebapp2.stetson.edu (10.50.10.49)
+Host is up (0.020s latency).
+Not shown: 683 closed ports, 316 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.51
+Host is up (0.019s latency).
+All 1000 scanned ports on 10.50.10.51 are closed (683) or filtered (317)
+
+Nmap scan report for dldevcas501.stetson.edu (10.50.10.52)
+Host is up (0.011s latency).
+All 1000 scanned ports on dldevcas501.stetson.edu (10.50.10.52) are closed (684) or filtered (316)
+
+Nmap scan report for dldevcas502.stetson.edu (10.50.10.53)
+Host is up (0.016s latency).
+All 1000 scanned ports on dldevcas502.stetson.edu (10.50.10.53) are closed (684) or filtered (316)
+
+Nmap scan report for dldevbanxe9.stetson.edu (10.50.10.54)
+Host is up (0.019s latency).
+All 1000 scanned ports on dldevbanxe9.stetson.edu (10.50.10.54) are closed (681) or filtered (319)
+
+Nmap scan report for sudevmy.stetson.edu (10.50.10.55)
+Host is up (0.0095s latency).
+Not shown: 681 closed ports, 318 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for castest.stetson.edu (10.50.10.56)
+Host is up (0.019s latency).
+Not shown: 679 closed ports, 320 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevmystetson1.stetson.edu (10.50.10.57)
+Host is up (0.014s latency).
+Not shown: 679 closed ports, 320 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevmystetson2.stetson.edu (10.50.10.58)
+Host is up (0.0080s latency).
+Not shown: 682 closed ports, 317 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for devbanapp.stetson.edu (10.50.10.59)
+Host is up (0.021s latency).
+All 1000 scanned ports on devbanapp.stetson.edu (10.50.10.59) are closed (682) or filtered (318)
+
+Nmap scan report for 10.50.10.61
+Host is up (0.019s latency).
+Not shown: 972 closed ports
+PORT      STATE    SERVICE
+22/tcp    open     ssh
+306/tcp   filtered unknown
+513/tcp   filtered login
+1030/tcp  filtered iad1
+1061/tcp  filtered kiosk
+1174/tcp  filtered fnet-remote-ui
+2000/tcp  open     cisco-sccp
+2800/tcp  filtered acc-raid
+3404/tcp  filtered unknown
+3690/tcp  filtered svn
+5060/tcp  open     sip
+5102/tcp  filtered admeng
+5555/tcp  filtered freeciv
+6689/tcp  filtered tsa
+8180/tcp  filtered unknown
+8443/tcp  filtered https-alt
+8600/tcp  filtered asterix
+9000/tcp  filtered cslistener
+9040/tcp  filtered tor-trans
+10000/tcp filtered snet-sensor-mgmt
+10566/tcp filtered unknown
+23502/tcp filtered unknown
+32778/tcp filtered sometimes-rpc19
+44176/tcp filtered unknown
+49159/tcp filtered unknown
+49160/tcp filtered unknown
+55600/tcp filtered unknown
+65389/tcp filtered unknown
+
+Nmap scan report for 10.50.10.62
+Host is up (0.000058s latency).
+Not shown: 851 closed ports, 146 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.10.63
+Host is up (0.0071s latency).
+Not shown: 682 closed ports, 317 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.64
+Host is up (0.013s latency).
+All 1000 scanned ports on 10.50.10.64 are closed (682) or filtered (318)
+
+Nmap scan report for 10.50.10.65
+Host is up (0.0062s latency).
+Not shown: 685 closed ports, 314 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.93
+Host is up (0.021s latency).
+Not shown: 967 closed ports, 30 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.10.94
+Host is up (0.000034s latency).
+Not shown: 840 closed ports, 157 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.10.95
+Host is up (0.0061s latency).
+All 1000 scanned ports on 10.50.10.95 are closed (683) or filtered (317)
+
+Nmap scan report for 10.50.10.96
+Host is up (0.012s latency).
+Not shown: 679 closed ports, 320 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.125
+Host is up (0.020s latency).
+Not shown: 918 closed ports, 79 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.10.126
+Host is up (0.019s latency).
+Not shown: 921 closed ports, 76 filtered ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+2000/tcp open  cisco-sccp
+5060/tcp open  sip
+
+Nmap scan report for 10.50.10.127
+Host is up (0.022s latency).
+Not shown: 683 closed ports, 316 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.128
+Host is up (0.017s latency).
+Not shown: 682 closed ports, 317 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevparent1.stetson.edu (10.50.10.129)
+Host is up (0.013s latency).
+Not shown: 680 closed ports, 319 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevparent2.stetson.edu (10.50.10.130)
+Host is up (0.011s latency).
+Not shown: 685 closed ports, 314 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevbanapp1.stetson.edu (10.50.10.132)
+Host is up (0.010s latency).
+Not shown: 683 closed ports, 316 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevban9ss1.stetson.edu (10.50.10.135)
+Host is up (0.023s latency).
+Not shown: 683 closed ports, 316 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevdw1.stetson.edu (10.50.10.136)
+Host is up (0.012s latency).
+Not shown: 682 closed ports, 317 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for dldevdw2.stetson.edu (10.50.10.143)
+Host is up (0.024s latency).
+Not shown: 682 closed ports, 317 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for degreeworks-test.stetson.edu (10.50.10.150)
+Host is up (0.021s latency).
+Not shown: 684 closed ports, 315 filtered ports
+PORT     STATE SERVICE
+2000/tcp open  cisco-sccp
+
+Nmap scan report for 10.50.10.156
+Host is up (0.0093s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.10.157
+Host is up (0.0092s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.10.159
+Host is up (0.0090s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for suevimaps01.ad.stetson.edu (10.50.11.2)
+Host is up (0.0098s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for degreeworks2.stetson.edu (10.50.11.4)
+Host is up (0.0096s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for banesm2.stetson.edu (10.50.11.6)
+Host is up (0.0091s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlban9prod2.stetson.edu (10.50.11.7)
+Host is up (0.0089s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlwebapp1.stetson.edu (10.50.11.9)
+Host is up (0.0094s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlwebapp2.stetson.edu (10.50.11.10)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlmystetson1.stetson.edu (10.50.11.14)
+Host is up (0.0096s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlmystetson2.stetson.edu (10.50.11.15)
+Host is up (0.015s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlparent1.stetson.edu (10.50.11.16)
+Host is up (0.012s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlparent2.stetson.edu (10.50.11.17)
+Host is up (0.0089s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.18
+Host is up (0.0036s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlban9ss1.stetson.edu (10.50.11.19)
+Host is up (0.0086s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlsorry.stetson.edu (10.50.11.22)
+Host is up (0.0090s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlcas501.stetson.edu (10.50.11.23)
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlcas502.stetson.edu (10.50.11.24)
+Host is up (0.012s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for banform4.ad.stetson.edu (10.50.11.25)
+Host is up (0.0086s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlcas.stetson.edu (10.50.11.26)
+Host is up (0.0080s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlban9prod1.stetson.edu (10.50.11.27)
+Host is up (0.0096s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlban9pprd1.stetson.edu (10.50.11.28)
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.29
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.30
+Host is up (0.0096s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.32
+Host is up (0.0094s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.33
+Host is up (0.013s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.61
+Host is up (0.013s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.62
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.63
+Host is up (0.0084s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.11.97
+Host is up (0.0074s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.1
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlwsus02.ad.stetson.edu (10.50.12.2)
+Host is up (0.016s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlclm.ad.stetson.edu (10.50.12.3)
+Host is up (0.012s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for supcoipmgt.ad.stetson.edu (10.50.12.4)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlapp30.ad.stetson.edu (10.50.12.6)
+Host is up (0.0092s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlseccenter.stetson.edu (10.50.12.8)
+Host is up (0.0093s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.9
+Host is up (0.0043s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlvs6file.ad.stetson.edu (10.50.12.10)
+Host is up (0.0087s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlkeysystems01.ad.stetson.edu (10.50.12.11)
+Host is up (0.0083s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for *.gitpages.stetson.edu (10.50.12.15)
+Host is up (0.0087s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.16
+Host is up (0.012s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.17
+Host is up (0.0085s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlairwave.ad.stetson.edu (10.50.12.20)
+Host is up (0.0075s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.21
+Host is up (0.0097s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for my.stetson.edu (10.50.12.28)
+Host is up (0.012s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for ssb.stetson.edu (10.50.12.31)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.32
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for cas.stetson.edu (10.50.12.33)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlhighres.stetson.edu (10.50.12.35)
+Host is up (0.0058s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlfortianalyzer.ad.stetson.edu (10.50.12.41)
+Host is up (0.014s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlmedia01.ad.stetson.edu (10.50.12.42)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for casdev.ad.stetson.edu (10.50.12.46)
+Host is up (0.0091s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlapp130.ad.stetson.edu (10.50.12.52)
+Host is up (0.0089s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for banner-test.stetson.edu (10.50.12.53)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.55
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlinsight02.stetson.edu (10.50.12.57)
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlex01.ad.stetson.edu (10.50.12.58)
+Host is up (0.0099s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for 10.50.12.59
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlviewvc01.ad.stetson.edu (10.50.12.60)
+Host is up (0.010s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlviewmgr01.ad.stetson.edu (10.50.12.63)
+Host is up (0.0080s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlviewmgr02.stetson.edu (10.50.12.64)
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlviewextmgr01.ad.stetson.edu (10.50.12.65)
+Host is up (0.0094s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlviewextmgr02.ad.stetson.edu (10.50.12.66)
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+
+Nmap scan report for dlview.stetson.edu (10.50.12.70)
+Host is up (0.011s latency).
+Not shown: 994 closed ports
+PORT    STATE    SERVICE
+21/tcp  filtered ftp
+22/tcp  filtered ssh
+80/tcp  filtered http
+443/tcp filtered https
+587/tcp filtered submission
+993/tcp filtered imaps
+

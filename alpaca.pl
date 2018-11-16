@@ -1,4 +1,5 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
+:- [addons].
 
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
@@ -303,6 +304,9 @@ listVals([], "").
 listVals([Val|Vals], String) :-
 	listVals(Vals, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
+listVals(Predicate, String) :-
+	call(Predicate, Output),
+	format(atom(String), "~t~4|- ~s~n", [Output]).
 
 % Creates ansible/playbook.yml file
 % Starts vagrant to generate range

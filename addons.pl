@@ -101,8 +101,8 @@ generateUsername(Username) :-
 	Username = Elem.
 
 % generates a password, pulling letters from a dictionary
-generatePasswordOfLength(Password, Length) :-
-	passwords(Passwords),
+generatePasswordOfLength(Length, Password) :-
+  passwords(Passwords),
 	generateFromList(Passwords, Length, Output),
 	atom_chars(GenPwd, Output),
 	Password = GenPwd.
