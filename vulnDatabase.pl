@@ -9,32 +9,24 @@ vuln('open-ftp', [open_ports], [ftp_server], [ftp-[]]).
 vuln('directory-traversal', [ftp_server], [user_list], []).
 % Password: secret
 vuln('login-root(brute-force)', [ftp_server], [server_access_root],
-        [ftp-[root_password-(only, ["'$6$pcWmIiBJypefToKL$OgKL0uQx43wxEf9RkeaOFGkyRJvmJzlj0Farr6to0lLmkMiiG7PPKKvUKky1W0b2LBx93p/EVF2dss79E18J4/'"])]]).
+        [ftp-[root_password-(only, generatePasswordOfLength(15))]]).
 
 % == SSH ==
 vuln('open-ssh', [open_ports], [ssh_server], []).
 
 % Password: qwerty
 vuln('login-root(brute-force)', [ssh_server], [server_access_root],
-        [ssh-[root_password-(only, ["'$6$ugnivWA.s5k8bbgi$0zQz2ILZIFmKpCNr5RvVzFn6pYcY7IGZTYr5A3kLRMSrEuOuXrTmw2uhZUU8NAaAxA1Ma9wWHMh2PCT4jjYj20'"])]]).
+        [ssh-[root_password-(only, generatePasswordOfLength(15))]]).
 
 % Password: qwerty
 vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, ["'$6$ugnivWA.s5k8bbgi$0zQz2ILZIFmKpCNr5RvVzFn6pYcY7IGZTYr5A3kLRMSrEuOuXrTmw2uhZUU8NAaAxA1Ma9wWHMh2PCT4jjYj20'"])]]).
-
-% Password: password
-vuln('login-user(brute-force)', [ssh_server, user_list], [server_access_user],
-        [ssh-[users-(exists, [example]),
-              passwords-(exists, ["'$6$zXfK0cjCjTOYGk/t$U1DcfcpU2FQnaT5f/RfRHzRpq.va/d.YuDj7HcNW.B87yhaJgPtuik4CWlWa7drm9oGhZ941OXAtSF7CzXIgP1'"])]]).
-vuln('login-user(credentials)', [ssh_server, user_list, passwords], [server_access_user],
-        [ssh-[users-(exists, [example]),
-              passwords-(exists, ["'$6$zXfK0cjCjTOYGk/t$U1DcfcpU2FQnaT5f/RfRHzRpq.va/d.YuDj7HcNW.B87yhaJgPtuik4CWlWa7drm9oGhZ941OXAtSF7CzXIgP1'"])]]).
+        [ssh-[root_password-(only, generatePasswordOfLength(15)])]]).
 
 vuln('crack-hashes', [hashed_passwords], [passwords], []).
 
 % Password: 123123
 vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, ["'$6$XFCpeL8iXtL4MYOx$aDRdDFz941M3tsOHmQWEHicpzotdYQXXY3/eagI5uIRii.moOaKQPv93z6e6uC.9p44PjgVniy9IH1bA.Q0/W.'"])]]).
+        [ssh-[root_password-(only, generatePasswordOfLength(15))]]).
 
 % == Web ==
 vuln('open-web', [open_ports], [port_80], []).
@@ -65,7 +57,7 @@ vuln('crack-hashes', [hashed_passwords], [passwords], []).
 
 % Password: 123456789
 vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, ["'$6$Rt0CznBsC/VVsFNT$zIIU0FjskC3QTdWFWro2x1xaQ/BVLJ3d0UKtkw07XPGCQQVVRj5B8kvYe3CSJV.mChqIZ6jKvg.q0CdXuHSzb.'"])]]).
+        [ssh-[root_password-(only, generatePasswordOfLength(15))]]).
 
 vuln('directory-traversal', [web_access], [bypass_auth],
         [php-[git_repo-(only, ['alpaca_traversal']),
@@ -73,6 +65,11 @@ vuln('directory-traversal', [web_access], [bypass_auth],
         mysql-[db-(exists, ['alpaca_traversal']),
                sql_files-(exists, ['accounts.sql'])]]).
 vuln('bypass-authentication(admin)', [bypass_auth], [web_admin_access], []).
+
+passwords(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+          'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4',
+          '5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%' ,'^', '&', '*', '(', ')']).
 
 %vuln('remote_code_execution', [web_admin_access], [remote_code_execution], []).
 %vuln('directory-traversal', [web_server], [remote_code_execution], []).

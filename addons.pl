@@ -35,7 +35,7 @@ createLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Name) :-
 	getConfigs([Lattice], Name, 1).
 
 findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice) :-
-	allPaths(Goal, InitialState, Lattices),
+	createAllLatticesFromIGS(Goal, InitialState, Lattices),
 	calculateLatticeComplexity(Lattices, Sums),
 	matchBoundedConstraint(Sums, Lower, Upper, Elem),
 	indexOf(Sums, Elem, Index),
@@ -59,10 +59,10 @@ indexOf([_|Tail], Element, Index):-
 % create a vulnerability lattice, constraining for
 % a specific Vulnerability
 createLatticeWithVulnIGS(Goal, InitialState, Name, Vuln) :-
-	allPaths(Goal, InitialState, Lattices),
+	createAllLatticesFromIGS(Goal, InitialState, Lattices),
 	checkVulnLatticesForVuln(Lattices, Vuln, Lattice),
 	createLatticeDirectories(Name, 1, 1),
-	generateLatticeInDirectory([Lattice], Name),
+	generatePNGFromDotInDirectory([Lattice], Name),
 	getConfigs([Lattice], Name, 1).
 
 checkVulnLatticesForVuln([Lattice|_], Vuln, LatticeR) :-
