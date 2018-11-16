@@ -1,5 +1,6 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
 %:- use_module(library(archive)).
+
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
 */
@@ -174,6 +175,16 @@ createLatticeDirectories(Name, Num, Length) :-
 generatePNGFromLattices([], _).
 generatePNGFromLattices(Lattices, FileName) :-
 	generatePNGFromLattices(Lattices, FileName, 1).
+% Generates all graphs from list of lattices with FileName
+% This predicate
+% Example: generateAllGraphs([server_access_root], [], 'server_access_root')
+generateAllGraphs(Goal, InitialState, FileName) :-
+	allPaths(Goal, InitialState, Lattices),
+	generateAllLattices(Lattices, FileName).
+
+generateAllLattices([], _).
+generateAllLattices(Lattices, FileName) :-
+	generateAllLattices(Lattices, FileName, 1).
 
 generatePNGFromLattices([], _, _).
 generatePNGFromLattices([Lattice|Lattices], FileName, Num) :-
@@ -208,7 +219,7 @@ appendVulns([], []).
 appendVulns([(_, Vulns)|RestPaths], [Vulns|Result]) :-
 	appendVulns(RestPaths, Result).
 
-% HEADER [shape="none" label="This is the header"];  
+% HEADER [shape="none" label="This is the header"];
 % Calculates Complexities of all lattices in list of lattices and gives back list of complexities
 % Index of complexity corresponds to index of lattice
 calculateLatticeComplexity([], []).
@@ -300,7 +311,7 @@ createPlaybook(Roles, Name, Num) :-
 	format(atom(DirectoryName), "~s~s/playbook.yml", [Name, NumString]),
 	open(DirectoryName, write, Stream),
 	%open('playbook.yml', write, Stream),
-	format(atom(String), 
+	format(atom(String),
 		"---~n- hosts: all~n~t~2|become: true~n~t~2|vars_files:~n~t~4|- vars/all.yml~n~t~2|roles:~n~s", [Roles]),
 	write(Stream, String),
 	close(Stream).
@@ -310,7 +321,7 @@ formatRoles([Role-_|Configs], String) :-
 	formatRoles(Configs, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Role, String1]).
 
-createVars(Vars, Name, Num) :- 
+createVars(Vars, Name, Num) :-
 	number_string(Num, NumString),
 	format(atom(DirectoryName), "~s~s/vars/all.yml", [Name, NumString]),
 	open(DirectoryName, write, Stream),
@@ -337,6 +348,9 @@ listVals([], "").
 listVals([Val|Vals], String) :-
 	listVals(Vals, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
+listVals(Predicate, String) :-
+	call(Predicate, Output),
+	format(atom(String), "~t~4|- ~s~n", [Output]).
 
 % work backwards from goal to initial
 achieveGoal([], _, [], [], []).
@@ -397,3 +411,111 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     mergeConfig(K, PriorVals, ThisVals, PriorConfig, NewVals),
     NewConfig = [K-NewVals|TmpConfig],
     sort(NewConfig, SortedConfig).
+
+% MySQL Commands
+query(USER, PWD, DB, QUERY, Columns, Rows) :-
+	atom_concat('-p', PWD, PPWD),
+	process_create(path(mysql), ['-u', USER, PPWD, '-D', DB, '-e', QUERY], [stdout(pipe(Out)),stderr(std)]),
+	read_record(Out, Columns),
+	read_records(Out, Rows).
+
+read_record(Out, Fields) :-
+	read_line_to_codes(Out, Codes),
+	Codes \= end_of_file,
+	atom_codes(Line, Codes),
+	atomic_list_concat(Fields, '\t', Line).
+
+read_records(Out, [Record|Rs]) :-
+	read_record(Out, Record),
+	!, read_records(Out, Rs).
+read_records(Out, []) :-
+	close(Out).
+
+% convert MySQL table into ProLog knowledge base
+capture_table(USER, PWD, DB, QUERY, Functor) :-
+	query(USER, PWD, DB, QUERY, _Columns, Rows),
+	maplist(capture_table(Functor), Rows).
+
+capture_table(Functor, Row) :-
+	Clause =.. [Functor|Row],
+	assertz(Clause).
+
+% creates a lattice w/ complexity specified in the specific bounds.
+createLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Name) :-
+	findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice),
+	createLatticeDirectories(Name, 1, 1),
+	generateLatticeInDirectory([Lattice], Name),
+	getConfigs([Lattice], Name, 1).
+
+findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice) :-
+	createAllLatticesFromIGS(Goal, InitialState, Lattices),
+	calculateLatticeComplexity(Lattices, Sums),
+	matchBoundedConstraint(Sums, Lower, Upper, Elem),
+	indexOf(Sums, Elem, Index),
+	nth0(Index, Lattices, Lattice).
+
+matchBoundedConstraint([L|_], Lower, Upper, Index) :-
+	L =< Upper,
+	L >= Lower,
+	Index = L,
+	!.
+
+matchBoundedConstraint([_|O], Lower, Upper, Index) :-
+	matchBoundedConstraint(O, Lower, Upper, Index).
+
+indexOf([Element|_], Element, 0):- !.
+indexOf([_|Tail], Element, Index):-
+	indexOf(Tail, Element, Index1),
+	!,
+	Index is Index1+1.
+
+% create a vulnerability lattice, constraining for
+% a specific Vulnerability
+createLatticeWithVulnIGS(Goal, InitialState, Name, Vuln) :-
+	createAllLatticesFromIGS(Goal, InitialState, Lattices),
+	checkVulnLatticesForVuln(Lattices, Vuln, Lattice),
+	createLatticeDirectories(Name, 1, 1),
+	generatePNGFromDotInDirectory([Lattice], Name),
+	getConfigs([Lattice], Name, 1).
+
+checkVulnLatticesForVuln([Lattice|_], Vuln, LatticeR) :-
+	checkVulnAndConfig(Lattice, Vuln),
+	LatticeR = Lattice.
+
+checkVulnLatticesForVuln([_|Rest], Vuln, LatticeR) :-
+	checkVulnLatticesForVuln(Rest, Vuln, LatticeR).
+
+checkVulnAndConfig([(Config, Vulns)|_], Vuln) :-
+	checkVulns(Vulns, Vuln).
+
+checkVulnAndConfig([_|Rest], Vuln) :-
+	checkVulnAndConfig(Rest, Vuln).
+
+checkVulns([Vulns|_], Vuln) :-
+	with_output_to(atom(Ato), write(Vulns)),
+	sub_atom(Ato, B, L, A, Vuln).
+
+checkVulns([_|Rest], Vuln) :-
+	checkVulns(Rest, Vuln).
+
+% generates an atom from a list of atoms, at random
+generateFromList(List, Length, Output) :-
+	length(Output, Length),
+	length(List, N1),
+	maplist(random_char_generate(List, N1), Output).
+
+random_char_generate(List, N, Char):-  random(0, N, X), nth0(X, List, Char).
+
+% generates a username from username list, defined in vulnDatabase.pl
+generateUsername(Username) :-
+	usernames(Usernames),
+	generateFromList(Usernames, 1, Output),
+	nth0(0, Output, Elem),
+	Username = Elem.
+
+% generates a password, pulling letters from a dictionary
+generatePasswordOfLength(Length, Password) :-
+  passwords(Passwords),
+	generateFromList(Passwords, Length, Output),
+	atom_chars(GenPwd, Output),
+	Password = GenPwd.
