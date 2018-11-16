@@ -8,16 +8,18 @@
 :- use_module(library(http/http_error)).
 :- use_module(library(http/http_log)).
 :- use_module(library(http/http_client)).
-
-
+:- use_module(library(http/http_unix_daemon)).
+:- initialization(run, main).
+:- http_handler('/alpaca', handle, [time_limit(30)]).
 :- [alpaca].
+
+run :-
+http_daemon([port(10333)]).
 
 validPredicates([graphAllVulns, createRangeFromIGS,
                  createStartRangeFromIGS, createAllLatticesFromIGS]).
 
 server(Port) :- http_server(http_dispatch, [port(Port)]).
-
-:- http_handler('/alpaca', handle, [time_limit(30)]).
 
 read_term_from_atom([],[]). % need special case for empty list
 read_term_from_atom(A,T) :- read_term_from_atom(A,T,[]).
