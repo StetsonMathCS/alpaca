@@ -1,4 +1,5 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
+:- [addons].
 
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
@@ -135,7 +136,7 @@ createLatticeDirectories(Name, Num, Length) :-
 	createLatticeDirectories(Name, NewNum, Length).
 
 % Generates all graphs from list of lattices with FileName
-% This predicate 
+% This predicate
 % Example: generateAllGraphs([server_access_root], [], 'server_access_root')
 generateAllGraphs(Goal, InitialState, FileName) :-
 	allPaths(Goal, InitialState, Lattices),
@@ -176,7 +177,7 @@ appendVulns([], []).
 appendVulns([(_, Vulns)|RestPaths], [Vulns|Result]) :-
 	appendVulns(RestPaths, Result).
 
-% HEADER [shape="none" label="This is the header"];  
+% HEADER [shape="none" label="This is the header"];
 % Calculates Complexities of all lattices in list of lattices and gives back list of complexities
 % Index of complexity corresponds to index of lattice
 calculateLatticeComplexity([], []).
@@ -266,7 +267,7 @@ createPlaybook(Roles, Name, Num) :-
 	format(atom(DirectoryName), "~s~s/playbook.yml", [Name, NumString]),
 	open(DirectoryName, write, Stream),
 	%open('playbook.yml', write, Stream),
-	format(atom(String), 
+	format(atom(String),
 		"---~n- hosts: all~n~t~2|become: true~n~t~2|vars_files:~n~t~4|- vars/all.yml~n~t~2|roles:~n~s", [Roles]),
 	write(Stream, String),
 	close(Stream).
@@ -276,7 +277,7 @@ formatRoles([Role-_|Configs], String) :-
 	formatRoles(Configs, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Role, String1]).
 
-createVars(Vars, Name, Num) :- 
+createVars(Vars, Name, Num) :-
 	number_string(Num, NumString),
 	format(atom(DirectoryName), "~s~s/vars/all.yml", [Name, NumString]),
 	open(DirectoryName, write, Stream),
@@ -303,6 +304,9 @@ listVals([], "").
 listVals([Val|Vals], String) :-
 	listVals(Vals, String1),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
+listVals(Predicate, String) :-
+	call(Predicate, Output),
+	format(atom(String), "~t~4|- ~s~n", [Output]).
 
 % Creates ansible/playbook.yml file
 % Starts vagrant to generate range
