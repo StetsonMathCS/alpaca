@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
@@ -55,8 +57,10 @@ public class WebController {
 	}
 
 	@GetMapping("/builder")
-	public String builder() {
-		return "create";
+	public ModelAndView builder() {
+		ModelAndView model = new ModelAndView("create");
+//		model.addObject("msg", listOfVulns());
+		return model;
 	}
 
 	@GetMapping("/page1")
@@ -90,39 +94,21 @@ public class WebController {
 	}
 
 	@PostMapping(value = "/postBuild")
-	public ModelAndView submitBuilder(@RequestParam("vuln") String v1, @RequestParam("name") String name, @RequestParam("goal") String goal) throws JSONException, UnirestException {
+	public ModelAndView submitBuilder(@RequestParam("name") String name, @RequestParam("goal") String goal) throws JSONException, UnirestException {
 		ModelAndView model = new ModelAndView("postData");
-		String state = v1;
-		//String v1 = "open-ssh";
-		model.addObject("msg", "POST DATA: " + state);
+		model.addObject("msg", "POST DATA: " + goal);
 		HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
 				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
 		StringWriter reqBodyWriter = new StringWriter();
 		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
 		reqBodyJSONWriter.value("createRangeFromIGS");
 		reqBodyJSONWriter.value("["+goal+"]");
-		reqBodyJSONWriter.value("[" + state + "]");
-		//reqBodyJSONWriter.value("[]");
+		reqBodyJSONWriter.value("[]");
 		reqBodyJSONWriter.value(name);
 		reqBodyJSONWriter.endArray();
 		System.out.println(reqBodyWriter.toString());
 		JSONArray alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody().getArray();
 		System.out.print(alpaca_resp);
-//		
-		
-//		HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
-//				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
-//		StringWriter reqBodyWriter = new StringWriter();
-//		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
-//		reqBodyJSONWriter.value("createStartRangeFromIGS");
-//		reqBodyJSONWriter.value("[server_access_root]");
-//		reqBodyJSONWriter.value("[" + state + "]");
-//		reqBodyJSONWriter.value(name);
-//		reqBodyJSONWriter.endArray();
-//		System.out.println(reqBodyWriter.toString());
-//		JSONArray alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody().getArray();
-//		System.out.print(alpaca_resp);
-		
 		return model;
 	}
 
@@ -215,6 +201,22 @@ public class WebController {
 		responseOutputStream.write(captchaChallengeAsJpeg);
 		responseOutputStream.flush();
 		responseOutputStream.close();
+	}
+	private List<String> listOfVulns() {
+		String vuln = "List: \n";
+		int i = 0;
+		int j = 0;
+		List<String> list = new ArrayList();
+		while (i < vulnsRepository.count()) {
+			if (vulnsRepository.findById((j)).isPresent()) {
+				vuln += vulnsRepository.findById((j)).get().getVuln() + "("
+						+ vulnsRepository.findById((j)).get().getId() + ")\n";
+				list.add(vulnsRepository.findById((j)).get().getVuln());
+				i++;
+			}
+			j++;
+		}
+		return list;
 	}
 
 }

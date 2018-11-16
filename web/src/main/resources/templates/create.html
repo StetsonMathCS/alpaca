@@ -23,11 +23,28 @@
 	</div>
 	<form action="postBuild" method="post">
 		<div class="listWrapper">
-			<u1> <input type="text" name="vuln" placeholder="state1"> 
+			<u1> <select name="goal" multiple>
+		<option value="discover_host">discover_host</option>
+		<option value="open_ports">open_ports</option>
+		<option value="ftp_server">ftp_server</option>
+		<option value="user_list">user_list</option>
+		<option value="server_access_root">server_access_root</option>
+		<option value="ssh_server">ssh_server</option>
+		<option value="passwords">passwords</option>
+		<option value="server_access_user">server_access_user</option>
+		<option value="hashed_passwords">hashed_passwords</option>
+		<option value="port_80">port_80</option>
+		<option value="web_access">web_access</option>
+		<option value="login_page">login_page</option>
+		<option value="web_admin_access">web_admin_access</option>
+		<option value="database_queries">database_queries</option>
+		<option value="bypass_auth">bypass_auth</option>
+	</select>
 			<input type="text" name="name" placeholder="name"> 
-			<input type="text" name="goal" placeholder="goal"> 
 		</div>
 		<input type="submit" name="submit">
+	
 	</form>
+	
 </body>
 </html>
