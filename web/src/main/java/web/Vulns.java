@@ -3,28 +3,28 @@ package web;
 import javax.persistence.*;
 
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name = "vulns")
+@Table(name = "states")
 public class Vulns {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+    private Integer states_id;
 
-    private String vuln;
+    private String states_name;
 
     public Integer getId() {
-        return id;
+        return states_id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.states_id = id;
     }
 
     public String getVuln() {
-        return vuln;
+        return states_name;
     }
 
     public void setVuln(String vuln) {
-        this.vuln = vuln;
+        this.states_name = vuln;
     }
 
 

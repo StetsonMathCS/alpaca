@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.StringWriter;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
@@ -11,6 +12,9 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Controller;
@@ -23,9 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-
-import web.UserRepository;
-import web.VulnsRepository;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
 @Controller
 public class WebController {
@@ -44,8 +48,10 @@ public class WebController {
 	private String captcha;
 
 	@GetMapping("/home")
-	public String home() {
-		return "index";
+	public ModelAndView home() {
+		ModelAndView model = new ModelAndView("index");
+		model.addObject("msg", vulnsRepository.count());
+		return model;
 	}
 
 	@GetMapping("/builder")
@@ -54,7 +60,19 @@ public class WebController {
 	}
 
 	@GetMapping("/page1")
-	public String page() {
+	public String page() throws UnirestException, JSONException {
+		HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
+				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
+		StringWriter reqBodyWriter = new StringWriter();
+		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
+		reqBodyJSONWriter.value("createStartRangeFromIGS");
+		reqBodyJSONWriter.value("[server_access_root]");
+		reqBodyJSONWriter.value("[open-ssh]");
+		reqBodyJSONWriter.value("test01");
+		reqBodyJSONWriter.endArray();
+		System.out.println(reqBodyWriter.toString());
+		JSONArray alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody().getArray();
+		System.out.print(alpaca_resp);
 		return "page1";
 	}
 
@@ -72,9 +90,39 @@ public class WebController {
 	}
 
 	@PostMapping(value = "/postBuild")
-	public ModelAndView submitBuilder(@RequestParam("vuln") String v1) {
+	public ModelAndView submitBuilder(@RequestParam("vuln") String v1, @RequestParam("name") String name, @RequestParam("goal") String goal) throws JSONException, UnirestException {
 		ModelAndView model = new ModelAndView("postData");
-		model.addObject("msg", "POST DATA: " + v1);
+		String state = v1;
+		//String v1 = "open-ssh";
+		model.addObject("msg", "POST DATA: " + state);
+		HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
+				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
+		StringWriter reqBodyWriter = new StringWriter();
+		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
+		reqBodyJSONWriter.value("createRangeFromIGS");
+		reqBodyJSONWriter.value("["+goal+"]");
+		reqBodyJSONWriter.value("[" + state + "]");
+		//reqBodyJSONWriter.value("[]");
+		reqBodyJSONWriter.value(name);
+		reqBodyJSONWriter.endArray();
+		System.out.println(reqBodyWriter.toString());
+		JSONArray alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody().getArray();
+		System.out.print(alpaca_resp);
+//		
+		
+//		HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
+//				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
+//		StringWriter reqBodyWriter = new StringWriter();
+//		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
+//		reqBodyJSONWriter.value("createStartRangeFromIGS");
+//		reqBodyJSONWriter.value("[server_access_root]");
+//		reqBodyJSONWriter.value("[" + state + "]");
+//		reqBodyJSONWriter.value(name);
+//		reqBodyJSONWriter.endArray();
+//		System.out.println(reqBodyWriter.toString());
+//		JSONArray alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody().getArray();
+//		System.out.print(alpaca_resp);
+		
 		return model;
 	}
 
@@ -103,7 +151,6 @@ public class WebController {
 
 		String u = user;
 		String p = pass;
-		String c = tCap;
 		if (tCap.compareTo(captcha) == 0) {
 			UserService.add(u, p);
 			authService.add(u);

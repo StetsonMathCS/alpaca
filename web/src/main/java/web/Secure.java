@@ -36,6 +36,7 @@ public class Secure extends WebSecurityConfigurerAdapter{
 		.antMatchers(HttpMethod.POST,"/postLog*").permitAll()
 		.antMatchers(HttpMethod.GET,"/postData*").permitAll()
 		.antMatchers(HttpMethod.POST,"/page2*").permitAll()
+		.antMatchers(HttpMethod.GET,"/page2*").permitAll()
 		.antMatchers("/").permitAll()
 		.and()
 		.httpBasic();
