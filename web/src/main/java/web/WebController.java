@@ -18,10 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +34,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
 @Controller
-public class WebController {
+public class WebController implements ErrorController{
 
 	@Autowired
 	private UserService UserService;
@@ -54,6 +54,18 @@ public class WebController {
 		ModelAndView model = new ModelAndView("index");
 		model.addObject("msg", vulnsRepository.count());
 		return model;
+	}
+	
+	@GetMapping("/error")
+	public ModelAndView error() {
+		ModelAndView model = new ModelAndView("index");
+		model.addObject("msg", vulnsRepository.count());
+		return model;
+	}
+	
+	@Override
+	public String getErrorPath() {
+		return "index";
 	}
 
 	@GetMapping("/builder")
