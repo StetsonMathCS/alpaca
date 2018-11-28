@@ -2,4 +2,4 @@
 *.properties
 config.properties
 production
-production.properties
+*production.properties
