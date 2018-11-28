@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Page2</title>
+<title>Cyber Range Builder</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -12,39 +12,38 @@
 </head>
 <font size="+5">CYBER RANGE BUILDER</font>
 <body>
-	<div>
 	<nav class="navbar navbar-inverse">
-	<ul class="nav navbar-nav">
-		<li><a href ="download">Download</a></li>
-		<li><a href = "vulns">Vulnerability</a></li>
-		<li><a href = "home">Home</a></li>
-	</ul>
+		<ul class="nav navbar-nav">
+			<li><a href="download">Download</a></li>
+			<li><a href="vulns">Vulnerability</a></li>
+			<li><a href="home">Home</a></li>
+		</ul>
 	</nav>
-	</div>
+
+
 	<form action="postBuild" method="post">
-		<div class="listWrapper">
-			<u1> <select name="goal" multiple>
-		<option value="discover_host">discover_host</option>
-		<option value="open_ports">open_ports</option>
-		<option value="ftp_server">ftp_server</option>
-		<option value="user_list">user_list</option>
-		<option value="server_access_root">server_access_root</option>
-		<option value="ssh_server">ssh_server</option>
-		<option value="passwords">passwords</option>
-		<option value="server_access_user">server_access_user</option>
-		<option value="hashed_passwords">hashed_passwords</option>
-		<option value="port_80">port_80</option>
-		<option value="web_access">web_access</option>
-		<option value="login_page">login_page</option>
-		<option value="web_admin_access">web_admin_access</option>
-		<option value="database_queries">database_queries</option>
-		<option value="bypass_auth">bypass_auth</option>
-	</select>
-			<input type="text" name="name" placeholder="name"> 
+		<select id="test1" name="goal" multiple>
+
+		</select> 
+		<div><input type="text" name="name" placeholder="name"> 
 		</div>
+		
+		<div>
+		<select name="privacy">
+		<option value="PRIVATE">Private</option>
+		<option value="PUBLIC">Public</option>
+		</select>
+		</div>
+		
 		<input type="submit" name="submit">
-	
 	</form>
-	
+	<script th:inline="javascript">
+			var message =/*[[${msg}]]*/;
+			var options="";
+			for(var i = 0; i < message.length; i++){
+				options+="<option value='"+message[i]+"'>"+message[i]+"</option>"
+			}
+			document.getElementById('test1').innerHTML=options;
+	</script>
 </body>
 </html>

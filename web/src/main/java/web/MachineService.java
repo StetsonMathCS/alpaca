@@ -6,15 +6,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class MachineService {
 	@Autowired
-	private UserRepository UserRepository;
+	private MachineRepo UserRepository;
 
-	public void add(String user, String pass) {
-		User n = new User();
+	public void add(String user, String privacy, String owner) {
+		Machine n = new Machine();
 		n.setName(user);
-		n.setPassword(new BCryptPasswordEncoder().encode(pass));
-		n.setTrue();
+		n.setPrivacy(privacy);
+		n.setOwner(owner);
 		UserRepository.save(n);
 		
 	}
