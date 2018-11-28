@@ -142,7 +142,7 @@ public class WebController implements ErrorController {
 		ModelAndView model = new ModelAndView("index");
 	
 		//model.addObject("msg", "POST DATA: " + goal);
-		HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
+		HttpRequestWithBody alpacaReq = Unirest.post("http://0.0.0.0:10333/alpaca")
 				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
 		StringWriter reqBodyWriter = new StringWriter();
 		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
