@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
@@ -150,7 +152,7 @@ public class WebController implements ErrorController {
 		reqBodyJSONWriter.value(name);
 		reqBodyJSONWriter.endArray();
 		System.out.println(reqBodyWriter.toString());
-		JSONArray alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody().getArray();
+		JsonNode alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody(); //.getArray();
 		System.out.print(alpaca_resp);
 		machService.add(name + "1", privacy, principal.getName());
 		
