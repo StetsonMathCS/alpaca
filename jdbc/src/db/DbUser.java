@@ -23,7 +23,7 @@ public class DbUser {
          
          try {
 
-             input = new FileInputStream("config.properties");
+             input = new FileInputStream("production.properties");
 
              // load a properties file
              prop.load(input);
