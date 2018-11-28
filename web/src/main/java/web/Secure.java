@@ -43,14 +43,14 @@ public class Secure extends WebSecurityConfigurerAdapter{
 		.and()
 		.httpBasic();
 		
-		http
-		.httpBasic()
-		.and()
-		.logout().clearAuthentication(true)
-		.logoutSuccessUrl("/")
-		.deleteCookies("JSESSIONID")
-		.invalidateHttpSession(true)
-		.and();
+//		http
+//		.httpBasic()
+//		.and()
+//		.logout().clearAuthentication(true)
+//		.logoutSuccessUrl("/")
+//		.deleteCookies("JSESSIONID")
+//		.invalidateHttpSession(true)
+//		.and();
 		
 		http.csrf().disable();
 		
