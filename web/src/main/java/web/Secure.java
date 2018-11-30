@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 // database follows https://docs.spring.io/spring-security/site/docs/3.0.x/reference/appendix-schema.html
@@ -31,6 +32,7 @@ public class Secure extends WebSecurityConfigurerAdapter{
 		.antMatchers("/home*").permitAll()
 		.antMatchers("/vulns*").hasRole("USER")
 		.antMatchers("/builder*").hasRole("USER")
+		.antMatchers(HttpMethod.POST, "/postBuild").hasRole("USER")
 		.antMatchers("/login*").permitAll()
 		.antMatchers(HttpMethod.POST, "/register").permitAll()
 		.antMatchers(HttpMethod.POST,"/postLog*").permitAll()
@@ -41,6 +43,14 @@ public class Secure extends WebSecurityConfigurerAdapter{
 		.and()
 		.httpBasic();
 		
+//		http
+//		.httpBasic()
+//		.and()
+//		.logout().clearAuthentication(true)
+//		.logoutSuccessUrl("/")
+//		.deleteCookies("JSESSIONID")
+//		.invalidateHttpSession(true)
+//		.and();
 		
 		http.csrf().disable();
 		

@@ -116,8 +116,39 @@ public class DbUser {
             deleted = statement.executeUpdate("DELETE FROM vuln_post WHERE states_id = (SELECT states_id FROM states WHERE states_name = 'port_80');");
             System.out.println("\tVulnerabilities deleted: " + deleted);
             
-            
-            
+            // 30 nov milestones
+            System.out.println("9. List Git repositories that appear in a vulnerability.");
+          //select git repository url by finding the string between 'https' and 'git' in the config
+          rs = statement.executeQuery("select concat('https',(SELECT substring_index(substring_index(vuln_config, 'https', -1), '.git', 1) FROM vuln WHERE vuln_config LIKE '%https%' AND vuln_config LIKE '%git%'), '.git');");
+          while (rs.next()) {
+              //print out the answer
+              System.out.println("\tGit repository: " + rs.getString(1));
+          }
+
+          System.out.println("10. List pre states of the vulnerabilities that use sql injection.");
+          rs = statement.executeQuery("SELECT * FROM states WHERE states_id in (SELECT states_id FROM vuln_pre WHERE vuln_id = (SELECT vuln_id FROM vuln WHERE vuln_name = 'sql-injection'));");
+          while (rs.next()) {
+              System.out.println("\tID: " + rs.getInt(1) + ", Name: " + rs.getString(2) + ", Description: " + rs.getString(3));
+          }
+
+          System.out.println("11. List post states of the vulnerabilities that use sql injection.");
+          rs = statement.executeQuery("SELECT * FROM states WHERE states_id in (SELECT states_id FROM vuln_post WHERE vuln_id = (SELECT vuln_id FROM vuln WHERE vuln_name = 'sql-injection'));");
+          while (rs.next()) {
+              System.out.println("\tID: " + rs.getInt(1) + ", Name: " + rs.getString(2) + ", Description: " + rs.getString(3));
+          }
+
+          System.out.println("12. Show info of the vulnerability with the most pre states");
+          rs = statement.executeQuery("SELECT vuln_id, COUNT(*) AS cnt FROM vuln_pre GROUP BY vuln_id ORDER BY cnt DESC LIMIT 1;");
+          while (rs.next()) {
+              int id = rs.getInt(1);
+              Statement tmpStatement = connection.createStatement();
+              ResultSet tmpRs = tmpStatement.executeQuery("SELECT * FROM vuln WHERE vuln_id = " + id);
+              while (tmpRs.next()) {
+                  System.out.println("\tID: " + tmpRs.getInt(1) + ", Name: " + tmpRs.getString(2) + ", Description: " + tmpRs.getString(3) + ", Config: " + tmpRs.getString(4));
+              
+              }
+          }
+        
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
