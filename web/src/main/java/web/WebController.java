@@ -2,13 +2,27 @@ package web;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -30,8 +44,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
@@ -40,7 +56,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
-@Controller
+@RestController
 public class WebController implements ErrorController {
 
 	@Autowired
@@ -102,7 +118,7 @@ public class WebController implements ErrorController {
 			}
 			j++;
 		}
-		model.addObject("msg", list.toString());
+		model.addObject("msg", list);
 		return model;
 	}
 
@@ -115,14 +131,14 @@ public class WebController implements ErrorController {
 		List<String> list = new ArrayList();
 		while (i < machineRepo.count()) {
 			if (machineRepo.findById((j)).isPresent()) {
-				if (machineRepo.findById(j).get().getPrivacy().compareTo("PUBLIC")==0) {
+				if (machineRepo.findById(j).get().getPrivacy().compareTo("PUBLIC") == 0) {
 					list.add(machineRepo.findById((j)).get().getName());
 				}
 				i++;
 			}
 			j++;
 		}
-		model.addObject("msg",list.toString());
+		model.addObject("msg", list);
 		return model;
 	}
 
@@ -135,27 +151,33 @@ public class WebController implements ErrorController {
 
 	@PostMapping(value = "/postBuild")
 	public ModelAndView submitBuilder(@RequestParam("name") String name, @RequestParam("goal") String goal,
-			@RequestParam("privacy") String privacy, Principal principal) throws JSONException, UnirestException {
+			@RequestParam("privacy") String privacy, Principal principal, @RequestParam("goal") String goal2)
+			throws JSONException, UnirestException, IOException {
 		boolean check = StringUtils.containsAny(name, "!@#$%^&*()-=+{}[]|\":;''<>,.?/");
-	//	boolean check2 = StringUtils.containsAny(goal, "!@#$%^&*()-=+{}[]|\":;''<>.?/");
-	//	boolean check3 = StringUtils.containsAny(name, "!@#$%^&*()-=+{}[]|\":;''<>,.?/");
+		boolean check2 = StringUtils.containsAny(goal, "!@#$%^&*()-=+{}[]|\":;''<>.?/");
+		boolean check3 = StringUtils.containsAny(privacy, "!@#$%^&*()-=+{}[]|\":;''<>,.?/");
+		boolean check4 = StringUtils.containsAny(goal2, "!@#$%^&*()-=+{}[]|\":;''<>.?/");
 		ModelAndView model = new ModelAndView("index");
-	
-		//model.addObject("msg", "POST DATA: " + goal);
-		HttpRequestWithBody alpacaReq = Unirest.post("http://0.0.0.0:10333/alpaca")
-				.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
-		StringWriter reqBodyWriter = new StringWriter();
-		JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
-		reqBodyJSONWriter.value("createRangeFromIGS");
-		reqBodyJSONWriter.value("[" + goal + "]");
-		reqBodyJSONWriter.value("[]");
-		reqBodyJSONWriter.value(name);
-		reqBodyJSONWriter.endArray();
-		System.out.println(reqBodyWriter.toString());
-		JsonNode alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody(); //.getArray();
-		System.out.print(alpaca_resp);
-		machService.add(name + "1", privacy, principal.getName());
-		
+
+		// model.addObject("msg", "POST DATA: " + goal);
+		if (!check && !check2 && !check3 && !check4
+				&& ((privacy.compareTo("PUBLIC") == 0) || privacy.compareTo("PRIVATE") == 0)) {
+			HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10332/alpaca")
+					.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
+			StringWriter reqBodyWriter = new StringWriter();
+			JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
+			reqBodyJSONWriter.value("createRangeFromIGS");
+			reqBodyJSONWriter.value("[" + goal + "]");
+			reqBodyJSONWriter.value("[" + goal2 + "]");
+			reqBodyJSONWriter.value(name);
+			reqBodyJSONWriter.endArray();
+			System.out.println(reqBodyWriter.toString());
+			JsonNode alpaca_resp = alpacaReq.body(reqBodyWriter.toString()).asJson().getBody(); // .getArray();
+			System.out.print(alpaca_resp);
+			machService.add(name + "1", privacy, principal.getName());
+			zip2(name + "1");
+		}
+
 		return model;
 	}
 
@@ -175,8 +197,7 @@ public class WebController implements ErrorController {
 		String u = user;
 		String p = pass;
 		boolean check = StringUtils.containsAny(u, "!@#$%^&*()-=+{}[]|\":;''<>,.?/");
-		
-		
+
 		if (tCap.compareTo(captcha) == 0 && !listOfUsers().contains(u) && !check) {
 			UserService.add(u, p);
 			authService.add(u);
@@ -188,35 +209,38 @@ public class WebController implements ErrorController {
 		return model;
 	}
 
-	@GetMapping("/login")
-	public ModelAndView showLogin() {
-		ModelAndView model = new ModelAndView("login");
-		return model;
-	}
-
 	@GetMapping("/register")
 	public ModelAndView showRegister() {
 		ModelAndView model = new ModelAndView("register");
 		return model;
 	}
 
-	
-	
 	// using this page as reference
 	// https://www.oodlestechnologies.com/blogs/How-To-Download-A-File-Directly-From-URL-In-Spring-Boot
 	@GetMapping(value = "/download")
-	public InputStreamResource FileSystemResource(HttpServletResponse test) throws FileNotFoundException {
-		test.setContentType("application/txt");
-		test.setHeader("Content-Disposition", "attachment; filename=" + "test.txt");
-		InputStreamResource resource = new InputStreamResource(new FileInputStream("/home/greg/test.txt"));
-		return resource;
-	}
+	public InputStreamResource FileSystemResource2(@RequestParam("name") String name, HttpServletResponse resp,
+			Principal principal) throws IOException {
 
-//	@GetMapping("/all")
-//	public @ResponseBody Optional<User> getAllUsers() {
-//
-//		return userRepository.findById(1);
-//	}
+		boolean check = StringUtils.containsAny(name, "!@#$%^&*()-=+{}[]|\":;''<>,.?/");
+
+		if (!check) {
+			int id = getID(name, principal.getName());
+
+			if (machineRepo.findById(id).get().getOwner().compareTo(principal.getName()) == 0
+					|| machineRepo.findById(id).get().getPrivacy().compareTo("PUBLIC") == 0) {
+				resp.setContentType("application/zip");
+				resp.setHeader("Content-Disposition",
+						"attachment; filename=" + "\" " + machineRepo.findById(id).get().getName() + ".zip" + "\"");
+				InputStreamResource res = new InputStreamResource(new FileInputStream(
+						"/home/greg/oldApi/" + machineRepo.findById(id).get().getName() + ".zip"));
+				System.out.println(name);
+				return res;
+			} else {
+				return null;
+			}
+		}
+		return null;
+	}
 
 	@RequestMapping("/Register")
 	public void defaultKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
@@ -244,25 +268,11 @@ public class WebController implements ErrorController {
 		responseOutputStream.flush();
 		responseOutputStream.close();
 	}
-	
-	@GetMapping("/logout2")
-	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession(false);
-		SecurityContextHolder.clearContext();
-		session=request.getSession(false);
-		if(session !=null) {
-			session.invalidate();
-		}
-		for(Cookie cookie:request.getCookies()) {
-			cookie.setMaxAge(0);
-		}
-		return "index";
-	}
 
 	private List<String> listOfVulns() {
 		int i = 0;
 		int j = 0;
-		List<String> list = new ArrayList();
+		List<String> list = new ArrayList<String>();
 		while (i < vulnsRepository.count()) {
 			if (vulnsRepository.findById((j)).isPresent()) {
 				list.add(vulnsRepository.findById((j)).get().getVuln());
@@ -272,11 +282,11 @@ public class WebController implements ErrorController {
 		}
 		return list;
 	}
-	
+
 	private List<String> listOfUsers() {
 		int i = 0;
 		int j = 0;
-		List<String> list = new ArrayList();
+		List<String> list = new ArrayList<String>();
 		while (i < userRepository.count()) {
 			if (userRepository.findById((j)).isPresent()) {
 				list.add(userRepository.findById((j)).get().getName());
@@ -287,4 +297,46 @@ public class WebController implements ErrorController {
 		return list;
 	}
 
+	// using
+	// https://docs.oracle.com/javase/7/docs/technotes/guides/io/fsp/zipfilesystemprovider.html
+
+	public void zip2(String machine) throws IOException {
+		Map<String, String> env = new HashMap<>();
+		env.put("create", "true");
+		String mach = machine;
+		URI uri = URI.create("jar:file:/home/greg/oldApi/" + machine + ".zip");
+		String[] exfiles = new String[3];
+		exfiles[0] = "/lattice.gv.png";
+		exfiles[1] = "/lattice.gv";
+		exfiles[2] = "/vars/all.yml";
+
+		String[] infiles = new String[3];
+		infiles[0] = "/lattice.gv.png";
+		infiles[1] = "/lattice.gv";
+		infiles[2] = "/all.yml";
+
+		for (int i = 0; i < exfiles.length; i++) {
+			try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
+				Path exFile = Paths.get("/home/greg/oldApi/" + mach + exfiles[i]);
+				Path inFile = zipfs.getPath(infiles[i]);
+				Files.copy(exFile, inFile, StandardCopyOption.REPLACE_EXISTING);
+			}
+		}
+	}
+
+	public int getID(String machine, String name) {
+		int i = 0;
+		int j = 0;
+		while (i < machineRepo.count()) {
+			if (machineRepo.findById((j)).isPresent()) {
+				if (machineRepo.findById(j).get().getName().compareTo(machine) == 0) {
+					return j;
+				}
+				System.out.println(machineRepo.count());
+				i++;
+			}
+			j++;
+		}
+		return i;
+	}
 }

@@ -22,6 +22,20 @@
 	</ul>
 	</nav>
 	</div>
-	<p th:text="${msg}" />
+	<font size="+1">Select the machine you wish to download</font>
+	<form action="download" method="get">
+		<select id="test1" name="name">
+
+		</select> 
+		<input type="submit" name="submit">
+		</form>
+		<script th:inline="javascript">
+			var message =/*[[${msg}]]*/;
+			var options="";
+			for(var i = 0; i < message.length; i++){
+				options+="<option value='"+message[i]+"'>"+message[i]+"</option>"
+			}
+			document.getElementById('test1').innerHTML=options;
+	</script>
 </body>
 </html>
