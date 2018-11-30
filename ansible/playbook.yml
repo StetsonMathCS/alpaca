@@ -1,0 +1,2 @@
+---
+- import_playbook: ../server_access_root1/playbook.yml
