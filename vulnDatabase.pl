@@ -20,7 +20,7 @@ vuln('login-root(brute-force)', [ssh_server], [server_access_root],
 
 % Password: qwerty
 vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, generatePasswordOfLength(15)])]]).
+        [ssh-[root_password-(only, generatePasswordOfLength(15))]]).
 
 vuln('crack-hashes', [hashed_passwords], [passwords], []).
 
