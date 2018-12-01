@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
-
+:- use_module(library(clpfd)).
+:- [alpaca].
 /*
  * Maximum clique
  *   A graph is represented by a list, each item of which is of the form
@@ -16,57 +17,30 @@
 /*                       g(5,[1,4])], [[2,3,4]]).                            */
 
 
-/*
-* uniqueNodes([], Result, Result).
-* uniqueNodes([g(Machine,_)|Rest], UniqueNodes, Result):-
-*     append([[Machine]], UniqueNodes, Result),
-*     write(Result), nl,
-*     uniqueNodes(Rest, Result, Result).
-*/
-/*uniqueNodes([g(a,[b,c]),g(b,[a,c,d]),g(c,[a,b]),g(d,[b,e]),g(g,[d])]).*/
 
+/* runAll([g(a,[b,c]),g(b,[a,c,d]),g(c,[a,b]),g(d,[b,e]),g(e,[d])], Cliques, AllCliques) */
+
+runAll(Graph, Cliques, AllCliques):-
+    all_cliques(Graph, Cliques, AllCliques),
+    getMachines(Graph, [], Machines),
+    removeSubsets(AllCliques, [], Result),
+    assignAddrToNodesInClique(Machines, Result, _, Final),
+    writeInventoryFile(Result),
+    editVagrantfile(Final),
+    endVagrantfile.
+
+/* getMachines([g(a,[b,c]),g(b,[a,c,d]),g(c,[a,b]),g(d,[b,e]),g(e,[d])], [], R) */
+
+getMachines([], Machines, Machines).
+getMachines([g(M,_)|Tail], Ms, Machines):-
+    append([M], Ms, List),
+    getMachines(Tail, List, Machines).
 
 isSubsetAny([],[]).
 isSubsetAny(List, [H|_]):-
-    write(List), write("v."), write(H), nl,
     subset(List, H), !.
 isSubsetAny(List, [_|T]):-
     isSubsetAny(List, T).
-
-indexOf([Elem|_], Elem, 1):- !.
-indexOf([_|Tail], Elem, Index):-
-    indexOf(Tail, Elem, Index1),
-    Index is Index1+1.
-
-findNetworkNum([],[],_,[]).
-findNetworkNum([Elem|Tail], OGList, Index1, List):-
-    indexOf(OGList, Elem, Index), !,
-    write(Elem), write(" is at "), write(Index), nl,
-    append(List, [Index], IndexList),
-    write(IndexList), nl,
-    findNetworkNum(Tail, OGList, Index1, IndexList).
-
-
-config1([H1|T1],[H2|T2]):-
-    config([H1|T1], [H1|T1], [H2|T2], [H2|T2]).
-
-config([],_,_):- write("WAIT."), nl.
-config(AllMachines, [Machine|Rest1], [Clique|Rest2]):-
-    member(Machine, Clique), !,
-    indexOf([Clique|Rest2], Clique, Index2),
-    indexOf(Clique, Machine, Index1),
-    print(Machine), write(" of "), print(Clique), write(" is at Index: "), print(Index1), nl,
-    List = [Machine],
-    number_string(Index1, X),
-    number_string(Index2, Y),
-    string_concat("192.168.", Y, Step1),
-    string_concat(Step1, ".", Step2),
-    string_concat(Step2, X, Ip),
-    append(List, Ip, Result),
-    print(Result), nl,
-    config(AllMachines, Rest1, [Clique|Rest2]).
-config(AllMachines, AllMachines, [_|Rest2]):-
-    config(AllMachines, AllMachines, Rest2).
 
 removeSubsets([], Result, Result).
 removeSubsets([List|Rest], UniqueNonSubsets, Result):-
@@ -75,6 +49,109 @@ removeSubsets([List|Rest], UniqueNonSubsets, Result):-
     removeSubsets(Rest, UniqueNonSubsets, Result).
 removeSubsets([List|Rest], UniqueNonSubsets, Result):-
     removeSubsets(Rest, [List|UniqueNonSubsets], Result).
+
+indexOf([Elem|_], Elem, 1).
+indexOf([_|Tail], Elem, Index):-
+    indexOf(Tail, Elem, Index1),
+    Index #= Index1 + 1.
+
+/* [[a,b,c], [d,e], [b,d]] */
+/* [a,b,c,d,e] */
+/* assignAddrToNodesInClique([a,b,c,d,e], [[a,b,c], [d,e], [b,d]], MachineIps, Final). */
+
+assignAddrToNodesInClique(Machines, Cliques, MachineIps, Final):-
+    assignAddrToNodesInClique(Machines, Machines, Cliques, Cliques, MachineIps),
+    findall([Machine, Group], group_by(Machine, Ip, member((Machine, Ip), MachineIps), Group), Final), !.
+assignAddrToNodesInClique(_,_,_,[],[]):- !.
+assignAddrToNodesInClique(AllMachines, [Machine|Rest1], AllCliques, [Clique|Rest2], RestIps):-
+    not(member(Machine, Clique)), !,
+    assignAddrToNodesInClique(AllMachines, Rest1, AllCliques, [Clique|Rest2], RestIps).
+assignAddrToNodesInClique(AllMachines, [Machine|Rest1], AllCliques, [Clique|Rest2], [(Machine, Ip)|RestIps]):-
+    indexOf(AllCliques, Clique, CliqueNum), CliqueNum1 is CliqueNum + 74,
+    indexOf(Clique, Machine, MachineNum), MachineNum1 is MachineNum + 74,
+    number_string(MachineNum1, X),
+    number_string(CliqueNum1, Y),
+    string_concat("192.168.", Y, Step1), string_concat(Step1, ".", Step2), string_concat(Step2, X, Ip),
+    assignAddrToNodesInClique(AllMachines, Rest1, AllCliques, [Clique|Rest2], RestIps).
+assignAddrToNodesInClique(AllMachines, [], AllCliques, [_|Rest2], RestIps):-
+    assignAddrToNodesInClique(AllMachines, AllMachines, AllCliques, Rest2, RestIps).
+
+/* writeInventoryFile([[a,b,c], [d,e], [b,d]]). */
+writeInventoryFile(List):-
+    open('ansible/inventories/dev', write, Stream),
+    write(Stream, ''),
+    close(Stream),
+    length(List, N),
+    foreach(between(1,N,X), writeInventoryFile(List, X)).
+writeInventoryFile(List, X):-
+    indexOf(List, Group, X),
+    length(Group, M),
+    number_string(X, Num),
+    append('ansible/inventories/dev'),
+    format(atom(String), "~s~s~s", ["[net", Num,"]"]),
+    nl, write(String), nl,
+    told,
+    foreach(between(1,M,Z), addMachinesToInventoryFile(Group, Z)).
+addMachinesToInventoryFile(Group, Z):-
+    indexOf(Group, Machine, Z),
+    append('ansible/inventories/dev'),
+    write(Machine), nl,
+    told.
+
+
+/* editVagrantfile([[a,["192.168.75.75"]],[b,["192.168.75.76","192.168.77.75"]],[c,["192.168.75.77"]],[d,["192.168.76.75","192.168.77.76"]],[e,["192.168.76.76"]]]). */
+editVagrantfile(List):-
+    instantiateVagrantfile,
+    length(List, N),
+    foreach(between(1,N,X), editVagrantfile(List, X)).
+editVagrantfile(List, X):-
+    indexOf(List, Net, X),
+    writeVagrantfile(Net).
+
+
+
+
+/* instantiateVagrantfile, writeVagrantfile([(a,["192.168.75.75"]),(b,["192.168.75.76","192.168.77.75"]),(c,["192.168.75.77"]),(d,["192.168.76.75","192.168.77.76"]),(e,["192.168.76.76"])]). */
+
+instantiateVagrantfile :-
+    open('Vagrantfile', write, Stream),
+    write(Stream, 'Vagrant.configure("2") do |config|'),
+    close(Stream).
+
+writeVagrantfile(List) :-
+    indexOf(List, Name, 1),
+    write(Name), nl,
+    indexOf(List, IpList, 2),
+    append('Vagrantfile'),
+    nl,
+    tab(4), write('config.vm.define "'), write(Name), write('" do |'), write(Name), write('|'), nl,
+    tab(8), write(Name), write('.vm.box = "ubuntu/trusty64"'), nl,
+    tab(8), write(Name), write('.vm.hostname = "sr"'), nl,
+    told,
+    addPrivateNetwork(IpList, Name),
+    append('Vagrantfile'),
+    tab(8), write(Name), write('.vm.provision "ansible" do |ansible|'), nl,
+    tab(16), write('ansible.playbook = "ansible/playbook.yml"'), nl,
+    tab(16), write('ansible.inventory_path = "ansible/inventories/dev"'), nl,
+    tab(16), write('ansible.limit = "all"'), nl,
+    tab(8), write('end'), nl,
+    tab(4), write('end'), nl,
+    told.
+
+endVagrantfile :-
+    append('Vagrantfile'),
+    write('end'),
+    told.
+
+addPrivateNetwork(List, Name):-
+    length(List, N),
+    foreach(between(1,N,X), makeLine(List, Name, X)).
+
+makeLine(List, Name, X):-
+    indexOf(List, Ip, X),
+    append('Vagrantfile'),
+    tab(8), write(Name), write('.vm.network :private_network, ip: "'), write(Ip), write('"'), nl,
+    told.
 
 
 all_cliques(Graph, Cliques, AllCliques):-
@@ -91,8 +168,9 @@ all_cliques(Graph, Cliques, AllCliques):-
 	append(Cliques8, Cliques9, Cliques10),
 	findall(Clique, clique(8, Graph, Clique), Cliques11),
 	append(Cliques10, Cliques11, Cliques12),
-	AllCliques = Cliques12,
-	write("All Cliques: "), print(AllCliques), nl.
+    findall(Clique, clique(1, Graph, Clique), Cliques13),
+    append(Cliques12, Cliques13, Cliques14),
+	AllCliques = Cliques14.
 
 
 all_max_cliques(Graph, Cliques):-

@@ -1,6 +1,8 @@
 :- [vulnDatabase]. %import vulnDatabase.pl
 %:- use_module(library(archive)).
 
+:- [addons].
+
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
 */
@@ -117,6 +119,8 @@ generatePNGFromDot(String, File) :-
 	format(atom(Command), "dot -Tpng ~s > ~s.png", [File, File]),
 	shell(Command).
 
+
+% Example: createRangeFromIGS(['server_access_root'], [], 'server_access_root')
 % Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
 % renamed from 'createRange'
 createRangeFromIGS(Goal, InitialState, DirectoryName) :-
@@ -132,7 +136,7 @@ createRangeFromIGS(Goal, InitialState, DirectoryName) :-
     close(Stream).
 
 % Initializes the range as a virtual machine
-% Example: createStartRangeFromIGS(['server_access_root'], [], 'server_access_root')
+
 % renamed from 'createAllPaths'
 createStartRangeFromIGS(VMname) :-
     format(atom(Command1), "vagrant up ~s", [VMname]),
@@ -151,10 +155,39 @@ addAddrToDevFile :-
     append('ansible/inventories/dev2'),
     write('Here is another line'), nl, told.
 
-write_list([]).
-write_list([H|T]):-
-    write(H), nl,
-    write_list(T).
+readLine(InStream,W):-
+    get_code(InStream,Char),
+    checkCharAndReadRest(Char,Chars,InStream),
+    atom_codes(W,Chars).
+
+checkCharAndReadRest(-1,[],_):- !.
+checkCharAndReadRest(10,[],_):- !.
+checkCharAndReadRest(end_of_file,[],_):-  !.
+checkCharAndReadRest(Char,[Char|Chars],InStream):-
+    get_code(InStream,NextChar),
+    checkCharAndReadRest(NextChar,Chars,InStream).
+
+function :-
+    open('ansible/inventories/dev_d',read,Str),
+    line_count(Str, LineCount),
+    readLine(Str, Machine),
+    close(Str),
+    write(Machine), nl, write(LineCount), nl.
+
+instantiateVagrantfile :-
+    open('trial', write, Stream),
+    write(Stream, 'Vagrant.configure("2") do |config|'), nl(Stream),
+    tab(Stream, 4),
+    close(Stream).
+
+writeVagrantfile(Name) :-
+    format(string(DirectoryName), "~s~s", ["../ansible/inventories/dev_", Name]),
+    append(DirectoryName),
+    write('config.vm.define "'), write(Name), write('" do |'), write(Name), write('|'), nl,
+    tab(8), write(Name), write('.vm.box = "ubuntu/trusty64"'), nl,
+    tab(8), write(Name), write('.vm.hostname = "sr"'), nl,
+    tab(8), write(Name), write('.vm.network :private_network, ip: "'), nl,
+    told.
 
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.
@@ -172,9 +205,11 @@ createLatticeDirectories(Name, Num, Length) :-
 	NewNum is Num+1,
 	createLatticeDirectories(Name, NewNum, Length).
 
+
 generatePNGFromLattices([], _).
 generatePNGFromLattices(Lattices, FileName) :-
 	generatePNGFromLattices(Lattices, FileName, 1).
+
 % Generates all graphs from list of lattices with FileName
 % This predicate
 % Example: generateAllGraphs([server_access_root], [], 'server_access_root')
@@ -185,6 +220,7 @@ generateAllGraphs(Goal, InitialState, FileName) :-
 generateAllLattices([], _).
 generateAllLattices(Lattices, FileName) :-
 	generateAllLattices(Lattices, FileName, 1).
+
 
 generatePNGFromLattices([], _, _).
 generatePNGFromLattices([Lattice|Lattices], FileName, Num) :-
