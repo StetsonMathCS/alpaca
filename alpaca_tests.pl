@@ -6,14 +6,16 @@
 :- begin_tests(main).
 
 
-test(allPossiblePaths, [nondet]) :-
-	allPossiblePaths.
+test(graphAllVulns, [nondet]) :-
+        graphAllVulns('Testfile').
 
-test(createAllPaths) :-
-	createAllPaths([server_access_root], [], server_access_root5).
+$test(createRangeFromIGS) :-
+$        createRangeFromIGS([server_access_root], [], server_access_root40).
+
 
 test(add) :-
-	A is 1 + 2,
-	A =:= 3.
+        A is 1 + 2,
+        A =:= 3.
 
 :- end_tests(main).
+
