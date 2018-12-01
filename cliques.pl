@@ -99,7 +99,6 @@ addMachinesToInventoryFile(Group, Z):-
     told.
 
 
-/* editVagrantfile([[a,["192.168.75.75"]],[b,["192.168.75.76","192.168.77.75"]],[c,["192.168.75.77"]],[d,["192.168.76.75","192.168.77.76"]],[e,["192.168.76.76"]]]). */
 editVagrantfile(List):-
     instantiateVagrantfile,
     length(List, N),
@@ -109,9 +108,6 @@ editVagrantfile(List, X):-
     writeVagrantfile(Net).
 
 
-
-
-/* instantiateVagrantfile, writeVagrantfile([(a,["192.168.75.75"]),(b,["192.168.75.76","192.168.77.75"]),(c,["192.168.75.77"]),(d,["192.168.76.75","192.168.77.76"]),(e,["192.168.76.76"])]). */
 
 instantiateVagrantfile :-
     open('Vagrantfile', write, Stream),

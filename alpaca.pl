@@ -146,48 +146,15 @@ createStartRangeFromIGS(VMname) :-
 	%shell('vagrant up sr_range_1'),
     %shell('vagrant halt sr_range_1').
 
-initiateDevFile :-
-    open('ansible/inventories/dev2', write, Stream),
-    write(Stream, '[test-web]'), nl(Stream),
-    close(Stream).
 
-addAddrToDevFile :-
-    append('ansible/inventories/dev2'),
-    write('Here is another line'), nl, told.
+createStartRangeMultiple(List):-
+    length(List, N),
+    foreach(between(1,N,X), startStopRangeMultiple(List, X)).
 
-readLine(InStream,W):-
-    get_code(InStream,Char),
-    checkCharAndReadRest(Char,Chars,InStream),
-    atom_codes(W,Chars).
+startStopRangeMultiple(List, X):-
+    indexOf(List, VMname, X),
+    createStartRangeFromIGS(VMname).
 
-checkCharAndReadRest(-1,[],_):- !.
-checkCharAndReadRest(10,[],_):- !.
-checkCharAndReadRest(end_of_file,[],_):-  !.
-checkCharAndReadRest(Char,[Char|Chars],InStream):-
-    get_code(InStream,NextChar),
-    checkCharAndReadRest(NextChar,Chars,InStream).
-
-function :-
-    open('ansible/inventories/dev_d',read,Str),
-    line_count(Str, LineCount),
-    readLine(Str, Machine),
-    close(Str),
-    write(Machine), nl, write(LineCount), nl.
-
-instantiateVagrantfile :-
-    open('trial', write, Stream),
-    write(Stream, 'Vagrant.configure("2") do |config|'), nl(Stream),
-    tab(Stream, 4),
-    close(Stream).
-
-writeVagrantfile(Name) :-
-    format(string(DirectoryName), "~s~s", ["../ansible/inventories/dev_", Name]),
-    append(DirectoryName),
-    write('config.vm.define "'), write(Name), write('" do |'), write(Name), write('|'), nl,
-    tab(8), write(Name), write('.vm.box = "ubuntu/trusty64"'), nl,
-    tab(8), write(Name), write('.vm.hostname = "sr"'), nl,
-    tab(8), write(Name), write('.vm.network :private_network, ip: "'), nl,
-    told.
 
 % creates new directory for each lattice
 createLatticeDirectories(_, Num, Length) :- Num > Length, !.
