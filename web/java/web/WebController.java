@@ -2,7 +2,10 @@ package web;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URI;
@@ -17,20 +20,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -59,7 +75,6 @@ public class WebController implements ErrorController {
 	DefaultKaptcha defaultKaptcha;
 
 	private String captcha;
-	private String alpacaPath = "/home/gk/Desktop/workrepo/alpaca/";
 
 	@GetMapping("/home")
 	public ModelAndView home() {
@@ -147,7 +162,7 @@ public class WebController implements ErrorController {
 		// model.addObject("msg", "POST DATA: " + goal);
 		if (!check && !check2 && !check3 && !check4
 				&& ((privacy.compareTo("PUBLIC") == 0) || privacy.compareTo("PRIVATE") == 0)) {
-			HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10333/alpaca")
+			HttpRequestWithBody alpacaReq = Unirest.post("http://127.0.0.1:10332/alpaca")
 					.header("content-type", "application/json; charset=utf-8").header("accept", "application/json");
 			StringWriter reqBodyWriter = new StringWriter();
 			JSONWriter reqBodyJSONWriter = new JSONWriter(reqBodyWriter).array();
@@ -217,7 +232,7 @@ public class WebController implements ErrorController {
 				resp.setHeader("Content-Disposition",
 						"attachment; filename=" + "\" " + machineRepo.findById(id).get().getName() + ".zip" + "\"");
 				InputStreamResource res = new InputStreamResource(new FileInputStream(
-						alpacaPath + machineRepo.findById(id).get().getName() + ".zip"));
+						"/home/greg/oldApi/" + machineRepo.findById(id).get().getName() + ".zip"));
 				System.out.println(name);
 				return res;
 			} else {
@@ -289,7 +304,7 @@ public class WebController implements ErrorController {
 		Map<String, String> env = new HashMap<>();
 		env.put("create", "true");
 		String mach = machine;
-		URI uri = URI.create("jar:file:" + alpacaPath + machine + ".zip");
+		URI uri = URI.create("jar:file:/home/greg/oldApi/" + machine + ".zip");
 		String[] exfiles = new String[3];
 		exfiles[0] = "/lattice.gv.png";
 		exfiles[1] = "/lattice.gv";
@@ -302,7 +317,7 @@ public class WebController implements ErrorController {
 
 		for (int i = 0; i < exfiles.length; i++) {
 			try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
-				Path exFile = Paths.get(alpacaPath + mach + exfiles[i]);
+				Path exFile = Paths.get("/home/greg/oldApi/" + mach + exfiles[i]);
 				Path inFile = zipfs.getPath(infiles[i]);
 				Files.copy(exFile, inFile, StandardCopyOption.REPLACE_EXISTING);
 			}

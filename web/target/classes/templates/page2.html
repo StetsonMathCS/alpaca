@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Page2</title>
+<title>List of Vulns</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -10,17 +10,32 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+<font size="+5">User Machines</font>
 <body>
+<div>
+	<nav class="navbar navbar-inverse">
 	<ul class="nav navbar-nav">
-		<li><a href ="home">Home</a></li>
-		<li><a href ="page1">Page1</a></li>
 		<li><a href ="download">Download</a></li>
-		<li><a href = "login">Login</a></li>
+		<li><a href = "home">Home</a></li>
+		<li><a href = "builder">Cyber Range</a></li>
+		<li><a href = "page1">Private Machines</a></li>
 	</ul>
-	<form action="postData" method="post">
-		<input type="text" name="test">
+	</nav>
+	</div>
+	<font size="+1">Select the machine you wish to download</font>
+	<form action="download" method="get">
+		<select id="test1" name="name">
+
+		</select> 
 		<input type="submit" name="submit">
-	</form>
-	Welcome to page #2
+		</form>
+		<script th:inline="javascript">
+			var message =/*[[${msg}]]*/;
+			var options="";
+			for(var i = 0; i < message.length; i++){
+				options+="<option value='"+message[i]+"'>"+message[i]+"</option>"
+			}
+			document.getElementById('test1').innerHTML=options;
+	</script>
 </body>
 </html>

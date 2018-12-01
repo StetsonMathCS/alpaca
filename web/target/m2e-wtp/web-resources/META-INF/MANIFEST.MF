@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: milestone7
+Implementation-Version: 2.0.3.RELEASE
+Built-By: gk
+Implementation-Vendor-Id: org.springframework
+Build-Jdk: 1.8.0_181
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/milestone7
+Created-By: Maven Integration for Eclipse
+

@@ -1,0 +1,15 @@
+web/UserService.class
+web/Auth.class
+web/AuthServ.class
+web/MachineService.class
+web/UserRepository.class
+web/WebController.class
+web/Vulns.class
+web/MachineRepo.class
+web/Application.class
+web/Secure.class
+web/VulnsRepository.class
+web/AuthRepo.class
+web/Machine.class
+web/KaptchaConfig.class
+web/User.class
