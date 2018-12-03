@@ -1,0 +1,3 @@
+FOR OUR REFERENCE:
+
+Create documentation for your features, including how to run/test them and possibly how to install the necessary software to use them. If you wrote new functions, describe how to run them (like documenting an API). Write at least 1 page. Write the documentation Markdown format and put on Github in a "docs" folder. Create a single file and give the file a name that summarizes your features (e.g., "database.md"). If more than one person has worked on similar features (e.g., two people on database features), both people should help write the same document, and should each write at least 1 page. I will look at the git "blame" feature to see who contributed what.
