@@ -1,13 +1,9 @@
-#DevOps setup for ALPACA:
+# DevOps setup for ALPACA:
 
-##Requisite software dependencies
+## Requisite software dependencies
 
-*Jenkins
-*Java 8
-*Java Runtime Environment
-*Docker
-
-### Database
-
-// here
+* Jenkins
+* Java 8
+* Java Runtime Environment
+* Docker
 
