@@ -23,6 +23,26 @@ the idea from them is to have easy access and manuiplaute database queires
 in the java code.
 
 ### Example:
-// to be given.
+<pre>
+System.out.println("1. What is the total number of vulnerabilities?");
+</pre>
 
+it count the vulnerabilities and execute a query from Java in order to count them
+
+### Example:
+<pre>
+System.out.println("3. Which vulnerabilities employ a brute force technique to login?");
+</pre>
+
+Here, it should take a sql query the %like% and display any vulnerability that has brute force
+
+## Run the Program
+
+In order to run the program, the user must have login to the ssh server
+using the tunnel in the command line
+
+<pre>
+$ssh username@remoteserver -L 3306:localhost:3306 
+</pre>
+* Note : the mySQL server should be stopped in your local machine before executing the program. Other wise, the address would be used twice and might cause an error.
 
