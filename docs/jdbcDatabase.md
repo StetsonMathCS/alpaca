@@ -52,5 +52,5 @@ using the tunnel in the command line
 <pre>
 $ssh username@remoteserver -L 3306:localhost:3306 
 </pre>
-## * Note : the mySQL server should be stopped in your local machine before executing the program. Other wise, the address would be used twice and might cause an error.
+### * Note : the mySQL server should be stopped in your local machine before executing the program. Other wise, the address would be used twice and might cause an error.
 
