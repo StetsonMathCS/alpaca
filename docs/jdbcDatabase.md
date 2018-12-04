@@ -4,12 +4,20 @@
 
 + Java 8
 + jConnector
++ mySQL
 
 ## Installing
 
 Installing jConnector to the Java project to access the database
+Here is the download link for jConnector
+https://dev.mysql.com/downloads/connector/j/
 
-### Example:
+### Add to the build path
+
+In order to connect mySQL to the java code, the jConnector should be added in the JAR library under build path 
+
+
+### Connects to the server:
 
 <pre>
 Connection connection = DriverManager.getConnection("path/to/the/database", username, password);
@@ -27,7 +35,7 @@ in the java code.
 System.out.println("1. What is the total number of vulnerabilities?");
 </pre>
 
-it count the vulnerabilities and execute a query from Java in order to count them
+it counts the vulnerabilities and execute a query from Java in order to count them
 
 ### Example:
 <pre>
