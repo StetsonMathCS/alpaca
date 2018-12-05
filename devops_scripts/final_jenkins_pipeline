@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    stages {
+        stage('Check and/or Start HTTP_API Server') {
+            steps {
+                sh 'bash /home/noah/alpaca/devops_scripts/check_http_server.sh'
+            }
+        }
+        
+        stage('Test ALPCACA HTTP_API') {
+            steps {
+                sh 'bash /home/noah/alpaca/devops_scripts/api_examples.sh'
+            }
+        }
+        stage('Report ALPACA HTTP_API results') {
+            steps {
+                sh 'cat /home/noah/alpaca/devops_scripts/httpd.log'
+            }
+        }
+
+        
+        stage('Test ALPACA') {
+            steps {
+                    sh 'swipl -s /home/noah/alpaca/alpaca_tests.pl -t run_tests'
+            }
+        }
+        
+        stage('Test mysql database connection') {
+            steps {
+                sh 'expect /home/noah/alpaca/devops_scripts/testDatabase.sh'
+            }
+        }
+        
+        stage('Test front-end website connection') {
+            steps {
+                sh 'bash /home/noah/alpaca/devops_scripts/test_website.sh'
+            }
+        }
+    }
+}
