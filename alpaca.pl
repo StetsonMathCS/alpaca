@@ -443,6 +443,16 @@ capture_table(Functor, Row) :-
 	Clause =.. [Functor|Row],
 	assertz(Clause).
 
+initialSetup() :-
+	capture_table("mimi", "mimi123", "vuln", "select vuln_name,
+	concat("[",group_concat(distinct statesPre.states_name),"]") as
+	pre,concat("[",group_concat(distinct statesPost.states_name),"]") as post,
+	vuln_config from vuln left join vuln_pre on vuln.vuln_id = vuln_pre.vuln_id
+	left join states as statesPre on vuln_pre.states_id=statesPre.states_id
+	left join vuln_post on vuln_post.vuln_id=vuln.vuln_id left join states as
+	statesPost on vuln_post.states_id=statesPost.states_id group by vuln.vuln_id;",
+	vuln).
+
 % creates a lattice w/ complexity specified in the specific bounds.
 createLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Name) :-
 	findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice),
