@@ -49,4 +49,5 @@ If Jenkins or the HTTP_API need to be restarted, treat them like any other Unix 
 For example:
 
 Restart the HTTP_API: "sudo service alpaca_http restart"
+
 Get the running status of Jenkins: "sudo service jenkins status"
