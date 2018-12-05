@@ -29,4 +29,4 @@ Jenkins is used to confirm that the ALPACA system and its dependencies are opera
 
 Jenkins is oriented around the "pipeline", which is a special script that interfaces with Jenkins and the above devops_scripts to systematically test each stage in isolation from the main project. To extend ALPACA in the future, it is important to add the new testing scripts to the existing pipeline to ensure that the tested features are still operational.
 
-To set up Jenkins, follow [this guide](https://jenkins.io/doc/book/installing/)
+To set up Jenkins, follow [this guide](https://jenkins.io/doc/book/installing/). After setup, you may need to create the ALPACA pipeline. In this case, follow [these steps](https://jenkins.io/pipeline/getting-started-pipelines/#creating-a-simple-pipeline) to create the pipeline, and paste final_jenkins_pipeline code from devops_scripts into the Jenkinsfile under the configure tab of the pipeline.
