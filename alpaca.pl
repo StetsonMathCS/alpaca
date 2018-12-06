@@ -1,7 +1,5 @@
-:- [vulnDatabase]. %import vulnDatabase.pl
+% :- [vulnDatabase].
 %:- use_module(library(archive)).
-
-:- [addons].
 
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
@@ -123,12 +121,12 @@ generatePNGFromDot(String, File) :-
 % Example: createRangeFromIGS(['server_access_root'], [], 'server_access_root')
 % Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
 % renamed from 'createRange'
-createRangeFromIGS(Goal, InitialState, DirectoryName) :-
+createRangeFromIGS(Goal, InitialState, DirectoryName, Params) :-
     createAllLatticesFromIGS(Goal, InitialState, Lattices),
     length(Lattices, Length),
     createLatticeDirectories(DirectoryName, 1, Length),
     generatePNGFromDotInDirectory(Lattices, DirectoryName),
-    getConfigs(Lattices, DirectoryName, 1),
+    getConfigs(Lattices, DirectoryName, 1, Params),
     format(atom(NewDirectoryName), "~s~s", [DirectoryName, "1"]),
     open('ansible/playbook.yml', write, Stream),
     format(atom(String), "---~n- import_playbook: ../~s/playbook.yml", [NewDirectoryName]),
@@ -289,24 +287,24 @@ longestPath(Goal, InitialState) :-
 	generatePNGFromDot(Str, 'longestPath-test.gv'),
 	createYamlFiles(Configs).
 
-getConfigs([], _, _).
-getConfigs([Lattice|Lattices], Name, Num) :-
+getConfigs([], _, _, _).
+getConfigs([Lattice|Lattices], Name, Num, Params) :-
 	nth0(0, Lattice, First),
-	getConfig(First, Name, Num),
+	getConfig(First, Name, Num, Params),
 	NewNum is Num+1,
-	getConfigs(Lattices, Name, NewNum).
+	getConfigs(Lattices, Name, NewNum, Params).
 
-getConfig([], _, _).
-getConfig((Configs, _), Name, Num) :-
-	createYamlFiles(Configs, Name, Num).
+getConfig([], _, _, _).
+getConfig((Configs, _), Name, Num, Params) :-
+	createYamlFiles(Configs, Name, Num, Params).
 
-createYamlFiles(Configs, Name, Num) :-
+createYamlFiles(Configs, Name, Num, Params) :-
 	formatRoles(Configs, Roles),
 	createPlaybook(Roles, Name, Num),
 	number_string(Num, NumString),
 	format(atom(DirectoryName), "~s~s/vars", [Name, NumString]),
 	make_directory(DirectoryName),
-	listRoles(Configs, Vars),
+	listRoles(Configs, Vars, Params),
 	createVars(Vars, Name, Num).
 
 createPlaybook(Roles, Name, Num) :-
@@ -333,26 +331,27 @@ createVars(Vars, Name, Num) :-
 	write(Stream, String),
 	close(Stream).
 
-listRoles([], "").
-listRoles([Role-Val|Rest], String) :-
-	listKeys(Val, String1),
+listRoles([], "", _).
+listRoles([Role-Val|Rest], String, Params) :-
+	listKeys(Val, String1, Params),
 	format(atom(Out), "~s:~n~s~n", [Role, String1]),
-	listRoles(Rest, String2),
+	listRoles(Rest, String2, Params),
 	format(atom(String), "~s~s", [Out, String2]).
 
-listKeys([], "").
-listKeys([Key-(_, Vals)|Rest], String) :-
-	listVals(Vals, String1),
+listKeys([], "", _).
+listKeys([Key-(_, Vals)|Rest], String, Params) :-
+	listVals(Vals, String1, Params),
 	format(atom(Out), "~t~2|~s:~n~s", [Key, String1]),
-	listKeys(Rest, String2),
+	listKeys(Rest, String2, Params),
 	format(atom(String), "~s~s", [Out, String2]).
 
-listVals([], "").
-listVals([Val|Vals], String) :-
-	listVals(Vals, String1),
+listVals([], "", _).
+listVals([Val|Vals], String, Params) :-
+	listVals(Vals, String1, Params),
 	format(atom(String), "~t~4|- ~s~n~s", [Val, String1]).
-listVals(Predicate, String) :-
-	call(Predicate, Output),
+listVals(Predicate, String, Params) :-
+	list_to_assoc(Params, Assoc),
+	call(Predicate, Assoc, Output),
 	format(atom(String), "~t~4|- ~s~n", [Output]).
 
 % work backwards from goal to initial
@@ -415,7 +414,16 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     NewConfig = [K-NewVals|TmpConfig],
     sort(NewConfig, SortedConfig).
 
+
+replace_substring(String, To_Replace, Replace_With, Result) :-
+    append([Front, To_Replace, Back], String),
+    append([Front, Replace_With, Back], Result).
+
 % MySQL Commands
+replace_word(Old, New, Orig, Replaced) :-
+    atomic_list_concat(Split, Old, Orig),
+    atomic_list_concat(Split, New, Replaced). 
+
 query(USER, PWD, DB, QUERY, Columns, Rows) :-
 	atom_concat('-p', PWD, PPWD),
 	process_create(path(mysql), ['-u', USER, PPWD, '-D', DB, '-e', QUERY], [stdout(pipe(Out)),stderr(std)]),
@@ -426,7 +434,8 @@ read_record(Out, Fields) :-
 	read_line_to_codes(Out, Codes),
 	Codes \= end_of_file,
 	atom_codes(Line, Codes),
-	atomic_list_concat(Fields, '\t', Line).
+	replace_word('NULL', '[]', Line, R),
+	atomic_list_concat(Fields, '\t', R).
 
 read_records(Out, [Record|Rs]) :-
 	read_record(Out, Record),
@@ -439,26 +448,21 @@ capture_table(USER, PWD, DB, QUERY, Functor) :-
 	query(USER, PWD, DB, QUERY, _Columns, Rows),
 	maplist(capture_table(Functor), Rows).
 
-capture_table(Functor, Row) :-
-	Clause =.. [Functor|Row],
+capture_table(Functor, [Vuln|VulnProps]) :-
+	maplist(term_string, VulnPropTerms, VulnProps),
+	Clause =.. [Functor|[Vuln|VulnPropTerms]],
 	assertz(Clause).
 
 initialSetup() :-
-	capture_table("mimi", "mimi123", "vuln", "select vuln_name,
-	concat("[",group_concat(distinct statesPre.states_name),"]") as
-	pre,concat("[",group_concat(distinct statesPost.states_name),"]") as post,
-	vuln_config from vuln left join vuln_pre on vuln.vuln_id = vuln_pre.vuln_id
-	left join states as statesPre on vuln_pre.states_id=statesPre.states_id
-	left join vuln_post on vuln_post.vuln_id=vuln.vuln_id left join states as
-	statesPost on vuln_post.states_id=statesPost.states_id group by vuln.vuln_id;",
-	vuln).
+	capture_table("mimi", "mimi123", "vuln", "select vuln_name, concat('[',group_concat(distinct statesPre.states_name),']') as pre,concat('[',group_concat(distinct statesPost.states_name),']') as post, vuln_config from vuln left join vuln_pre on vuln.vuln_id = vuln_pre.vuln_id left join states as statesPre on vuln_pre.states_id=statesPre.states_id left join vuln_post on vuln_post.vuln_id=vuln.vuln_id left join states as statesPost on vuln_post.states_id=statesPost.states_id group by vuln.vuln_id;", vuln),
+	!.
 
 % creates a lattice w/ complexity specified in the specific bounds.
-createLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Name) :-
+createLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Name, Params) :-
 	findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice),
 	createLatticeDirectories(Name, 1, 1),
 	generateLatticeInDirectory([Lattice], Name),
-	getConfigs([Lattice], Name, 1).
+	getConfigs([Lattice], Name, 1, Params).
 
 findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice) :-
 	createAllLatticesFromIGS(Goal, InitialState, Lattices),
@@ -484,12 +488,12 @@ indexOf([_|Tail], Element, Index):-
 
 % create a vulnerability lattice, constraining for
 % a specific Vulnerability
-createLatticeWithVulnIGS(Goal, InitialState, Name, Vuln) :-
+createLatticeWithVulnIGS(Goal, InitialState, Name, Vuln, Params) :-
 	createAllLatticesFromIGS(Goal, InitialState, Lattices),
 	checkVulnLatticesForVuln(Lattices, Vuln, Lattice),
 	createLatticeDirectories(Name, 1, 1),
 	generatePNGFromDotInDirectory([Lattice], Name),
-	getConfigs([Lattice], Name, 1).
+	getConfigs([Lattice], Name, 1, Params).
 
 checkVulnLatticesForVuln([Lattice|_], Vuln, LatticeR) :-
 	checkVulnAndConfig(Lattice, Vuln),
@@ -527,8 +531,16 @@ generateUsername(Username) :-
 	Username = Elem.
 
 % generates a password, pulling letters from a dictionary
-generatePasswordOfLength(Length, Password) :-
-  passwords(Passwords),
+generatePasswordOfLength(Params, Password) :-
+	get_assoc(paramPasswordLength, Params, Length),
+	passwords(Passwords),
 	generateFromList(Passwords, Length, Output),
 	atom_chars(GenPwd, Output),
 	Password = GenPwd.
+
+passwords(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+	'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4',
+	'5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%' ,'^', '&', '*', '(', ')']).
+
+usernames(['admin', 'bbelna', 'jeckroth', 'guest']).
