@@ -12,24 +12,23 @@
 </head>
 <font size="+5">User Machines</font>
 <body>
-<div>
-	<nav class="navbar navbar-inverse">
-	<ul class="nav navbar-nav">
-		<li><a href ="download">Download</a></li>
-		<li><a href = "home">Home</a></li>
-		<li><a href = "builder">Cyber Range</a></li>
-		<li><a href = "page1">Private Machines</a></li>
-	</ul>
-	</nav>
+	<div>
+		<nav class="navbar navbar-inverse">
+			<ul class="nav navbar-nav">
+				<li><a href="home">Home</a></li>
+				<li><a href="register">Register</a></li>
+				<li><a href="builder">Cyber Range</a></li>
+				<li><a href="page1">User Machines</a></li>
+			</ul>
+		</nav>
 	</div>
 	<font size="+1">Select the machine you wish to download</font>
 	<form action="download" method="get">
 		<select id="test1" name="name">
 
-		</select> 
-		<input type="submit" name="submit">
-		</form>
-		<script th:inline="javascript">
+		</select> <input type="submit" name="submit">
+	</form>
+	<script th:inline="javascript">
 			var message =/*[[${msg}]]*/;
 			var options="";
 			for(var i = 0; i < message.length; i++){
