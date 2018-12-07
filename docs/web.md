@@ -25,7 +25,8 @@ In the Run/Debug Configurations, add a new Configuration choosing Maven. Write '
 # Tomcat setting
 Because our web ultimately needs to run on sever, we use Tomcat. Spring boots embedded within Tomcat. When using an external Tomcat server, must exclude embedded Tomcat servers then add Tomcat dependency.
 
-# Windows environment run project on server
+# Running the website
+## Windows environment
 - First need using Putty connect to the sever
 - To run the program, user need install Tomcat 8.5.34 (the version that we used) 
 - Get the war file under target folder
@@ -33,7 +34,7 @@ Because our web ultimately needs to run on sever, we use Tomcat. Spring boots em
 - Go to tomcat->bin
 - Run the Project command:  ./catalina.sh run
 
-# Running the website
+## Linux environment
 The website can be ran by navigating to the web folder and running "mvn spring-boot:run". By default, the website will be running on port 8080. Maven is required.
 
 # Creating an account
