@@ -7,11 +7,15 @@
 # Configuring the website
 The website relies on information gathered from a vulnerability database. Check that the website is able to connect to your database by referencing the applicaiton.properties file.   
   
->> spring.jpa.show-sql = true
->> spring.jpa.hibernate.ddl-auto=update
->> spring.datasource.url=jdbc:mysql://localhost:3306/'database name'
->> spring.datasource.username='user name'
->> spring.datasource.password='password'
+>> spring.jpa.show-sql = true  
+
+>> spring.jpa.hibernate.ddl-auto=update  
+
+>> spring.datasource.url=jdbc:mysql://localhost:3306/'database name'  
+
+>> spring.datasource.username='user name'  
+
+>> spring.datasource.password='password'  
   
   
 Adjust spring.datasource.username and spring.datasource.password to match your mysql username and password. Also make sure the correct database is being used for spring.datasource.url. Check that the alpacaPath variable is correctly set in alpaca/web/java/web/WebController.java. The variable should match the location of the repository.
