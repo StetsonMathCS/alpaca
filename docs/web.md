@@ -7,15 +7,15 @@
 # Configuring the website
 The website relies on information gathered from a vulnerability database. Check that the website is able to connect to your database by referencing the applicaiton.properties file.   
   
->> spring.jpa.show-sql = true  
+> spring.jpa.show-sql = true  
 
->> spring.jpa.hibernate.ddl-auto=update  
+> spring.jpa.hibernate.ddl-auto=update  
 
->> spring.datasource.url=jdbc:mysql://localhost:3306/'database name'  
+> spring.datasource.url=jdbc:mysql://localhost:3306/'database name'  
 
->> spring.datasource.username='user name'  
+> spring.datasource.username='user name'  
 
->> spring.datasource.password='password'  
+> spring.datasource.password='password'  
   
   
 Adjust spring.datasource.username and spring.datasource.password to match your mysql username and password. Also make sure the correct database is being used for spring.datasource.url. Check that the alpacaPath variable is correctly set in alpaca/web/java/web/WebController.java. The variable should match the location of the repository.
@@ -23,7 +23,7 @@ Adjust spring.datasource.username and spring.datasource.password to match your m
 # Package the program for J IDEA user
 In the Run/Debug Configurations, add a new Configuration choosing Maven. Write 'clean package' in the Comand line under Parameters. The Software will automatically compile the Project and pack it into war/jar file.
 
-# Tomcat install and setting
+# Tomcat setting
 Because our web ultimately needs to run on sever, we use Tomcat. Spring boots embedded within Tomcat. When using an external Tomcat server, must exclude embedded Tomcat servers then add Tomcat dependency.
 
 # Windows environment testing wen on server
