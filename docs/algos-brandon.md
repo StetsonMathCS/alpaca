@@ -24,7 +24,7 @@ Yes! This is accomplished via Params, which is an argument required by every pre
 that generates a VM. The format for Params is as follows:
 
 ```
-[paramaterName1-parameter1, paramaeterName2-paramer2]
+[paramaterName1-parameter1, paramaeterName2-parameter2, ...]
 ```
 
 For example, the generatePasswordOfLength() predicate accepts an argument, paramPasswordLength, for password length.
