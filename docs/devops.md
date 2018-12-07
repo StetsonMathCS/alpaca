@@ -36,11 +36,20 @@ To set up Jenkins, follow [this guide](https://jenkins.io/doc/book/installing/).
 
 Most of the scripts relevant to integration testing are simple bash scripts, but here are the commands for running each one:
 
-1. check_http_server.sh "bash /home/YOUR_USERNAME/alpaca/devops_scripts/check_http_server.sh"
-2. api_examples "bash /home/YOUR_USERNAME/alpaca/devops_scripts/api_examples.sh"
-3. alpaca_tests.pl "swipl -s /home/YOUR_USERNAME/alpaca/alpaca_tests.pl -t run_tests"
-4. testDatabase.sh "expect /home/YOUR_USERNAME/alpaca/devops_scripts/testDatabase.sh"
-5. test_website.sh "bash /home/YOUR_USERNAME/alpaca/devops_scripts/test_website.sh"
+1. check_http_server.sh
+> bash /home/YOUR_USERNAME/alpaca/devops_scripts/check_http_server.sh  
+
+2. api_examples
+> bash /home/YOUR_USERNAME/alpaca/devops_scripts/api_examples.sh
+
+3. alpaca_tests.pl
+> swipl -s /home/YOUR_USERNAME/alpaca/alpaca_tests.pl -t run_tests
+
+4. testDatabase.sh
+> expect /home/YOUR_USERNAME/alpaca/devops_scripts/testDatabase.sh
+
+5. test_website.sh
+> bash /home/YOUR_USERNAME/alpaca/devops_scripts/test_website.sh"
 
 ## Utility commands
 
