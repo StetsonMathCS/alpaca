@@ -1,6 +1,6 @@
-Report Generator 
+## Report Generator 
 
-Requirements
+# Requirements
 * Install Pandoc, Miktext, Java8, jConnector, and mySQL
   *	Pandoc: https://pandoc.org/installing.html
   * jConnector: https://dev.mysql.com/downloads/connector/j/
@@ -11,12 +11,12 @@ Requirements
 * Install IDE tool : Eclipse 
   * https://www.eclipse.org/downloads/
 
-How to compile and run the code with eclipse 
+# How to compile and run the code with eclipse 
   * Open eclipse 
   * File -> import -> Maven project 
   * Go to Main.java file -> Right click -> run 
 
-Features:
+# Features:
 The code has the 9 features that was on the alpaca tasks file.
 It generates a PDF and HTML report in Pandoc format and it includes:
   * an introduction paragraph.
@@ -25,7 +25,7 @@ It generates a PDF and HTML report in Pandoc format and it includes:
   * a list of vulnerability descriptions.
   * instructions for how to use the virtual machine.
 
-How the code works
+# How the code works
 Step1 : get vulns from mysql database 
 -	The part of the code that reads data from the database and print it up on the pdf and html report is in the Main.java file from line 22 to 39
 Step2: To choose/change the graph that is shown in the report:
