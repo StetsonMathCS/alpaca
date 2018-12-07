@@ -21,12 +21,12 @@ The website relies on information gathered from a vulnerability database. Check 
 Adjust spring.datasource.username and spring.datasource.password to match your mysql username and password. Also make sure the correct database is being used for spring.datasource.url. Check that the alpacaPath variable is correctly set in alpaca/web/java/web/WebController.java. The variable should match the location of the repository.
 
 # Package the program for J IDEA user
-In the Run/Debug Configurations, add a new Configuration choosing Maven. Write 'clean package' in the Comand line under Parameters. The Software will automatically compile the Project and pack it into war/jar file.
+In the Run/Debug Configurations, add a new Configuration choosing Maven. Write 'clean package' in the Comand line under Parameters. The Software will automatically compile the Project and pack it into war/jar file. The package will stored under target folder.
 
 # Tomcat setting
 Because our web ultimately needs to run on sever, we use Tomcat. Spring boots embedded within Tomcat. When using an external Tomcat server, must exclude embedded Tomcat servers then add Tomcat dependency.
 
-# Windows environment testing wen on server
+# Windows environment run project on server
 First need using Putty connect to the sever
 To run the program, user need install Tomcat 8.5.34 (the version that we used) 
 Get the war file under target folder
