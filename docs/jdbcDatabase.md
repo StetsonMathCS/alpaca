@@ -75,18 +75,6 @@ https://dev.mysql.com/downloads/connector/j/
 
 In order to connect mySQL to the java code, the jConnector should be added in the JAR library under build path 
 
-<pre>
-$ wget [url with the file needed]
-</pre>
-
-Copy file from the downloaded archive 'mysql-connector-java-*.jar' to the folder 'contrib/dataimporthandler/lib' in the folder where Solr is installed. You may need to create the lib folder if you don't have it.
-
-<pre>
-$ cp mysql-connector-java-5.1.30-bin.jar ../Solr/solr-7.5.0/contrib/dataimporthandler/lib 
-</pre>
-
-Your desired directory will have a slightly different path. The above cp command is ran while I was in the .jar directory
-
 ### Connects to the server:
 
 <pre>
@@ -145,64 +133,17 @@ $ssh username@remoteserver -L 3306:localhost:3306
 ### * Note : the mySQL server should be stopped in your local machine before executing the program. Other wise, the address would be used twice and might cause an error.
 ![alt tunnel](./img/tunnel.jpg)
 
-# Solr 
-Apache Solr is an open source enterprise search engine for data stored in HDFS which enables organizations to perform full-text search and real-time indexing. Many applications store data in Relational databases, and searching is a common use case that you'll have to deal with. You can search the data in Relational or structured databases by importing the data using Apache Solr's Data Import Handler. This is a way of importing data from a database using the JBDC drivers and indexing it.
-
-## Setting up Solr using Putty 
-
-### Download and install Solr 
-Prereq: You will need the Java Runtime Environment (JRE) verion 1.8 or higher. You can check your Java version like this:
+## Installing MySQL Connector/J on the server
+MySQL Connector/J is the official JDBC driver for MySQL. 
 
 <pre>
-$ java -version
-Java(TM) SE Runtime Environment (build 1.8.9_60-b27)
-Java HotSpot(TM) 64-Bit Server VM (build 25.60-b23, mixed mode)
+$ wget [url with the file needed]
 </pre>
 
-Download and install Solr from https://lucene.apache.org/solr/ You can use curl or wget.
+Copy file from the downloaded archive 'mysql-connector-java-*.jar' to the folder 'contrib/dataimporthandler/lib' in the folder where Solr is installed. You may need to create the lib folder if you don't have it.
 
 <pre>
-$ wget [url/file.tar]
+$ cp mysql-connector-java-5.1.30-bin.jar ../Solr/solr-7.5.0/contrib/dataimporthandler/lib 
 </pre>
 
-Make sure to extract the contents of the downloaded folder. There are many references on Google how to do that depending on what file extension you have downloaded.
-
-### Setup a new collection
-bin/solr create -c products This will create a new collection named products which will be visible from Solr when you try to see what collections you have.
-
-### solrconfig.xml
-edit solrconfig.xml (/solr/example/files/conf) by adding:
-
-```html
-<requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
-	<lst name="default">
-		<str name="config"data-config.xml</str>
-	</lst>
-</requestHandler>
-```
-
-## data-config.xml for MYSQL database
-You can find a file, if you don't know where it is, with the command:
-
-<pre>
-$ locate filename.ext
-</pre>
-
-The file 'data-config.xml' will define data we want to import/index from our datasource.
-
-### Start Solr 
-prereq: Setup Putty in Tunnels in SSH to allow localhost to link to your desired port.
-
-Change into your Solr directory and run:
-
-<pre>
-$ bin/solr start -e cloud 
-</pre>
-
-This will give you some options to configure Solr. Then you can go to your browser and open localhost:8983 The port can be any available port. It does not have to be 8983
-
-### References 
-* https://www.progress.com/tutorials/jdbc/import-sql-server-data-into-apache-solr-using-data-import-handler-via-jdbc
-
-* https://gist.github.com/rnjailamba/8c872768b136a88a10b1
-
+Your desired directory will have a slightly different path. The above cp command is ran while I was in the .jar directory
