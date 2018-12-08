@@ -34,12 +34,33 @@ in the java code.
 <pre>
 System.out.println("1. What is the total number of vulnerabilities?");
 </pre>
-
+### Execute:
+<pre>
+ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM vuln;");
+            //get the resulting number
+            rs.next();
+            int count = rs.getInt(1);
+            //print out the answer
+            System.out.println("\tThere is a total of " + count + " vulnerabilities.");
+</pre>
 it counts the vulnerabilities and execute a query from Java in order to count them
 
 ### Example:
 <pre>
 System.out.println("3. Which vulnerabilities employ a brute force technique to login?");
+</pre>
+### Execute:
+<pre>
+rs = statement.executeQuery("SELECT vuln_id, vuln_name, vuln_description FROM vuln WHERE vuln_name LIKE '%brute-force%';");
+            //zeros the counter
+            int i = 0;
+            while (rs.next()) {
+                //increase the counter
+                i++;
+                //print out the answer
+                System.out.println("\tID = " + rs.getInt(1) + ", Vulnerability: " + rs.getString(2) + ", Description: " + rs.getString(3));
+            }
+
 </pre>
 
 Here, it should take a sql query the %like% and display any vulnerability that has brute force
