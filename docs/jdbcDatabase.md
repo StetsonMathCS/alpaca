@@ -154,13 +154,11 @@ bin/solr create -c products This will create a new collection named products whi
 edit solrconfig.xml (/solr/example/files/conf) by adding:
 
 ```html
-<pre>
 <requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
 	<lst name="default">
 		<str name="config"data-config.xml</str>
 	</lst>
 </requestHandler>
-</pre>
 ```
 
 ## data-config.xml for MYSQL database
