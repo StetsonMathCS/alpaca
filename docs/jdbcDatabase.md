@@ -7,7 +7,7 @@
 + mySQL
 + Solr 
 
-##Installing MySQL shell on Linux
+## Installing MySQL shell on Linux
 
 <pre>
 sudo apt-get update 
@@ -15,19 +15,19 @@ sudo apt-get update
 apt-get install mysql-server
 </pre>
 
-##Getting into the MySQL shell  
+## Getting into the MySQL shell  
 
 <pre>
 mysql -u root
 </pre>
 
-##Setting up a superuser
+## Setting up a superuser
 
 <pre>
 CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
 </pre>
 
-##Grant all privileges to that user so it can have root privileges 
+## Grant all privileges to that user so it can have root privileges 
 
 <pre>
 GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhos';
@@ -46,13 +46,13 @@ mysql -u username -p password
 use alpaca;
 </pre>
 
-## see all tables
+## See all tables
 
 <pre>
 show tables;
 </pre>
 
-## backup database 
+## Backup database 
 By default, mysqldump writes information as SQL statements to the standard output. Save the output in a file: 
 
 <pre>
