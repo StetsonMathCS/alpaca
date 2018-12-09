@@ -26,7 +26,6 @@ swipl cliques.pl
 all_cliques(Graph, Cliques, AllCliques).
 </pre>
 
-
 Each new section of a graph holds the format:
 <pre>
 [g(_,[ ])]
@@ -59,7 +58,19 @@ If you were to create an visual undirected graph from this information, the grap
 
 The output <i>AllCliques</i> is a list contains all possible cliques size 1 through size 8 implied by the given graph.
 
-2.) Determine whether a clique is a subset of another, and remove cliques that are subsets of other cliques.
+2.) Determine the list of all unique machines in your network given a graph.
+<pre>
+getMachines([g(M,_)|Tail], Ms, Machines).
+</pre>
+
+Example:
+<pre>
+getMachines([g(a,[b,c]),g(b,[a,c,d]),g(c,[a,b]),g(d,[b,e]),g(e,[d])], [], Machines).
+</pre>
+
+This will output a the list of machines: a,b,c,d,e.
+
+3.) Determine whether a clique is a subset of another, and remove cliques that are subsets of other cliques.
 <pre>
 removeSubsets([List|Rest], UniqueNonSubsets, Result).
 </pre>
@@ -71,7 +82,7 @@ removeSubsets(AllCliques, [], Result).
 
 In this example, we use the list of all possible cliques <i> AllCliques </i>, which was created from running the <i> all_cliques() </i> function, as input. <i> Result </i> is a list of all unique cliques that exist in <i> AllCliques </i>, which further represents the number of subnetworks that will exist in the network that are creating.
 
-3.) Assign each machine in your network its own IP address such that the machines in each clique are members of the same private subnet and thus share the same network card/adapter when instantiate in VirtualBox.
+4.) Assign each machine in your network its own IP address such that the machines in each clique are members of the same private subnet and thus share the same network card/adapter when instantiate in VirtualBox.
 <pre>
 assignAddrToNodesInClique(Machines, Cliques, MachineIps, Final).
 </pre>
@@ -86,6 +97,26 @@ In the example above,
 * <i>b</i> would be assigned the addresses: <i>192.168.75.76</i> and <i>192.168.76.75</i>, because it is a member of two separate subnets;
 * and so on...
 
+5.) Create/Edit the anisble inventory files in according to yous network design.
+<pre>
+writeInventoryFile(List).
+</pre>
+
+Example:
+<pre>
+writeInventoryFile([[a,b,c], [d,e], [b,d]]).
+</pre>
+
+6.) Create/Edit a Vagrantfile from a list of the machines and their addresses. (This list can be created by using the <i>assignAddrToNodesInClique()</i> function.)
+<pre>
+editVagrantfile(List).
+</pre>
+
+Example:
+<pre>
+editVagrantfile([[a, ["192.168.75.75"]], [b, ["192.168.75.76", "192.168.77.75"]], [c, ["192.168.75.77"]]]).
+</pre>
+where <i>a</i>, <i>b</i>, and <i>c</i> are machines followed by a list of the addresses that belong to them.
 
 ##### All-in-One Function
 ###### The function that runs all of the above functions and more for an easy and quick way to accomplish all the tasks that need to be accomplished to create a network of Virtual Machines in VitualBox is:
