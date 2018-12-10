@@ -119,7 +119,7 @@ editVagrantfile([[a, ["192.168.75.75"]], [b, ["192.168.75.76", "192.168.77.75"]]
 where <i>a</i>, <i>b</i>, and <i>c</i> are machines followed by a list of the addresses that belong to them.
 
 ##### All-in-One Function
-###### The function that runs all of the above functions and more for an easy and quick way to accomplish all the tasks that need to be accomplished to create a network of Virtual Machines in VitualBox is:
+###### 7.) Run all of the above functions and more for an easy and quick way to accomplish all the tasks that need to be accomplished to create a network of Virtual Machines in VitualBox is:
 <pre>
 runAll(Graph, Cliques, AllCliques).
 </pre>
@@ -136,4 +136,30 @@ Example:
 runAll([g(a,[b,c]),g(b,[a,c,d]),g(c,[a,b]),g(d,[b,e]),g(e,[d])], Cliques, AllCliques).
 </pre>
 
-<i> After running runAll(Graph, Cliques, AllCliques), the Ansible and Vagrant files needed to create your network of Virtual Machines are ready. </i>
+##### <i> After running runAll(Graph, Cliques, AllCliques), the Ansible and Vagrant files needed to create your network of Virtual Machines are ready. </i>
+
+8.) Create the range, including playbook files, for each VM.
+<pre>
+createRangeFromIGS(Goal, InitialState, DirectoryName).
+</pre>
+
+Example:
+<pre>
+createRangeFromIGS([server_access_root], [], 'server_access_root').
+</pre>
+
+9.) Create/Start one of the VM's in your network.
+<pre>
+createStartRangeFromIGS(VMname).
+</pre>
+
+Example:
+<pre>
+createStartRangeFromIGS(a).
+</pre>
+
+#### Important Note:
+#### As of now, one playbook files is specified for all VM's. This means that every VM, when started, will have the same inital states. That is also a reason why you have to create/start each VM in your network individaully.
+#### There is not yet a function implemented that can allow you to adjust/customize the vulnerabilites per machine in your network.
+
+
