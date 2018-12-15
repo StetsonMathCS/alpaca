@@ -1,5 +1,0 @@
-/bin/
-*.properties
-config.properties
-production
-*production.properties
