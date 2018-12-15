@@ -1,5 +1,5 @@
-% :- [vulnDatabase].
 %:- use_module(library(archive)).
+:- [vulnDatabase].
 
 /*
 [([Configs1], [Vulns1]), ([Configs2], [Vulns2]), ..., ([ConfigsN], [VulnsN])]
@@ -40,7 +40,7 @@ groupPathsByConfigs(Paths, Paths).
 % where Config is a maximally merged config for the lattice (all paths in the
 % lattice will have this same maximal config)
 % renamed from 'allPaths'
-createAllLatticesFromIGS(Goals, InitialState, Lattices) :-
+createAllLatticesFromIGS(InitialState, Goals, Lattices) :-
 	setof([(Config, Vulns)], achieveGoal(Goals, InitialState, [], Config, Vulns), Paths),
     % repeatedly merge these configs until no more merging is possible
     groupPathsByConfigs(Paths, Lattices).
@@ -69,7 +69,7 @@ graphAllVulns(FileName) :-
 	generatePNGFromDot(Str, FileName), !.
 
 % another way to call formatDotSingleVuln:
-% createAllLatticesFromIGS([server_access_root], [], Result),
+% createAllLatticesFromIGS([], [server_access_root], Result),
 %  Result = [(Config, Vulns)|_],  % get first path, just for demonstration
 %  formatDotVulns(Vulns, Str),
 %  generatePNGFromDot(Str, 'allLattices.gv').
@@ -121,8 +121,8 @@ generatePNGFromDot(String, File) :-
 % Example: createRangeFromIGS(['server_access_root'], [], 'server_access_root')
 % Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
 % renamed from 'createRange'
-createRangeFromIGS(Goal, InitialState, DirectoryName, Params) :-
-    createAllLatticesFromIGS(Goal, InitialState, Lattices),
+createRangeFromIGS(InitialState, Goal, DirectoryName, Params) :-
+    createAllLatticesFromIGS(InitialState, Goal, Lattices),
     length(Lattices, Length),
     createLatticeDirectories(DirectoryName, 1, Length),
     generatePNGFromDotInDirectory(Lattices, DirectoryName),
@@ -178,8 +178,8 @@ generatePNGFromLattices(Lattices, FileName) :-
 % Generates all graphs from list of lattices with FileName
 % This predicate
 % Example: generateAllGraphs([server_access_root], [], 'server_access_root')
-generateAllGraphs(Goal, InitialState, FileName) :-
-	allPaths(Goal, InitialState, Lattices),
+generateAllGraphs(InitialState, Goal, FileName) :-
+	allPaths(InitialState, Goal, Lattices),
 	generateAllLattices(Lattices, FileName).
 
 generateAllLattices([], _).
@@ -244,7 +244,7 @@ sortByLength(Ordered, (_, Vulns1), (_, Vulns2)) :-
 	compare(Ordered, Length1, Length2).
 
 % gives back shortest path in each lattice
-% Example: createAllLatticesFromIGS([server_access_root], [], Lattices), shortestPathInLattices(Lattices, Shortest)
+% Example: createAllLatticesFromIGS([], [server_access_root], Lattices), shortestPathInLattices(Lattices, Shortest)
 shortestPathInLattices([], []).
 shortestPathInLattices([Lattice|Lattices], [[Shortest]|Rest]) :-
 	predsort(sortByLength, Lattice, SortedPaths),
@@ -252,7 +252,7 @@ shortestPathInLattices([Lattice|Lattices], [[Shortest]|Rest]) :-
     shortestPathInLattices(Lattices, Rest).
 
 % Constrains results to a minimum length
-% Example: createAllLatticesFromIGS([server_access_root], [], Lattices), filterLatticesByShortest(10, Lattices, Result)
+% Example: createAllLatticesFromIGS([], [server_access_root], Lattices), filterLatticesByShortest(10, Lattices, Result)
 latticeShortestPath(_, []).
 latticeShortestPath(MinLength, [(_,Path)|Paths]) :-
     length(Path, L),
@@ -269,9 +269,9 @@ filterLatticesByShortest(MinLength, [_|Lattices], Result) :-
 
 % BROKEN: createAllLatticesFromIGS returns a list of paths, not just paths,
 % since we are now grouping paths by their configs (i.e., making distinct lattices)
-shortestPath(Goal, InitialState) :-
-	createAllLatticesFromIGS(Goal, InitialState, createAllLatticesFromIGS),
-	predsort(sortByLength, createAllLatticesFromIGS, SortedPaths),
+shortestPath(InitialState, Goal) :-
+	createAllLatticesFromIGS(InitialState, Goal, Lattices),
+	predsort(sortByLength, Lattices, SortedPaths),
 	nth0(0, SortedPaths, (Configs, Vulns)),
 	formatDotVulns(Vulns, Str),
 	generatePNGFromDot(Str, 'shortestPath-test.gv'),
@@ -279,9 +279,9 @@ shortestPath(Goal, InitialState) :-
 
 % BROKEN: createAllLatticesFromIGS returns a list of paths, not just paths,
 % since we are now grouping paths by their configs (i.e., making distinct lattices)
-longestPath(Goal, InitialState) :-
-	createAllLatticesFromIGS(Goal, InitialState, createAllLatticesFromIGS),
-	predsort(sortByLength, createAllLatticesFromIGS, SortedPaths),
+longestPath(InitialState, Goal) :-
+	createAllLatticesFromIGS(InitialState, Goal, Lattices),
+	predsort(sortByLength, Lattices, SortedPaths),
 	last(SortedPaths, (Configs, Vulns)),
 	formatDotVulns(Vulns, Str),
 	generatePNGFromDot(Str, 'longestPath-test.gv'),
@@ -414,58 +414,15 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     NewConfig = [K-NewVals|TmpConfig],
     sort(NewConfig, SortedConfig).
 
-
-replace_substring(String, To_Replace, Replace_With, Result) :-
-    append([Front, To_Replace, Back], String),
-    append([Front, Replace_With, Back], Result).
-
-% MySQL Commands
-replace_word(Old, New, Orig, Replaced) :-
-    atomic_list_concat(Split, Old, Orig),
-    atomic_list_concat(Split, New, Replaced). 
-
-query(USER, PWD, DB, QUERY, Columns, Rows) :-
-	atom_concat('-p', PWD, PPWD),
-	process_create(path(mysql), ['-u', USER, PPWD, '-D', DB, '-e', QUERY], [stdout(pipe(Out)),stderr(std)]),
-	read_record(Out, Columns),
-	read_records(Out, Rows).
-
-read_record(Out, Fields) :-
-	read_line_to_codes(Out, Codes),
-	Codes \= end_of_file,
-	atom_codes(Line, Codes),
-	replace_word('NULL', '[]', Line, R),
-	atomic_list_concat(Fields, '\t', R).
-
-read_records(Out, [Record|Rs]) :-
-	read_record(Out, Record),
-	!, read_records(Out, Rs).
-read_records(Out, []) :-
-	close(Out).
-
-% convert MySQL table into ProLog knowledge base
-capture_table(USER, PWD, DB, QUERY, Functor) :-
-	query(USER, PWD, DB, QUERY, _Columns, Rows),
-	maplist(capture_table(Functor), Rows).
-
-capture_table(Functor, [Vuln|VulnProps]) :-
-	maplist(term_string, VulnPropTerms, VulnProps),
-	Clause =.. [Functor|[Vuln|VulnPropTerms]],
-	assertz(Clause).
-
-initialSetup(Username, Password) :-
-	capture_table(Username, Password, "vuln", "select vuln_name, concat('[',group_concat(distinct statesPre.states_name),']') as pre,concat('[',group_concat(distinct statesPost.states_name),']') as post, vuln_config from vuln left join vuln_pre on vuln.vuln_id = vuln_pre.vuln_id left join states as statesPre on vuln_pre.states_id=statesPre.states_id left join vuln_post on vuln_post.vuln_id=vuln.vuln_id left join states as statesPost on vuln_post.states_id=statesPost.states_id group by vuln.vuln_id;", vuln),
-	!.
-
 % creates a lattice w/ complexity specified in the specific bounds.
-createLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Name, Params) :-
-	findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice),
+createLatticeWithComplexityIGS(InitialState, Goal, Lower, Upper, Name, Params) :-
+	findLatticeWithComplexityIGS(InitialState, Goal, Lower, Upper, Lattice),
 	createLatticeDirectories(Name, 1, 1),
 	generateLatticeInDirectory([Lattice], Name),
 	getConfigs([Lattice], Name, 1, Params).
 
-findLatticeWithComplexityIGS(Goal, InitialState, Lower, Upper, Lattice) :-
-	createAllLatticesFromIGS(Goal, InitialState, Lattices),
+findLatticeWithComplexityIGS(InitialState, Goal, Lower, Upper, Lattice) :-
+	createAllLatticesFromIGS(InitialState, Goal, Lattices),
 	calculateLatticeComplexity(Lattices, Sums),
 	matchBoundedConstraint(Sums, Lower, Upper, Elem),
 	indexOf(Sums, Elem, Index),
@@ -488,8 +445,8 @@ indexOf([_|Tail], Element, Index):-
 
 % create a vulnerability lattice, constraining for
 % a specific Vulnerability
-createLatticeWithVulnIGS(Goal, InitialState, Name, Vuln, Params) :-
-	createAllLatticesFromIGS(Goal, InitialState, Lattices),
+createLatticeWithVulnIGS(InitialState, Goal, Name, Vuln, Params) :-
+	createAllLatticesFromIGS(InitialState, Goal, Lattices),
 	checkVulnLatticesForVuln(Lattices, Vuln, Lattice),
 	createLatticeDirectories(Name, 1, 1),
 	generatePNGFromDotInDirectory([Lattice], Name),
@@ -531,7 +488,7 @@ generateUsername(Username) :-
 	Username = Elem.
 
 % generates a password, pulling letters from a dictionary
-generatePasswordOfLength(Params, Password) :-
+generatePassword(Params, Password) :-
 	get_assoc(paramPasswordLength, Params, Length),
 	passwords(Passwords),
 	generateFromList(Passwords, Length, Output),
@@ -543,4 +500,5 @@ passwords(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','
 	'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4',
 	'5', '6', '7', '8', '9', '0', '!', '@', '#', '$', '%' ,'^', '&', '*', '(', ')']).
 
-usernames(['admin', 'bbelna', 'jeckroth', 'guest']).
+usernames(['admin', 'jane', 'john', 'guest']).
+

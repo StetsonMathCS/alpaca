@@ -13,8 +13,7 @@
 :- http_handler('/alpaca', handle, [time_limit(30)]).
 :- [alpaca].
 
-run :-
-http_daemon([port(10333)]).
+run :- http_daemon([port(10333)]).
 
 validPredicates([graphAllVulns, createRangeFromIGS,
                  createStartRangeFromIGS, createAllLatticesFromIGS]).

@@ -1,2 +1,2 @@
 ---
-- import_playbook: ../t1/playbook.yml
+- import_playbook: ../demox1/playbook.yml

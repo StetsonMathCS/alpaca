@@ -9,8 +9,8 @@
 test(graphAllVulns, [nondet]) :-
         graphAllVulns('Testfile').
 
-$test(createRangeFromIGS) :-
-$        createRangeFromIGS([server_access_root], [], server_access_root40).
+%test(createRangeFromIGS) :-
+%        createRangeFromIGS([server_access_root], [], server_access_root40).
 
 
 test(add) :-
