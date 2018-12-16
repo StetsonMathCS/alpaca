@@ -1,21 +1,21 @@
-%:- use_module(library(archive)).
-:- use_module(library(uuid)).
 :- [configs].
 :- [graphviz].
 :- [output].
 :- [analysis].
 :- [vulnDatabase].
 
-rangesDir("../ranges").
-
 % Example: createRangeFromIGS(['server_access_root'], [], 'server_access_root')
 % Finds all lattices, create directories, generate lattices in directory, create ansible playbooks
 createRangeFromIGS(InitialState, Goal, Params) :-
     createAllLatticesFromIGS(InitialState, Goal, Lattices),
-    uuid(RangeId, [version(4)]),
-    format("Creating range ~s~n", [RangeId]),
-    printLattices(Lattices),nl,
-    maplist(outputLattice(RangeId, Params), Lattices).
+    % realize lattice config if there are predicates involved
+    realizeLatticeConfigsFromParams(Lattices, Params, RealizedLattices),
+    outputRange(InitialState, Goal, Params, RealizedLattices).
+
+realizeLatticeConfigsFromParams([], _, []).
+realizeLatticeConfigsFromParams([(Config, Vulns)|Rest], Params, [(RealizedConfig, Vulns)|RealizedRest]) :-
+    realizeConfigFromParams(Config, Params, RealizedConfig),
+    realizeLatticeConfigsFromParams(Rest, Params, RealizedRest).
 
 % e.g., createAllLatticesFromIGS([server_access_root], [], Lattices)
 % paths will be in reverse usually, but that doesnt matter for generating a lattice

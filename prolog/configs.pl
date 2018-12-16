@@ -80,6 +80,19 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
     NewConfig = [K-NewVals|TmpConfig],
     sort(NewConfig, SortedConfig).
 
+realizeConfigFromParams([], _, []).
+realizeConfigFromParams([Key-Vals|ConfigRest], Params, [Key-ValsRealized|ConfigRealizedRest]) :-
+    realizeValsFromParams(Vals, Params, ValsRealized),
+    realizeConfigFromParams(ConfigRest, Params, ConfigRealizedRest).
+
+realizeValsFromParams([], _, []).
+realizeValsFromParams([Key-(Quantifier,Val)|ValsRest], Params, [Key-(Quantifier,ValRealized)|ValsRealizedRest]) :-
+    (atom(Val) ->
+        list_to_assoc(Params, Assoc),
+        call(Val, Assoc, ValRealized) ;
+        ValRealized = Val),
+    realizeValsFromParams(ValsRest, Params, ValsRealizedRest).
+
 % generates an atom from a list of atoms, at random
 generateFromList(List, Length, Output) :-
 	length(Output, Length),
