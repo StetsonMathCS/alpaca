@@ -6,3 +6,4 @@
 /.metadata/
 *.properties
 *production.properties
+prolog/httpd.log
