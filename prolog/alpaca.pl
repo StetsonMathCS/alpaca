@@ -47,16 +47,3 @@ achieveGoal([Goal|Goals], InitialState, StartingConfigs, AcceptedConfigs, [(Inpu
     achieveGoal(NewGoals, NewState, StartingConfigs, NewConfigs, Vulns),
     checkConfigs(NewConfigs, Configs, AcceptedConfigs).
 
-% swipl repl helpers
-printLattices([]).
-printLattices([(Config, Vulns)|Rest]) :-
-    print('----'), nl,
-    print('Config: '), print(Config), nl,
-    printVulns(Vulns), nl,
-    printLattices(Rest).
-
-printVulns([]).
-printVulns([Vulns|Rest]) :-
-	print(Vulns), nl,
-	printVulns(Rest).
-

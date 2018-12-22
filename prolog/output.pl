@@ -8,24 +8,25 @@ outputRange(InitialState, Goal, Params, Lattices) :-
     format(atom(RangeDirRel), "../ranges/~s", [RangeId]),
     absolute_file_name(RangeDirRel, RangeDir),
     make_directory_path(RangeDir),
-    outputRangeMetadata(RangeDir, RangeId, InitialState, Goal, Params, Lattices),
-    printLattices(Lattices),nl,
-    maplist(outputLattice(RangeDir, RangeId), Lattices),
+    findall((LatticeId, Lattice), (member(Lattice, Lattices), uuid(LatticeId, [version(4)])), LatticesWithIds),
+    outputRangeMetadata(RangeDir, RangeId, InitialState, Goal, Params, LatticesWithIds),
+    printLattices(LatticesWithIds), nl,
+    maplist(outputLattice(RangeDir, RangeId), LatticesWithIds),
     working_directory(OrigWD, "../ranges"),
     format(atom(Command), "zip -r ~s.zip ~s", [RangeId, RangeId]),
     shell(Command),
     working_directory(_, OrigWD).
 
-outputRangeMetadata(RangeDir, RangeId, InitialState, Goal, Params, Lattices) :-
+outputRangeMetadata(RangeDir, RangeId, InitialState, Goal, Params, LatticesWithIds) :-
     format(atom(RangeMetadataFname), "~s/range_metadata.json", [RangeDir]),
 	open(RangeMetadataFname, write, Stream),
-    jsonifyLattices(Lattices, JsonLattices),
+    jsonifyLattices(LatticesWithIds, JsonLattices),
     json_write(Stream, json([rangeId-RangeId, initialState-InitialState, goal-Goal,
                              params-json(Params), lattices-JsonLattices])),
     close(Stream).
 
 jsonifyLattices([], []).
-jsonifyLattices([(Config,Vulns)|Rest], [json([config-JsonConfig, vulns-JsonVulns])|JsonRest]) :-
+jsonifyLattices([(LatticeId, (Config,Vulns))|Rest], [json([latticeId-LatticeId, config-JsonConfig, vulns-JsonVulns])|JsonRest]) :-
     jsonifyConfig(Config, JsonConfig),
     jsonifyVulns(Vulns, JsonVulns),
     jsonifyLattices(Rest, JsonRest).
@@ -47,18 +48,24 @@ jsonifyVulns([(Input, Description, Output)|Rest], [Json|JsonRest]) :-
     Json = json([input-Input, description-Description, output-Output]),
     jsonifyVulns(Rest, JsonRest).
 
-outputLattice(RangeDir, RangeId, Lattice) :-
-    uuid(LatticeId, [version(4)]),
+outputLattice(RangeDir, RangeId, (LatticeId, Lattice)) :-
     format("Creating lattice ~s in range ~s~n", [LatticeId, RangeId]),
     format(atom(LatticeDir), "~s/~s", [RangeDir, LatticeId]),
     make_directory_path(LatticeDir),
+    % link packer files
+    format(atom(LatticePackerDir), "~s/packer", [LatticeDir]),
+    absolute_file_name("../packer", PackerDir),
+    link_file(PackerDir, LatticePackerDir, symbolic),
+    format(atom(LatticePackerScript), "~s/run_packer.sh", [LatticeDir]),
+    absolute_file_name("../run_packer.sh", PackerScript),
+    link_file(PackerScript, LatticePackerScript, symbolic),
     generatePNGFromLattice(LatticeDir, Lattice),
     Lattice = (Configs, _),
 	createYamlFiles(Configs, LatticeDir), !.
 
 createYamlFiles(Configs, LatticeDir) :-
-    format(atom(AnsibleDir), "~s/ansible", [LatticeDir]),
-    absolute_file_name("../ansible", ParentAnsibleDir),
+    format(atom(AnsibleDir), "~s/roles", [LatticeDir]),
+    absolute_file_name("../ansible/roles", ParentAnsibleDir),
     link_file(ParentAnsibleDir, AnsibleDir, symbolic),
     print(ParentAnsibleDir),nl,
 	formatRoles(Configs, Roles),
@@ -99,4 +106,18 @@ listVals([Val|Vals], String) :-
 	format(atom(String), "~t~10|- ~s~n~s", [Val, String1]).
 listVals(Val, String) :-
 	format(atom(String), "~t~10|- ~s~n", [Val]).
+
+% swipl repl helpers
+printLattices([]).
+printLattices([(LatticeId, (Config, Vulns))|Rest]) :-
+    print('----'), nl,
+    print(LatticeId), nl,
+    print('Config: '), print(Config), nl,
+    printVulns(Vulns), nl,
+    printLattices(Rest).
+
+printVulns([]).
+printVulns([Vulns|Rest]) :-
+	print(Vulns), nl,
+	printVulns(Rest).
 
