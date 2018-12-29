@@ -82,15 +82,20 @@ mergeConfigs(PriorConfig, ThisConfig, SortedConfig) :-
 
 realizeConfigFromParams([], _, []).
 realizeConfigFromParams([Key-Vals|ConfigRest], Params, [Key-ValsRealized|ConfigRealizedRest]) :-
-    realizeValsFromParams(Vals, Params, ValsRealized),
+    realizeKeysValsFromParams(Vals, Params, ValsRealized),
     realizeConfigFromParams(ConfigRest, Params, ConfigRealizedRest).
 
+realizeKeysValsFromParams([], _, []).
+realizeKeysValsFromParams([Key-(Quantifier,Vals)|KeysValsRest], Params, [Key-(Quantifier,ValsRealized)|KeysValsRealizedRest]) :-
+    realizeValsFromParams(Vals, Params, ValsRealized),
+    realizeKeysValsFromParams(KeysValsRest, Params, KeysValsRealizedRest).
+
 realizeValsFromParams([], _, []).
-realizeValsFromParams([Key-(Quantifier,Val)|ValsRest], Params, [Key-(Quantifier,ValRealized)|ValsRealizedRest]) :-
-    (atom(Val) ->
+realizeValsFromParams([Val|ValsRest], Params, [ValRealized|ValsRealizedRest]) :-
+    (string(Val) ->
+        ValRealized = Val ;
         list_to_assoc(Params, Assoc),
-        call(Val, Assoc, ValRealized) ;
-        ValRealized = Val),
+        call(Val, Assoc, ValRealized)),
     realizeValsFromParams(ValsRest, Params, ValsRealizedRest).
 
 % generates an atom from a list of atoms, at random
@@ -105,16 +110,15 @@ random_char_generate(List, N, Char):-  random(0, N, X), nth0(X, List, Char).
 generateUsername(Username) :-
 	usernames(Usernames),
 	generateFromList(Usernames, 1, Output),
-	nth0(0, Output, Elem),
-	Username = Elem.
+	nth0(0, Output, UsernameAtom),
+    atom_string(UsernameAtom, Username).
 
 % generates a password, pulling letters from a dictionary
 generatePassword(Params, Password) :-
 	get_assoc(paramPasswordLength, Params, Length),
 	passwords(Passwords),
 	generateFromList(Passwords, Length, Output),
-	atom_chars(GenPwd, Output),
-	Password = GenPwd.
+	string_chars(Password, Output).
 
 passwords(['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',

@@ -33,8 +33,10 @@ createAllLatticesFromIGS(InitialState, Goals, Lattices) :-
 % keep single config (all paths will share this same config), append all paths into a set of vulns
 appendPathsIntoLattice([], []).
 appendPathsIntoLattice([(Config, Vulns)|Rest], (Config, AllVulns)) :-
-    maplist(nth0(1), Rest, RestVulns),
+    maplist(secondPair, Rest, RestVulns),
     append([Vulns|RestVulns], AllVulns).
+
+secondPair((_, B), B).
 
 % work backwards from goal to initial
 achieveGoal([], _, [], [], []).
