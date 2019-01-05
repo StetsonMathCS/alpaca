@@ -18,19 +18,19 @@ vuln('vsftpd-backdoor', [vsftpd234], [root_shell],
 vuln('scan-ssh', [], [ssh, openssh76p1],
         [openssh-[version-(only, ["7.6p1"])]]).
 
-vuln('ssh-login-root(brute-force)', [ssh], [root_shell],
+%vuln('ssh-login-root(brute-force)', [ssh], [root_shell],
+%        [openssh-[allowrootlogin-(only, ["Yes"])],
+%        users-[root-(only, [generatePassword])]]).
+
+vuln('ssh-login-root', [ssh, passwords], [root_shell],
         [openssh-[allowrootlogin-(only, ["Yes"])],
         users-[root-(only, [generatePassword])]]).
 
-vuln('ssh-login-root(credentials)', [ssh, passwords], [root_shell],
-        [openssh-[allowrootlogin-(only, ["Yes"])],
-        users-[root-(only, [generatePassword])]]).
+%vuln('ssh-login(brute-force)', [ssh, user_list], [user_shell],
+%        [users-[logins-(exists, [generateUsername]),
+%                passwords-(exists, [generatePassword])]]).
 
-vuln('ssh-user(brute-force)', [ssh, user_list], [user_shell],
-        [users-[logins-(exists, [generateUsername]),
-                passwords-(exists, [generatePassword])]]).
-
-vuln('ssh-user(credentials)', [ssh, user_list, passwords], [user_shell],
+vuln('ssh-login-user', [ssh, user_list, passwords], [user_shell],
         [users-[logins-(exists, [generateUsername]),
                 passwords-(exists, [generatePassword])]]).
 
@@ -51,39 +51,47 @@ vuln('find-login-page', [http], [php_webapp, login_page, bad_sql],
         php-[deployments-(exists, ["loginpage1-badsql"])],
         mysql-[db-(exists, ["logindb1"])]]).
 
-vuln('login-web-admin(brute-force)', [php_webapp, login_page], [web_admin_access, web_passwords], []).
+%vuln('web-login-admin(brute-force)', [login_page, web_user_list], [web_admin_access, web_passwords], []).
 
-vuln('login-web-admin(credentials)', [php_webapp, login_page, web_passwords], [web_admin_access], []).
+vuln('web-login-admin', [login_page, web_user_list, web_passwords], [web_admin_access], []).
 
-vuln('sql-injection', [php_webapp, login_page, bad_sql], [db_access], []).
+vuln('sql-injection', [login_page, bad_sql], [db_access], []).
 
 vuln('exec-custom-php', [php_webapp, web_admin_access], [user_shell], []).
 
 % == Database ==
 
-vuln('db-query-users', [db_access], [user_list, hashed_web_passwords],
+vuln('db-query-users', [db_access], [web_user_list, hashed_web_passwords],
         [mysql-[db-(exists, ["logindb1"])]]).
 
 % == Java ==
 
-vuln('scan-jboss', [http], [jboss],
-        [jboss-[]]).
+%vuln('scan-jboss', [http], [jboss],
+%        [jboss-[]]).
 
 % CVE-2017-12149
-vuln('deserialization-attack', [jboss], [user_shell],
-        [jboss-[version-(only, ["5.2.2"]),
-                deployments-(exists, ["jbossdemo1.war"])]]).
+%vuln('deserialization-attack', [jboss], [user_shell],
+%        [jboss-[version-(only, ["5.2.2"]),
+%                deployments-(exists, ["jbossdemo1.war"])]]).
 
 % == Password cracking ==
+
+vuln('exposed-shadow-file', [user_shell], [hashed_passwords], []).
+vuln('exposed-shadow-file', [ftp], [hashed_passwords], []).
 
 vuln('crack-hashes', [hashed_passwords], [passwords], []).
 vuln('crack-hashes', [hashed_web_passwords], [web_passwords], []).
 
-% == User shell to root shell ==
+% == User shell to root shell (privilege escalation) ==
 
 vuln('scan-for-setuid-binary', [user_shell], [setuid_binary], []).
 
-vuln('examine-setuid-binary', [setuid_binary], [assumed_path_var], []).
+vuln('examine-setuid-binary', [setuid_binary], [assumed_PATH_var], []).
 
-vuln('custom-PATH-setuid', [user_shell, setuid_binary, assumed_path_var], [root_shell], []).
+vuln('custom-PATH-setuid', [user_shell, setuid_binary, assumed_PATH_var], [root_shell], []).
+
+%vuln('scan-for-root-cronjobs', [user_shell], [root_cronjob], []).
+
+%vuln('hijack-root-cronjob', [root_cronjob], [root_shell], []).
+
 
