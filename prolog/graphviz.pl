@@ -23,8 +23,8 @@ generatePNGFromDot(String, File) :-
 formatDotSingleVuln(_, [], "").
 formatDotSingleVuln(VulnID, [(Prereq, Vuln, Result)|Rest], String) :-
 	formatDotSingleVuln(VulnID, Rest, String1),
-    ( Prereq = none -> PrereqLabel = '' ; PrereqLabel = Prereq ),
-    format(atom(String), "~s\"~a\" [shape=\"none\", label=\"~a\"];~n\"~a\" [shape=\"none\"];~n\"~s\" [shape=\"box\", label=\"~a\"];~n\"~a\" -> \"~s\";~n\"~s\" -> \"~a\";~n", [String1, Prereq, PrereqLabel, Result, VulnID, Vuln, Prereq, VulnID, VulnID, Result]).
+    ( Prereq = none -> format(atom(PrereqID), "PRE~a", [VulnID]), PrereqLabel = '' ; PrereqLabel = Prereq, PrereqID = Prereq ),
+    format(atom(String), "~s\"~a\" [shape=\"none\", label=\"~a\"];~n\"~a\" [shape=\"none\"];~n\"~s\" [shape=\"box\", label=\"~a\"];~n\"~a\" -> \"~s\";~n\"~s\" -> \"~a\";~n", [String1, PrereqID, PrereqLabel, Result, VulnID, Vuln, PrereqID, VulnID, VulnID, Result]).
 
 formatDotVulns([], "").
 formatDotVulns([(Prereqs, Vuln, Result)|Rest], Str) :-

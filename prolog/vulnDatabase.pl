@@ -2,67 +2,88 @@
 %note, result cannot be empty
 %note, config values must be strings or predicates
 
-vuln('host-discovery', [], [discover_host], []).
-vuln('port-scanning', [discover_host], [open_ports], []).
 
 % == FTP ==
-vuln('open-ftp', [open_ports], [ftp_server], [ftp-[]]).
-vuln('directory-traversal', [ftp_server], [user_list], []).
-vuln('login-root(brute-force)', [ftp_server], [server_access_root],
-        [ftp-[root_password-(only, [generatePassword])]]).
+
+vuln('scan-ftp', [], [ftp, vsftpd234],
+        [vsftpd-[version-(only, ["2.3.4"])]]).
+vuln('scan-ftp', [], [ftp, vsftpd303],
+        [vsftpd-[version-(only, ["3.0.3"])]]).
+
+vuln('vsftpd-backdoor', [vsftpd234], [root_shell],
+        [vsftpd-[version-(only, ["2.3.4"])]]).
 
 % == SSH ==
-vuln('open-ssh', [open_ports], [ssh_server], []).
 
-% Password: qwerty
-vuln('login-root(brute-force)', [ssh_server], [server_access_root],
-        [ssh-[root_password-(only, [generatePassword])]]).
+vuln('scan-ssh', [], [ssh, openssh76p1],
+        [openssh-[version-(only, ["7.6p1"])]]).
 
-% Password: qwerty
-vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, [generatePassword])]]).
+vuln('ssh-login-root(brute-force)', [ssh], [root_shell],
+        [openssh-[allowrootlogin-(only, ["Yes"])],
+        users-[root-(only, [generatePassword])]]).
 
-vuln('crack-hashes', [hashed_passwords], [passwords], []).
+vuln('ssh-login-root(credentials)', [ssh, passwords], [root_shell],
+        [openssh-[allowrootlogin-(only, ["Yes"])],
+        users-[root-(only, [generatePassword])]]).
 
-vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, [generatePassword])]]).
+vuln('ssh-user(brute-force)', [ssh, user_list], [user_shell],
+        [users-[logins-(exists, [generateUsername]),
+                passwords-(exists, [generatePassword])]]).
+
+vuln('ssh-user(credentials)', [ssh, user_list, passwords], [user_shell],
+        [users-[logins-(exists, [generateUsername]),
+                passwords-(exists, [generatePassword])]]).
+
+vuln('enumerate-users', [openssh76p1], [user_list], []).
 
 % == Web ==
-vuln('open-web', [open_ports], [port_80], []).
-vuln('web-access', [port_80], [web_access],
+
+vuln('scan-http', [], [http],
         [apache-[]]).
 
-vuln('login-admin(brute-force)', [web_access, login_page], [web_admin_access],
-        [php-[git_repo-(exists, ["brute-force"]),
-              repo_folder-(exists, ["alpaca_bruteforce"])],
-        mysql-[db-(exists, ["alpaca_bruteforce"]),
-               sql_files-(exists, ["accounts.sql"])]]).
+vuln('find-login-page', [http], [php_webapp, login_page],
+        [apache-[modules-(exists, ["php"])],
+        php-[deployments-(exists, ["loginpage1"])],
+        mysql-[db-(exists, ["logindb1"])]]).
 
-vuln('login-admin(credentials)', [web_access, login_page], [web_admin_access],
-        [php-[git_repo-(exists, ["alpaca_bruteforce"]),
-              repo_folder-(exists, ["alpaca_bruteforce"])],
-        mysql-[db-(exists, ["alpaca_bruteforce"]),
-               sql_files-(exists, ["accounts.sql"])]]).
+vuln('find-login-page', [http], [php_webapp, login_page, bad_sql],
+        [apache-[modules-(exists, ["php"])],
+        php-[deployments-(exists, ["loginpage1-badsql"])],
+        mysql-[db-(exists, ["logindb1"])]]).
 
-vuln('sql-injection', [login_page], [database_queries],
-        [php-[git_repo-(exists, ["https://KimAChen@bitbucket.org/KimAChen/alpaca_sqli.git"]),
-              repo_folder-(exists, ["alpaca_sqli"])],
-        mysql-[db-(exists, ["alpaca_sqli"]),
-               sql_files-(exists, ["users.sql"])]]).
+vuln('login-web-admin(brute-force)', [php_webapp, login_page], [web_admin_access, web_passwords], []).
 
-vuln('db-query-users', [database_queries], [user_list, hashed_passwords],
-        [mysql-[users-(exists, ["alpaca_sqli"]),
-                passwords-(exists, ["password"])]]).
+vuln('login-web-admin(credentials)', [php_webapp, login_page, web_passwords], [web_admin_access], []).
+
+vuln('sql-injection', [php_webapp, login_page, bad_sql], [db_access], []).
+
+vuln('exec-custom-php', [php_webapp, web_admin_access], [user_shell], []).
+
+% == Database ==
+
+vuln('db-query-users', [db_access], [user_list, hashed_web_passwords],
+        [mysql-[db-(exists, ["logindb1"])]]).
+
+% == Java ==
+
+vuln('scan-jboss', [http], [jboss],
+        [jboss-[]]).
+
+% CVE-2017-12149
+vuln('deserialization-attack', [jboss], [user_shell],
+        [jboss-[version-(only, ["5.2.2"]),
+                deployments-(exists, ["jbossdemo1.war"])]]).
+
+% == Password cracking ==
 
 vuln('crack-hashes', [hashed_passwords], [passwords], []).
+vuln('crack-hashes', [hashed_web_passwords], [web_passwords], []).
 
-vuln('login-root(credentials)', [passwords, ssh_server], [server_access_root],
-        [ssh-[root_password-(only, [generatePassword])]]).
+% == User shell to root shell ==
 
-vuln('directory-traversal', [web_access], [bypass_auth],
-        [php-[git_repo-(only, ["alpaca_traversal"]),
-              repo_folder-(exists, ["alpaca_traversal"])],
-        mysql-[db-(exists, ["alpaca_traversal"]),
-               sql_files-(exists, ["accounts.sql"])]]).
-vuln('bypass-authentication(admin)', [bypass_auth], [web_admin_access], []).
+vuln('scan-for-setuid-binary', [user_shell], [setuid_binary], []).
+
+vuln('examine-setuid-binary', [setuid_binary], [assumed_path_var], []).
+
+vuln('custom-PATH-setuid', [user_shell, setuid_binary, assumed_path_var], [root_shell], []).
 
