@@ -7,4 +7,11 @@
   become: true
   apt: name=apache2 state=present
   notify: 
-  - start apache2
+    - start apache2
+
+- name: Install apache modules
+  become: true
+  apt: pkg={{apache.modules}} state=present
+  notify:
+    - restart apache2
+

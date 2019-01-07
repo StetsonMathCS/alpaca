@@ -23,7 +23,7 @@ apt-get -y --force-yes dist-upgrade
 apt-get install -y --force-yes build-essential curl dkms linux-headers-$(uname -r) nfs-common
 
 # Setup sudo to allow no-password sudo for "admin"
-groupadd -r admin
+groupadd -rf admin
 usermod -a -G admin vagrant
 cp /etc/sudoers /etc/sudoers.orig
 sed -i -e '/Defaults\s\+env_reset/a Defaults\texempt_group=admin' /etc/sudoers

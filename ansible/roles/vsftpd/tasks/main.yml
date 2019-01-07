@@ -1,0 +1,20 @@
+---
+- name: Update apt
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install ftp
+  become: true
+  apt: pkg=vsftpd state=present
+
+- name: Uncomment line from /etc/vsftpd.conf
+  become: true
+  lineinfile:
+    dest: /etc/vsftpd.conf
+    regexp: '#\s*write_enable=YES'
+    line: 'write_enable=YES'
+  notify:
+  - restart vsftpd
+

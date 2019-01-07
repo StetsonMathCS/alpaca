@@ -1,5 +1,5 @@
 ---
 dependencies:
   - { role: apache }
+  - { role: composer}
   - { role: mysql }
-  - { role: git }

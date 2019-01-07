@@ -42,14 +42,16 @@ vuln('scan-http', [], [http],
         [apache-[]]).
 
 vuln('find-login-page', [http], [php_webapp, login_page],
-        [apache-[modules-(exists, ["php"])],
+        [apache-[modules-(exists, ["libapache2-mod-php"])],
         php-[deployments-(exists, ["loginpage1"])],
-        mysql-[db-(exists, ["logindb1"])]]).
+        mysql-[db-(exists, ["logindb1"]),
+               root-(only, [generatePassword])]]).
 
 vuln('find-login-page', [http], [php_webapp, login_page, bad_sql],
-        [apache-[modules-(exists, ["php"])],
+       [apache-[modules-(exists, ["libapache2-mod-php"])],
         php-[deployments-(exists, ["loginpage1-badsql"])],
-        mysql-[db-(exists, ["logindb1"])]]).
+        mysql-[db-(exists, ["logindb1"]),
+               root-(only, [generatePassword])]]).
 
 %vuln('web-login-admin(brute-force)', [login_page, web_user_list], [web_admin_access, web_passwords], []).
 

@@ -106,8 +106,9 @@ generateFromList(List, Length, Output) :-
 
 random_char_generate(List, N, Char):-  random(0, N, X), nth0(X, List, Char).
 
-% generates a username from username list, defined in vulnDatabase.pl
-generateUsername(Username) :-
+% generates a username from username list, defined below
+% (params not used)
+generateUsername(_, Username) :-
 	usernames(Usernames),
 	generateFromList(Usernames, 1, Output),
 	nth0(0, Output, UsernameAtom),

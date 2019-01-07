@@ -1,4 +1,5 @@
 ---
+ 
 - name: Download composer
   get_url:
     url: https://getcomposer.org/installer
@@ -19,3 +20,4 @@
     path: /usr/local/bin/composer
     mode: a+x
     state: file
+

@@ -1,16 +1,38 @@
 ---
-- name: Update apt
-  become: true
-  apt: update_cache=yes
 
-- name: Install php5
+- name: Install php-mysql
   become: true
-  apt: name=libapache2-mod-php5 state=present
+  apt: name=php-mysql state=present
+  notify: 
+    - restart apache2
+
+- name: Copy PHP deployments
+  copy:
+    src: "{{item}}.tar.gz"
+    dest: "/tmp/{{item}}.tar.gz"
+  with_items: "{{php.deployments}}"
+
+- name: Unzip PHP deployments
+  unarchive:
+    src: "/tmp/{{item}}.tar.gz"
+    dest: /
+    remote_src: yes
+  with_items: "{{php.deployments}}"
  
-- include_tasks: composer.yml
-- include_tasks: clone-repo.yml
-
-- name: Remove index.html
+- name: Remove PHP deployments zipfile
   file:
+    path: "/tmp/{{item}}.tar.gz"
     state: absent
-    path: /var/www/html/index.html
+  with_items: "{{php.deployments}}"
+
+- name: Run Composer for PHP deployments
+  command: chdir=/var/www/html/{{item}} /usr/local/bin/composer install
+  with_items: "{{ php.deployments }}"
+
+- name: Update PHP Composer database connections to use MySQL password
+  lineinfile:
+    path: "/var/www/html/{{item}}/app/Database/Connection.php"
+    regexp: "^\\s*const DB_PASS = 'password';\\s*$"
+    line: "const DB_PASS = '{{mysql.root.0}}';"
+  with_items: "{{ php.deployments }}"
+

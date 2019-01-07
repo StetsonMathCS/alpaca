@@ -1,19 +1,60 @@
 ---
-- name: Install MySQL
-  apt: name={{item}} update_cache=yes state=present
-  with_items:
-  - python-mysqldb
-  - php5-mysql
-  - mysql-server
 
-- name: Create MySQL DB user(s)
-  when: mysql.users is defined and mysql.passwords is defined
-  mysql_user: 
-    name: "{{ item.0 }}" 
-    password: "{{ item.1 }}"
-    priv: '*.*:ALL' 
+- name: Install MySQL
+  apt:
+    name: ["mysql-server", "python3-pymysql"]
+    update_cache: yes
     state: present
-  with_together:
-    - "{{ mysql.users }}" 
-    - "{{ mysql.passwords }}"
-  
+
+- name: Start the MySQL service
+  service:
+    name: mysql
+    state: started
+    enabled: true
+
+#- name: Set MySQL root password
+#  when: mysql.root is defined
+#  mysql_user: 
+#    name: root 
+#    password: "{{ mysql.root.0 }}"
+#    priv: "*.*:ALL,GRANT"
+#    login_unix_socket: "/var/run/mysqld/mysqld.sock"
+
+- name: Copy my.cnf file
+  when: mysql.root is defined
+  template:
+    src: "my.cnf.j2"
+    dest: "~/.my.cnf"
+    owner: root
+    mode: 0600
+
+- name: Copy MySQL database dumps
+  copy:
+    src: "{{item}}.sql.gz"
+    dest: /tmp
+  with_items: "{{mysql.db}}"
+
+- name: Import MySQL databases
+  mysql_db:
+    name: "{{item}}"
+    state: import
+    target: "/tmp/{{item}}.sql.gz"
+  with_items: "{{mysql.db}}"
+
+- name: Delete MySQL database dumps
+  file:
+    path: "/tmp/{{item}}.sql.gz"
+    state: absent
+  with_items: "{{mysql.db}}"
+
+#- name: Create MySQL DB user(s)
+#  when: mysql.users is defined and mysql.passwords is defined
+#  mysql_user: 
+#    name: "{{ item.0 }}" 
+#    password: "{{ item.1 }}"
+#    priv: '*.*:ALL' 
+#    state: present
+#  with_together:
+#    - "{{ mysql.users }}" 
+#    - "{{ mysql.passwords }}"
+ 
