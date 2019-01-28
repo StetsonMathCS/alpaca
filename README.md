@@ -1,6 +1,6 @@
 # Alpaca: Building Dynamic Cyber Ranges with Procedurally-Generated Vulnerability Lattices
 
-![Logo](logo.png)
+<img align="right" src="logo.png">
 
 ## Requirements
 
