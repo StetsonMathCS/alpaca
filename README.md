@@ -34,9 +34,9 @@ Or,
 $ swipl prolog/main.pl createRangeFromIGS '[db_access]' '[root_shell]' '[paramPasswordLength-5]'
 </pre>
 
-The system will generate a set of files in the `ranges/` folder. The generated range will have a unique ID that is reported by the system.
+The system will generate a subfolder and set of files in the `ranges/` folder. The generated range will have a unique ID that is reported by the system. A ZIP file will contain all the range configuration files.
 
-Information about the range and its lattices is found in the `range_metadata.json` file and the lattice subfolders.
+Information about the range and its lattices are found in the `range_metadata.json` file and the lattice subfolders.
 
 ### Step 2: Generate a virtual machine for a lattice in the range
 
