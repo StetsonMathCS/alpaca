@@ -1,44 +1,54 @@
-# ALPACA: BUILDING DYNAMIC CYBER RANGES WITH PROCEDURALLY-GENERATED VULNERABILITY LATTICES
+# Alpaca: Building Dynamic Cyber Ranges with Procedurally-Generated Vulnerability Lattices
 
 ![Logo](logo.png)
 
+## Requirements
+
+- [SWI-Prolog](http://www.swi-prolog.org/)
+- [Packer](https://packer.io/)
+- [Ansible](https://www.ansible.com/)
+- [Graphviz](https://www.graphviz.org/)
+
 ## Running Alpaca
 
-### Prolog
+### Step 0 (optional): Visualize the vulnerabilities
 
-Run main.pl to find/generate lattices and create ansible files
-
-<pre>
-swipl main.pl <i>predicate</i> <i>args</i>
-</pre>
-
-#### Examples:
-
-Generate full lattice showing all possible paths
+Generate an image of the vulnerabilities defined in the system:
 
 <pre>
-swipl main.pl allPossiblePaths
+$ swipl prolog/main.pl graphAllVulns vulns.dot
+$ open vulns.dot.png
 </pre>
 
-Find all possible paths for scenario, group paths by compatible configurations, and separate into different directories. 
+### Step 1: Generate range configuration files
 
-Directories include:
-+ Lattice
-+ Variable file (contains configurations)
-+ playbook.yml
+In order to build a range, one must first find/generate lattices and create Packer and Ansible files. The first `[...]` argument is the starting state, the second argument is the goal state, and the third is any required parameters.
 
 <pre>
-swipl main.pl createAllPaths <i>'[Goal]'</i> <i>'[InitialState]'</i> <i>'Name'</i>
-</pre>
-<pre>
-swipl main.pl createAllPaths '[server_access_root]' '[]' 'server_access_root'
+$ swipl prolog/main.pl createRangeFromIGS '[]' '[root_shell]' '[paramPasswordLength-5]'
 </pre>
 
-Select which scenario you want to create and instantiate the cyber range.
+Or,
 
 <pre>
-swipl main.pl createRange <i>'Directory_Name'</i>
+$ swipl prolog/main.pl createRangeFromIGS '[db_access]' '[root_shell]' '[paramPasswordLength-5]'
 </pre>
+
+The system will generate a set of files in the `ranges/` folder. The generated range will have a unique ID that is reported by the system.
+
+Information about the range and its lattices is found in the `range_metadata.json` file and the lattice subfolders.
+
+### Step 2: Generate a virtual machine for a lattice in the range
+
+Switch to a specific lattice in a range:
+
 <pre>
-swipl main.pl createRange 'server_access_root1'
+$ cd ranges/64374c93-697f-46eb-9f3f-58cf6c48e676/e38d2277-6f1d-4b22-a9aa-c93781da1c39/
 </pre>
+
+Then run the Packer script:
+
+<pre>
+$ bash run_packer.sh
+</pre>
+

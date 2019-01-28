@@ -116,9 +116,9 @@ checkVulnAndConfig([(_, Vulns)|_], Vuln) :-
 checkVulnAndConfig([_|Rest], Vuln) :-
 	checkVulnAndConfig(Rest, Vuln).
 
-checkVulns([Vulns|_], Vuln) :-
-	with_output_to(atom(Ato), write(Vulns)),
-	sub_atom(Ato, B, L, A, Vuln).
-checkVulns([_|Rest], Vuln) :-
-	checkVulns(Rest, Vuln).
+%checkVulns([Vulns|_], Vuln) :-
+%	with_output_to(atom(Ato), write(Vulns)),
+%	sub_atom(Ato, B, L, A, Vuln).
+%checkVulns([_|Rest], Vuln) :-
+%	checkVulns(Rest, Vuln).
 
