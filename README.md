@@ -2,6 +2,10 @@
 
 <img align="right" src="logo.png">
 
+## Publications
+
+- J. Eckroth, K. Chen, H. Gatewood, B. Belna. "Alpaca: Building Dynamic Cyber Ranges with Procedurally-Generated Vulnerability Lattices," Proceedings of the Annual ACM Southeast Conference, 2019. [PDF](publications/acmse-2019-alpaca.pdf)
+
 ## Requirements
 
 - [SWI-Prolog](http://www.swi-prolog.org/)
